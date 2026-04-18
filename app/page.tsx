@@ -797,8 +797,9 @@ function BlobBackground() {
         const mr = r * (0.9 + 0.1 * Math.sin(b.ph));
         const hue = (b.ho + t * 20) % 360;
         const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, mr);
-        g.addColorStop(0, `hsla(${hue},100%,62%,0.12)`);
-        g.addColorStop(.5, `hsla(${(hue+100)%360},100%,52%,0.06)`);
+        g.addColorStop(0, `hsla(${hue},100%,62%,0.25
+          )`);
+        g.addColorStop(.5, `hsla(${(hue+100)%360},100%,52%,0.14)`);
         g.addColorStop(1, "transparent");
         ctx.save();
         ctx.filter = "blur(55px)";
