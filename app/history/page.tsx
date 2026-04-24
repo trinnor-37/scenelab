@@ -267,6 +267,7 @@ export default function HistoryPage() {
                 {user.email}
               </div>
             )}
+            <button className="hist-btn hist-btn-ghost" onClick={() => router.push("/profile")}>Profile</button>
             <button className="hist-btn hist-btn-primary" onClick={() => router.push("/")}>+ Build New</button>
             <button className="hist-btn hist-btn-ghost" onClick={handleSignOut}>Sign Out</button>
           </div>

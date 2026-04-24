@@ -1826,9 +1826,12 @@ export default function App() {
           <div className="header-right">
             <div className="stage-pill"><div className="dot"/>{visibleStages[stage]?.label}</div>
             {user ? (
-              <button className="auth-header-btn" onClick={()=>router.push("/history")}>
-                <div className="auth-user-dot"/>History
-              </button>
+              <>
+                <button className="auth-header-btn" onClick={()=>router.push("/history")}>
+                  <div className="auth-user-dot"/>History
+                </button>
+                <button className="auth-header-btn" onClick={()=>router.push("/profile")}>Profile</button>
+              </>
             ) : (
               <button className="auth-header-btn" onClick={()=>router.push("/auth")}>Sign In</button>
             )}
