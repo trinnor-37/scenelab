@@ -2602,7 +2602,7 @@ function GearDrop({ label, value, options, onChange }: { label:string; value:str
 export default function App() {
   const router = useRouter();
   // Start screen + pipeline
-  const [showStart, setShowStart]       = useState(true);
+  const [showStart, setShowStart]       = useState(false);
   const [pipelineMode, setPipelineMode] = useState<PipelineMode>('video');
   // Image builder
   const [inImgBuilder, setInImgBuilder] = useState(false);
@@ -2877,7 +2877,7 @@ export default function App() {
               <div className="start-card-arrow">→</div>
             </div>
             {/* VIDEO PROMPTS */}
-            <div className="start-card featured" onClick={()=>{ setShowStart(false); setPipelineMode('video'); }}>
+            <div className="start-card featured" onClick={()=>{ setShowStart(false); setPipelineMode('video'); setConceptScreen(true); }}>
               <div className="start-card-icon">▶</div>
               <div className="start-card-type">Video Prompts</div>
               <div className="start-card-name">Full Video<br/>Builder</div>
@@ -3243,22 +3243,24 @@ export default function App() {
         </div>
 
         <div className="hero fade-in">
-          <div className="hero-eyebrow">AI Video Prompt Builder</div>
+          <div className="hero-eyebrow">AI Video Production Studio</div>
           <div className="hero-logo">
             <span className="hero-logo-scene">SCENE</span>
             <span className="hero-logo-bloc">BLOC</span>
           </div>
           <p className="hero-tagline">
-            Craft cinematic AI video prompts for luxury product commercials — in seconds.
+            The complete AI video production studio — from concept to cinematic prompt in seconds.
           </p>
           <div className="hero-features">
-            <div className="hero-feat"><div className="hero-feat-dot"/><span>Multi-Scene Support</span></div>
-            <div className="hero-feat"><div className="hero-feat-dot"/><span>Mood Board Upload</span></div>
-            <div className="hero-feat"><div className="hero-feat-dot"/><span>4-Stage Choreography</span></div>
-            <div className="hero-feat"><div className="hero-feat-dot"/><span>Start &amp; End Frames</span></div>
+            <div className="hero-feat"><div className="hero-feat-dot"/><span>Concept Generator</span></div>
+            <div className="hero-feat"><div className="hero-feat-dot"/><span>Cinema Gear 2.0</span></div>
+            <div className="hero-feat"><div className="hero-feat-dot"/><span>Image Prompts</span></div>
+            <div className="hero-feat"><div className="hero-feat-dot"/><span>Video Prompts</span></div>
+            <div className="hero-feat"><div className="hero-feat-dot"/><span>Voiceover Scripts</span></div>
+            <div className="hero-feat"><div className="hero-feat-dot"/><span>A/B Variations</span></div>
           </div>
-          <button className="hero-cta" onClick={()=>setConceptScreen(true)}>
-            Begin Building →
+          <button className="hero-cta" onClick={()=>setShowStart(true)}>
+            Let&apos;s Start Building →
           </button>
           <div className="hero-scroll">
             <div className="hero-scroll-line"/>
