@@ -110,14 +110,14 @@ const css = `
   }
 
   .hero-tagline {
-    font-size: clamp(15px, 3vw, 20px);
-    color: var(--muted2);
-    font-weight: 300;
-    font-style: italic;
-    line-height: 1.72;
-    max-width: 460px;
+    font-size: clamp(22px, 5vw, 38px);
+    color: var(--blue-bright);
+    font-weight: 800;
+    font-style: normal;
+    line-height: 1.2;
+    max-width: 560px;
     margin: 0 auto 56px;
-    letter-spacing: 0.01em;
+    letter-spacing: 0.18em;
     animation: heroFadeUp 1s ease both;
     animation-delay: 0.6s;
   }
@@ -3243,13 +3243,13 @@ export default function App() {
         </div>
 
         <div className="hero fade-in">
-          <div className="hero-eyebrow">AI Video Production Studio</div>
+          <div className="hero-eyebrow">The AI Creative Studio</div>
           <div className="hero-logo">
             <span className="hero-logo-scene">SCENE</span>
             <span className="hero-logo-bloc">BLOC</span>
           </div>
           <p className="hero-tagline">
-            The complete AI video production studio — from concept to cinematic prompt in seconds.
+            DIRECT. CREATE. PRODUCE.
           </p>
           <div className="hero-features">
             <div className="hero-feat"><div className="hero-feat-dot"/><span>Concept Generator</span></div>
