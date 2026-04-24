@@ -2113,12 +2113,165 @@ const css = `
   }
   .cine-preset-btn:hover { border-color: rgba(68,187,255,0.35); color: var(--text); }
   .cine-preset-btn.active { border-color: var(--blue); color: var(--blue); background: var(--blue-dim); }
+
+  /* ── PLATFORM & STYLE STEP ─────────────────────────────────────────── */
+  .plat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  .plat-card {
+    background: var(--surface);
+    border: 1.5px solid var(--border2);
+    border-radius: var(--radius-sm);
+    padding: 16px 14px;
+    cursor: pointer;
+    transition: border-color 0.18s, background 0.18s;
+    text-align: center;
+  }
+  .plat-card:hover { border-color: rgba(68,187,255,0.30); }
+  .plat-card.selected { border-color: var(--blue); background: var(--blue-dim); }
+  .plat-card-name { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .plat-card-sub  { font-size: 10px; color: var(--muted); letter-spacing: 0.5px; }
+  .plat-badge {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--blue);
+    background: var(--blue-dim);
+    border: 1px solid var(--blue);
+    border-radius: 100px;
+    padding: 2px 8px;
+    margin-top: 6px;
+  }
+  .style-section-lbl {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 20px 0 10px;
+  }
+  .style-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+    margin-bottom: 4px;
+  }
+  .style-card {
+    background: var(--surface);
+    border: 1.5px solid var(--border2);
+    border-radius: var(--radius-sm);
+    padding: 14px 13px;
+    cursor: pointer;
+    transition: border-color 0.18s, background 0.18s;
+  }
+  .style-card:hover { border-color: rgba(68,187,255,0.30); }
+  .style-card.selected { border-color: var(--blue); background: var(--blue-dim); }
+  .style-card-name { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+  .style-card-desc { font-size: 11px; color: var(--muted); line-height: 1.35; }
+  .hook2-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 9px;
+    margin-top: 8px;
+  }
+  .hook2-card {
+    background: var(--surface);
+    border: 1.5px solid var(--border2);
+    border-radius: var(--radius-sm);
+    padding: 14px 10px;
+    cursor: pointer;
+    transition: border-color 0.18s, background 0.18s;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted2);
+    line-height: 1.3;
+  }
+  .hook2-card:hover { border-color: rgba(68,187,255,0.30); color: var(--text); }
+  .hook2-card.selected { border-color: var(--blue); background: var(--blue-dim); color: var(--blue); }
+  .dur-row { display: flex; gap: 10px; margin-top: 8px; flex-wrap: wrap; }
+  .dur-pill {
+    background: transparent;
+    border: 1.5px solid var(--border2);
+    border-radius: 100px;
+    padding: 9px 22px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--muted2);
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+  }
+  .dur-pill:hover { border-color: rgba(68,187,255,0.35); color: var(--text); }
+  .dur-pill.selected { border-color: var(--blue); color: var(--blue); background: var(--blue-dim); }
+  .done-platform-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+  .done-plat-pill {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--blue);
+    border: 1px solid var(--blue);
+    border-radius: 100px;
+    padding: 5px 14px;
+  }
+  .done-style-pill {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted2);
+    border: 1px solid var(--border2);
+    border-radius: 100px;
+    padding: 5px 14px;
+  }
 `;
 
 type ConceptOption = { id:string; title:string; hook:string; build:string; peak:string; closure:string };
 type AbVariations  = { hookVariations:string[]; emotionalAngles:string[]; ctaVariations:string[] };
 type PipelineMode  = 'video' | 'image' | 'both';
 type ImgStep       = 'mode' | 'form' | 'done';
+
+// ── PLATFORM & STYLE DATA ────────────────────────────────────────────
+const PLATFORMS = [
+  { id:"seedance", name:"Seedance 2.0", sub:"Higgsfield", recommended:true },
+  { id:"kling",    name:"Kling 3.0",    sub:"",           recommended:false },
+  { id:"runway",   name:"Runway Gen-4", sub:"",           recommended:false },
+  { id:"veo",      name:"Veo 3.1",      sub:"",           recommended:false },
+  { id:"sora",     name:"Sora 2",       sub:"",           recommended:false },
+  { id:"minimax",  name:"MiniMax Hailuo", sub:"",         recommended:false },
+];
+const SEEDANCE_STYLES = [
+  { category:"Creative", name:"Cinematic",       desc:"Film-quality dramatic content, moody lighting, anamorphic" },
+  { category:"Creative", name:"3D CGI",          desc:"Pixar style, Unreal Engine, photorealistic renders" },
+  { category:"Creative", name:"Cartoon",         desc:"2D animation, cel-shaded, Ghibli, hand-drawn" },
+  { category:"Creative", name:"Comic to Video",  desc:"Manga panels, webtoons, graphic novels coming to life" },
+  { category:"Creative", name:"Fight Scenes",    desc:"Martial arts, combat, explosions, action sequences" },
+  { category:"Creative", name:"Anime Action",    desc:"Shonen, seinen, mecha, anime openings" },
+  { category:"Commercial", name:"Motion Design Ad", desc:"SaaS, app launches, UI demos, feature showcases" },
+  { category:"Commercial", name:"E-Commerce Ad",    desc:"Fashion, beauty, electronics, DTC conversion content" },
+  { category:"Commercial", name:"Product 360",      desc:"Turntable showcases, multi-angle hero shots, unboxing" },
+  { category:"Commercial", name:"Social Hook",      desc:"TikTok, Reels, Shorts, scroll-stopping viral formats" },
+  { category:"Commercial", name:"Brand Story",      desc:"Origin stories, mission statements, brand films" },
+  { category:"Industry", name:"Music Video",       desc:"Beat-synced, performance, narrative, visualizers" },
+  { category:"Industry", name:"Fashion Lookbook",  desc:"Runway walks, outfit showcases, fashion campaigns" },
+  { category:"Industry", name:"Food & Beverage",   desc:"Restaurant promos, ASMR, appetite appeal" },
+  { category:"Industry", name:"Real Estate",        desc:"Property tours, architecture, interior design, aerial" },
+];
+const PLATFORM_HOOKS = ["Impossible Scale","Mid-Action Freeze","Perspective Violation","Texture Macro","Color Shock","Motion Contrast"];
+const PLATFORM_DURATIONS = ["4s","8s","10s","15s"];
 
 // ── IMAGE PROMPT BUILDER DATA ─────────────────────────────────────────
 const IMG_MODES = [
@@ -2337,19 +2490,20 @@ const CUSTOM_PLACEHOLDERS: Record<string,string> = {
 };
 
 const STAGES = [
-  { id:"product",   short:"Brief",  label:"Product Brief" },
-  { id:"hook",      short:"Hook",   label:"Hook Type" },
-  { id:"reference", short:"Frames", label:"Frame Setup" },
-  { id:"visual",    short:"Visual", label:"Visual DNA" },
-  { id:"cine",      short:"Cinema", label:"Cinematography" },
-  { id:"light",     short:"Light",  label:"Landscape" },
-  { id:"choreo",    short:"Motion", label:"Motion" },
-  { id:"brand",     short:"Brand",  label:"Branding" },
-  { id:"preview",   short:"Done",   label:"Done" },
+  { id:"product",   short:"Brief",    label:"Product Brief" },
+  { id:"hook",      short:"Hook",     label:"Hook Type" },
+  { id:"reference", short:"Frames",   label:"Frame Setup" },
+  { id:"visual",    short:"Visual",   label:"Visual DNA" },
+  { id:"cine",      short:"Cinema",   label:"Cinematography" },
+  { id:"platform",  short:"Platform", label:"Platform & Style" },
+  { id:"light",     short:"Light",    label:"Landscape" },
+  { id:"choreo",    short:"Motion",   label:"Motion" },
+  { id:"brand",     short:"Brand",    label:"Branding" },
+  { id:"preview",   short:"Done",     label:"Done" },
 ];
 
 const EMPTY_SCENE  = { envA:"", envB:"", lightTrans:"", detail1:"", motion:"", detail2:"", particles:"", lightFx:"", refMode:"none", refImgs:[] as string[], startImg:null as string|null, endImg:null as string|null, cameraAngle:"", cameraMovement:"", timeOfDay:"", weather:"", shotDuration:"" };
-const EMPTY_SHARED = { product:"", commercialStyle:"", aesthetic:"", optics:"", atmosphere:"", bg:"", tagline:"", colorGrading:"", hookType:"", conceptTitle:"", conceptHook:"", conceptBuild:"", conceptPeak:"", conceptClosure:"", cineMood:"", cineCamera:"", cineLens:"", cineFocalLength:"", cineAperture:"" };
+const EMPTY_SHARED = { product:"", commercialStyle:"", aesthetic:"", optics:"", atmosphere:"", bg:"", tagline:"", colorGrading:"", hookType:"", conceptTitle:"", conceptHook:"", conceptBuild:"", conceptPeak:"", conceptClosure:"", cineMood:"", cineCamera:"", cineLens:"", cineFocalLength:"", cineAperture:"", platform:"", platformStyle:"", platformHook:"", platformDuration:"8s" };
 
 // ── SELECT WITH CUSTOM ────────────────────────────────────────────────
 function Sel({ label, value, onChange, optKey, placeholder="Choose an option...", locked=false }: {
@@ -2565,6 +2719,47 @@ Background: ${shared.bg||"—"}
 Tagline: "${shared.tagline||"Your Slogan Here"}"${cineBlock}${musicBlock}`;
 }
 
+function buildSeedancePrompt(shared: typeof EMPTY_SHARED, scene: typeof EMPTY_SCENE, sceneNum: number, totalScenes: number) {
+  const isCont  = sceneNum > 1;
+  const durStr  = shared.platformDuration || "8s";
+  const durNum  = parseInt(durStr);
+  const b1End   = Math.round(durNum * 0.25);
+  const b2End   = Math.round(durNum * 0.50);
+  const b3End   = Math.round(durNum * 0.85);
+  const style   = shared.platformStyle || "Cinematic";
+  const hook    = shared.platformHook  || "Bold Visual";
+  const music   = !isCont ? getMusicDirection(shared.commercialStyle) : null;
+  const contHdr = isCont
+    ? `SCENE ${sceneNum} OF ${totalScenes} — CONTINUATION\nInherit all visual DNA, colour grading, and lighting from Scene 1.\n\n`
+    : `SCENE ${sceneNum} OF ${totalScenes}\n\n`;
+  const hookDesc = scene.detail1
+    ? `Open on ${scene.detail1} of ${shared.product||"subject"}`
+    : `Establish ${shared.product||"subject"} in ${scene.envA||"environment"}`;
+  const taglineBlock = shared.tagline ? `\n[TAGLINE: "${shared.tagline}"]` : "";
+  return `═══════════════════════════════
+${contHdr}[STYLE: ${style}]
+[PRODUCT: ${shared.product||"—"}]
+
+[HOOK: 0–2s | ${hook} — ${hookDesc}]
+
+[BEAT 1: 2–${b1End}s | ${scene.envA||"environment"} — ${scene.cameraMovement||"dynamic movement"}, ${shared.atmosphere||"—"} atmosphere, ${shared.optics||"—"} lens]
+
+[BEAT 2: ${b1End}–${b2End}s | ${shared.product||"subject"} ${scene.motion||"reveals"} — ${scene.envA||"Env A"} transitions into ${scene.envB||"Env B"}, ${shared.colorGrading||"cinematic colour grading"}]
+
+[BEAT 3: ${b2End}–${b3End}s | Macro detail on ${scene.detail2||shared.product||"subject"} — ${scene.particles||"particles"} drifting, ${shared.cineMood||"moody"} lighting, tight helical orbit]
+
+[BEAT 4: ${b3End}–${durNum}s | Pull to hero frame — ${scene.lightFx||"light sweep"} over brand mark, ${scene.cameraAngle||"three-quarter"} angle lock]
+
+[SOUND DESIGN: ${music ? `${music.musicStyle} at ${music.bpm} BPM — ${music.instruments}` : "Cinematic ambient — foley-driven, minimal score"}]
+
+[TECHNICAL: 16:9 | ${durStr} | Style: ${style} | Platform: Seedance 2.0 (Higgsfield)]${taglineBlock}`;
+}
+
+function getPrompt(shared: typeof EMPTY_SHARED, scene: typeof EMPTY_SCENE, sceneNum: number, totalScenes: number) {
+  if (shared.platform === "Seedance 2.0") return buildSeedancePrompt(shared, scene, sceneNum, totalScenes);
+  return buildScenePrompt(shared, scene, sceneNum, totalScenes);
+}
+
 // ── GEAR DROPDOWN (Cinema override) ──────────────────────────────────
 function GearDrop({ label, value, options, onChange }: { label:string; value:string; options:string[]; onChange:(v:string)=>void }) {
   const [open, setOpen] = useState(false);
@@ -2711,10 +2906,11 @@ export default function App() {
     refValid,                                                      // 2: reference
     !isNewScene ? !!(shared.aesthetic && shared.optics && shared.atmosphere) : true, // 3: visual
     true,                                                          // 4: cine (always passable)
-    !!(sc.envA && sc.envB && sc.lightTrans),                      // 5: light
-    !!(sc.detail1 && sc.motion && sc.detail2 && sc.particles && sc.lightFx), // 6: choreo
-    !!shared.bg,                                                   // 7: brand
-    true,                                                          // 8: preview
+    true,                                                          // 5: platform (always passable)
+    !!(sc.envA && sc.envB && sc.lightTrans),                      // 6: light
+    !!(sc.detail1 && sc.motion && sc.detail2 && sc.particles && sc.lightFx), // 7: choreo
+    !!shared.bg,                                                   // 8: brand
+    true,                                                          // 9: preview
   ];
 
   const addScene = () => {
@@ -2724,10 +2920,10 @@ export default function App() {
     setStage(1);
   };
 
-  const allPrompts = scenes.map((s,i)=>buildScenePrompt(shared,s,i+1,scenes.length)).join("\n\n");
+  const allPrompts = scenes.map((s,i)=>getPrompt(shared,s,i+1,scenes.length)).join("\n\n");
 
   const copy = (which: number|"all") => {
-    const raw = which==="all" ? allPrompts : buildScenePrompt(shared,scenes[which as number],(which as number)+1,scenes.length);
+    const raw = which==="all" ? allPrompts : getPrompt(shared,scenes[which as number],(which as number)+1,scenes.length);
     navigator.clipboard.writeText(withWatermark(raw));
     setCopied(which);
     setTimeout(()=>setCopied(null),2000);
@@ -2821,7 +3017,7 @@ export default function App() {
     setVoiceoverScript('');
     try {
       const sceneIdx = previewScene === -1 ? 0 : previewScene;
-      const currentPrompt = previewScene === -1 ? allPrompts : buildScenePrompt(shared, scenes[sceneIdx], sceneIdx+1, scenes.length);
+      const currentPrompt = previewScene === -1 ? allPrompts : getPrompt(shared, scenes[sceneIdx], sceneIdx+1, scenes.length);
       const duration = scenes[sceneIdx].shotDuration || "7 seconds";
       const res = await fetch('/api/ai/voiceover', {
         method: 'POST',
@@ -2851,7 +3047,7 @@ export default function App() {
     }
   };
 
-  const visibleStages = isNewScene ? STAGES.filter(s=>!["product","hook","visual","cine","brand"].includes(s.id)) : STAGES;
+  const visibleStages = isNewScene ? STAGES.filter(s=>!["product","hook","visual","cine","platform","brand"].includes(s.id)) : STAGES;
 
   // ── HERO ────────────────────────────────────────────────────────────
   const userInitials = user?.email ? user.email.slice(0, 2).toUpperCase() : "";
@@ -3279,7 +3475,7 @@ export default function App() {
     switch(s.id) {
       case "product": return (
         <div className="fade-in">
-          <div className="stage-num">Step 01 / 08</div>
+          <div className="stage-num">Step 01 / 09</div>
           <div className="stage-title">PRODUCT BRIEF</div>
           <div className="stage-desc">Tell us exactly what you&apos;re advertising. This shapes every scene.</div>
           {shared.conceptTitle && (
@@ -3299,7 +3495,7 @@ export default function App() {
 
       case "hook": return (
         <div className="fade-in">
-          <div className="stage-num">Step 02 / 08</div>
+          <div className="stage-num">Step 02 / 09</div>
           <div className="stage-title">HOOK TYPE</div>
           <div className="stage-desc">Choose your psychological trigger — the opening seconds that stop the scroll and demand attention.</div>
           <div className="hook-grid">
@@ -3316,7 +3512,7 @@ export default function App() {
 
       case "reference": return (
         <div className="fade-in">
-          <div className="stage-num">{isNewScene?`Scene ${activeScene+1} — Step 1`:"Step 03 / 08"}</div>
+          <div className="stage-num">{isNewScene?`Scene ${activeScene+1} — Step 1`:"Step 03 / 09"}</div>
           <div className="stage-title">FRAME SETUP</div>
           <div className="stage-desc">{isNewScene?`Choose how Scene ${activeScene+1} connects visually to your previous footage.`:"Choose how you want to guide this scene visually."}</div>
           <div className="field-lbl" style={{marginBottom:13}}>Input Mode</div>
@@ -3355,7 +3551,7 @@ export default function App() {
 
       case "visual": return (
         <div className="fade-in">
-          <div className="stage-num">Step 04 / 08</div>
+          <div className="stage-num">Step 04 / 09</div>
           <div className="stage-title">VISUAL DNA</div>
           <div className="stage-desc">These lock across all scenes to keep your entire video consistent.</div>
           <Sel label="Aesthetic" value={shared.aesthetic} onChange={setS("aesthetic")} optKey="aesthetic"/>
@@ -3378,7 +3574,7 @@ export default function App() {
           shared.cineCamera===look.camera && shared.cineLens===look.lens && shared.cineFocalLength===look.focalLength && shared.cineAperture===look.aperture;
         return (
           <div className="fade-in">
-            <div className="stage-num">Step 05 / 08</div>
+            <div className="stage-num">Step 05 / 09</div>
             <div className="stage-title">CINEMATOGRAPHY</div>
             <div className="stage-desc">Set the physical camera language — locked across all scenes.</div>
 
@@ -3428,9 +3624,68 @@ export default function App() {
         );
       }
 
+      case "platform": return (
+        <div className="fade-in">
+          <div className="stage-num">Step 06 / 09</div>
+          <div className="stage-title">PLATFORM & STYLE</div>
+          <div className="stage-desc">Choose your AI video platform and creative direction — locked across all scenes.</div>
+
+          {/* Platform selector */}
+          <div className="section-label">AI Video Platform</div>
+          <div className="plat-grid">
+            {PLATFORMS.map(p=>(
+              <div key={p.id} className={`plat-card${shared.platform===p.name?" selected":""}`} onClick={()=>setShared(prev=>({...prev,platform:p.name}))}>
+                <div className="plat-card-name">{p.name}</div>
+                {p.sub && <div className="plat-card-sub">{p.sub}</div>}
+                {p.recommended && <div className="plat-badge">Recommended</div>}
+              </div>
+            ))}
+          </div>
+
+          {/* Seedance styles */}
+          {shared.platform==="Seedance 2.0" && (
+            <>
+              {(["Creative","Commercial","Industry"] as const).map(cat=>(
+                <div key={cat}>
+                  <div className="style-section-lbl">{cat} Styles</div>
+                  <div className="style-grid">
+                    {SEEDANCE_STYLES.filter(s=>s.category===cat).map(s=>(
+                      <div key={s.name} className={`style-card${shared.platformStyle===s.name?" selected":""}`} onClick={()=>setShared(prev=>({...prev,platformStyle:s.name}))}>
+                        <div className="style-card-name">{s.name}</div>
+                        <div className="style-card-desc">{s.desc}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </>
+          )}
+
+          {/* 2-second hook */}
+          <div className="section-label" style={{marginTop:24}}>2-Second Hook</div>
+          <div className="hook2-grid">
+            {PLATFORM_HOOKS.map(h=>(
+              <div key={h} className={`hook2-card${shared.platformHook===h?" selected":""}`} onClick={()=>setShared(prev=>({...prev,platformHook:h}))}>
+                {h}
+              </div>
+            ))}
+          </div>
+
+          {/* Duration */}
+          <div className="section-label" style={{marginTop:24}}>Shot Duration</div>
+          <div className="dur-row">
+            {PLATFORM_DURATIONS.map(d=>(
+              <button key={d} className={`dur-pill${shared.platformDuration===d?" selected":""}`} onClick={()=>setShared(prev=>({...prev,platformDuration:d}))}>
+                {d}
+              </button>
+            ))}
+          </div>
+        </div>
+      );
+
       case "light": return (
         <div className="fade-in">
-          <div className="stage-num">{isNewScene?`Scene ${activeScene+1} — Step 2`:"Step 06 / 08"}</div>
+          <div className="stage-num">{isNewScene?`Scene ${activeScene+1} — Step 2`:"Step 07 / 09"}</div>
           <div className="stage-title">LIGHT & LANDSCAPE</div>
           <div className="stage-desc">{isNewScene?`Set the environment for Scene ${activeScene+1} — can differ from Scene 1.`:`Set the two environments your ${shared.product||"product"} moves through.`}</div>
           {isNewScene&&<div className="locked-banner"><div className="locked-banner-icon">🔒</div><div className="locked-banner-text">Visual DNA locked from Scene 1 <span>— Aesthetic, Optics &amp; Atmosphere carry over automatically.</span></div></div>}
@@ -3445,7 +3700,7 @@ export default function App() {
 
       case "choreo": return (
         <div className="fade-in">
-          <div className="stage-num">{isNewScene?`Scene ${activeScene+1} — Step 3`:"Step 07 / 08"}</div>
+          <div className="stage-num">{isNewScene?`Scene ${activeScene+1} — Step 3`:"Step 08 / 09"}</div>
           <div className="stage-title">CHOREOGRAPHY</div>
           <div className="stage-desc">{isNewScene?`New motion for Scene ${activeScene+1}. Visual DNA stays locked from Scene 1.`:`Build the 4-stage motion for your ${shared.product||"product"}.`}</div>
           <div className="section-label">Camera</div>
@@ -3463,7 +3718,7 @@ export default function App() {
 
       case "brand": return (
         <div className="fade-in">
-          <div className="stage-num">Step 08 / 08</div>
+          <div className="stage-num">Step 09 / 09</div>
           <div className="stage-title">BRANDING</div>
           <div className="stage-desc">Final frame — locked across all scenes.</div>
           <Sel label="Background Color" value={shared.bg} onChange={setS("bg")} optKey="bg"/>
@@ -3482,6 +3737,14 @@ export default function App() {
             Built for: <strong style={{color:"var(--blue-bright)"}}>{shared.product}</strong><br/>
             {scenes.length>1?`${scenes.length} scenes — paste each into your AI video platform in order.`:"Your prompt is ready — paste it into your preferred AI video platform."}
           </div>
+          {(shared.platform || shared.platformStyle || shared.platformHook) && (
+            <div className="done-platform-badge">
+              {shared.platform && <div className="done-plat-pill">{shared.platform}</div>}
+              {shared.platformStyle && <div className="done-style-pill">{shared.platformStyle}</div>}
+              {shared.platformHook && <div className="done-style-pill">{shared.platformHook}</div>}
+              {shared.platformDuration && <div className="done-style-pill">{shared.platformDuration}</div>}
+            </div>
+          )}
           {pipelineMode==="both" && imgPromptText && (
             <>
               <div className="pipeline-step-badge">Step 1 — Generate this image</div>
@@ -3516,7 +3779,7 @@ export default function App() {
               </button>
             </div>
             <div className="preview-body">
-              {previewScene===-1?allPrompts:buildScenePrompt(shared,scenes[previewScene],previewScene+1,scenes.length)}
+              {previewScene===-1?allPrompts:getPrompt(shared,scenes[previewScene],previewScene+1,scenes.length)}
             </div>
           </div>
           {scenes.length>1&&(
