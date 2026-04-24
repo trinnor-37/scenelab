@@ -1642,6 +1642,355 @@ const css = `
   .ai-dot:nth-child(2){animation:cldot 1.2s 0.2s infinite both}
   .ai-dot:nth-child(3){animation:cldot 1.2s 0.4s infinite both}
 
+  /* ── START SCREEN ── */
+  .start-screen {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 6vw 80px;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+  }
+  .start-logo { font-family: 'Bebas Neue', sans-serif; line-height: 0.88; margin-bottom: 28px; }
+  .start-logo-scene { font-size: clamp(40px, 10vw, 72px); letter-spacing: 10px; color: var(--cream); display: block; }
+  .start-logo-bloc  { font-size: clamp(40px, 10vw, 72px); letter-spacing: 10px; color: var(--blue); display: block;
+    text-shadow: 0 0 60px rgba(68,187,255,0.55); }
+  .start-question {
+    font-size: clamp(18px, 3.5vw, 28px);
+    font-weight: 300;
+    color: var(--muted2);
+    margin-bottom: 48px;
+    letter-spacing: 0.5px;
+  }
+  .start-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    width: 100%;
+    max-width: 900px;
+  }
+  @media (max-width: 680px) { .start-cards { grid-template-columns: 1fr; } }
+  .start-card {
+    background: var(--surface);
+    border: 1.5px solid var(--border2);
+    border-radius: var(--radius);
+    padding: 32px 24px 28px;
+    cursor: pointer;
+    transition: border-color 0.22s, background 0.22s, transform 0.18s;
+    text-align: left;
+    position: relative;
+    overflow: hidden;
+  }
+  .start-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(68,187,255,0.4), transparent);
+    opacity: 0;
+    transition: opacity 0.22s;
+  }
+  .start-card:hover { border-color: rgba(68,187,255,0.45); background: var(--surface2); transform: translateY(-3px); }
+  .start-card:hover::before { opacity: 1; }
+  .start-card.featured { border-color: rgba(68,187,255,0.22); }
+  .start-card-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    background: var(--blue-dim);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    margin-bottom: 18px;
+  }
+  .start-card-type {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 8px;
+  }
+  .start-card-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(22px, 3vw, 30px);
+    letter-spacing: 2px;
+    color: var(--cream);
+    margin-bottom: 10px;
+    line-height: 1.05;
+  }
+  .start-card-desc {
+    font-size: 13px;
+    color: var(--muted2);
+    line-height: 1.6;
+  }
+  .start-card-arrow {
+    position: absolute;
+    bottom: 22px; right: 22px;
+    font-size: 18px;
+    color: rgba(68,187,255,0.35);
+    transition: color 0.18s, transform 0.18s;
+  }
+  .start-card:hover .start-card-arrow { color: var(--blue); transform: translateX(4px); }
+
+  /* ── IMAGE BUILDER ── */
+  .img-screen {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 7vw 100px;
+    position: relative;
+    z-index: 2;
+  }
+  .img-header {
+    width: 100%;
+    max-width: 580px;
+    margin-bottom: 32px;
+    text-align: center;
+  }
+  .img-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 10px;
+    opacity: 0.8;
+  }
+  .img-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(26px, 6vw, 46px);
+    color: var(--cream);
+    letter-spacing: 3px;
+    margin-bottom: 6px;
+  }
+  .img-sub { font-size: 14px; color: var(--muted2); line-height: 1.55; }
+  .img-mode-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    width: 100%;
+    max-width: 580px;
+    margin-bottom: 8px;
+  }
+  .img-mode-card {
+    background: var(--surface);
+    border: 1.5px solid var(--border2);
+    border-radius: var(--radius);
+    padding: 20px 18px;
+    cursor: pointer;
+    transition: border-color 0.18s, background 0.18s;
+    text-align: left;
+  }
+  .img-mode-card:hover { border-color: rgba(68,187,255,0.35); }
+  .img-mode-card.selected { border-color: var(--blue); background: var(--blue-dim); }
+  .img-mode-icon { font-size: 22px; margin-bottom: 10px; }
+  .img-mode-name { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .img-mode-desc { font-size: 11px; color: var(--muted); line-height: 1.4; }
+  .img-form {
+    width: 100%;
+    max-width: 580px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .img-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 0;
+  }
+  .img-field {
+    margin-bottom: 14px;
+  }
+  .img-field-lbl {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .img-sel {
+    width: 100%;
+    background: var(--surface);
+    border: 1.5px solid var(--border2);
+    border-radius: var(--radius-sm);
+    padding: 11px 14px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2344bbff' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 32px;
+  }
+  .img-sel:focus { outline: none; border-color: var(--blue); }
+  .img-generate-btn {
+    width: 100%;
+    max-width: 580px;
+    background: var(--blue);
+    color: #000;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    border: none;
+    border-radius: var(--radius);
+    padding: 17px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    margin-top: 4px;
+  }
+  .img-generate-btn:hover:not(:disabled) { opacity: 0.85; }
+  .img-generate-btn:disabled { opacity: 0.4; cursor: default; }
+  .img-back-btn {
+    background: transparent;
+    border: none;
+    color: var(--muted2);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 0;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.15s;
+    align-self: flex-start;
+    max-width: 580px;
+    width: 100%;
+  }
+  .img-back-btn:hover { color: var(--text); }
+  .img-result-card {
+    width: 100%;
+    max-width: 580px;
+    background: var(--surface);
+    border: 1.5px solid var(--border2);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-top: 4px;
+  }
+  .img-result-hd {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .img-result-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--blue);
+  }
+  .img-result-body {
+    padding: 18px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--text);
+    line-height: 1.8;
+    white-space: pre-wrap;
+    max-height: 480px;
+    overflow-y: auto;
+  }
+  .img-i2v-section {
+    width: 100%;
+    max-width: 580px;
+    margin-top: 14px;
+    background: var(--surface);
+    border: 1.5px solid var(--border2);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .img-i2v-hd {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .img-i2v-body { padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; }
+  .img-i2v-tool {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .img-i2v-badge {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    background: var(--blue-dim);
+    color: var(--blue);
+    border-radius: 6px;
+    padding: 3px 8px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .img-i2v-text { font-size: 12px; color: var(--muted2); line-height: 1.5; }
+  .img-continue-btn {
+    width: 100%;
+    max-width: 580px;
+    background: var(--blue);
+    color: #000;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    border: none;
+    border-radius: var(--radius);
+    padding: 17px;
+    cursor: pointer;
+    margin-top: 14px;
+    transition: opacity 0.2s;
+  }
+  .img-continue-btn:hover { opacity: 0.85; }
+  .img-restart-btn {
+    width: 100%;
+    max-width: 580px;
+    background: transparent;
+    color: var(--muted2);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    border: 1.5px solid var(--border2);
+    border-radius: var(--radius);
+    padding: 14px;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .img-restart-btn:hover { border-color: var(--border3); color: var(--text); }
+  .pipeline-section-lbl {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+    padding: 12px 0 4px;
+    border-top: 1px solid var(--border);
+  }
+  .pipeline-step-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--blue);
+    background: var(--blue-dim);
+    border-radius: 100px;
+    padding: 3px 10px;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+  }
+
   /* ── CINEMATOGRAPHY STEP ── */
   .cine-mood-grid {
     display: grid;
@@ -1768,6 +2117,101 @@ const css = `
 
 type ConceptOption = { id:string; title:string; hook:string; build:string; peak:string; closure:string };
 type AbVariations  = { hookVariations:string[]; emotionalAngles:string[]; ctaVariations:string[] };
+type PipelineMode  = 'video' | 'image' | 'both';
+type ImgStep       = 'mode' | 'form' | 'done';
+
+// ── IMAGE PROMPT BUILDER DATA ─────────────────────────────────────────
+const IMG_MODES = [
+  { id:"filming",    icon:"🎬", name:"AI Filmmaking",         desc:"Cinematic storyboard shots for I2V workflows" },
+  { id:"commercial", icon:"◈",  name:"Commercial Ad",          desc:"Premium brand aesthetics — Apple, Nike, Luxury" },
+  { id:"ugc",        icon:"📱", name:"UGC Ad",                 desc:"Authentic real-looking content, relatable" },
+  { id:"editorial",  icon:"✦",  name:"Product & Editorial",    desc:"Hero shots and lifestyle photography" },
+];
+const IMG_MOODS     = ["Aspirational","Dramatic","Intimate","Raw & Authentic","Dreamlike","Tense","Epic","Playful","Moody","Clean & Minimal"];
+const IMG_LIGHTINGS = ["Golden Hour","Studio Soft Box","Harsh Midday","Blue Hour","Neon Cinematic","Backlit Silhouette","Practical Only","Overcast Natural","Candlelit","High-Key Studio"];
+const IMG_PLATFORMS = ["None / Universal","Instagram","TikTok","YouTube Shorts","YouTube / Long-form","Pinterest","LinkedIn","Ad Creative"];
+const IMG_ASPECTS   = ["1:1 (Square)","4:5 (Instagram)","9:16 (Vertical / Reels)","16:9 (Widescreen)","21:9 (Cinematic)","3:2 (Photo)"];
+
+const IMG_MODE_TECHNICAL: Record<string, string> = {
+  filming:    "cinematic film still, anamorphic lens compression, 2.39:1 aspect ratio, shallow depth of field, film grain texture, motivated foreground elements, shot on ARRI ALEXA 35, Panavision anamorphic optics",
+  commercial: "premium commercial photography, ultra-high resolution, sharp focus, professional studio quality, advertising aesthetic, hero product framing, brand photography",
+  ugc:        "authentic user-generated content, smartphone camera quality, natural candid moment, slightly imperfect, handheld feel, real environment, relatable lifestyle, Instagram repost quality",
+  editorial:  "editorial product photography, hero shot composition, fashion magazine quality, sharp details, rich textures, luxury editorial style, art directed, studio or location",
+};
+const IMG_MODE_NEGATIVE: Record<string, string> = {
+  filming:    "stock photo, generic, flat lighting, no depth, amateur, digital-looking, oversaturated, CG render, plastic, HDR overprocessed",
+  commercial: "UGC, amateur, lo-fi, grainy, unlit, messy background, person-centric unless intended",
+  ugc:        "studio, overly produced, too clean, stock photo, advertising-looking, perfect lighting, professional model",
+  editorial:  "amateur, blurry, poor composition, cluttered, bad styling, wrong focus, unattractive background",
+};
+const IMG_COLOR_GRADE: Record<string, string> = {
+  "Aspirational":    "lifted matte with warm highlights",
+  "Dramatic":        "high contrast, teal shadows, crushed blacks",
+  "Intimate":        "warm skin tones, gentle vignette",
+  "Raw & Authentic": "desaturated, documentary grade",
+  "Dreamlike":       "pastel fade, halation glow",
+  "Tense":           "cold blue grade, high contrast",
+  "Epic":            "teal and orange, IMAX-style grade",
+  "Playful":         "vibrant saturated, punchy primary colors",
+  "Moody":           "low-key dark, pools of light",
+  "Clean & Minimal": "neutral, bright, clinical white balance",
+};
+const IMG_I2V_MOTION: Record<string, string> = {
+  filming:    "slow dolly push-in with subtle camera breathing, hold final frame 2s",
+  commercial: "smooth product reveal rotation, elegant hero hold at 70% mark",
+  ugc:        "handheld slight shake, natural movement then stabilize",
+  editorial:  "gentle parallax pull-back, product stays sharp, environment drifts",
+};
+
+function buildImagePrompt(mode: string, subject: string, environment: string, mood: string, lighting: string, platform: string, aspect: string): string {
+  const tech  = IMG_MODE_TECHNICAL[mode]  || "";
+  const neg   = IMG_MODE_NEGATIVE[mode]   || "";
+  const grade = IMG_COLOR_GRADE[mood]     || "cinematic color grade";
+  const motion= IMG_I2V_MOTION[mode]      || "slow push-in";
+  const subj  = subject  || "subject";
+  const env   = environment ? `, ${environment}` : "";
+  const moodStr    = mood      || "cinematic";
+  const lightStr   = lighting  || "cinematic lighting";
+  const platNote   = platform && platform !== "None / Universal" ? ` Optimized for ${platform}.` : "";
+  const aspectNote = aspect ? ` Aspect ratio: ${aspect}.` : "";
+
+  const main = `${subj}${env}, ${moodStr.toLowerCase()} mood, ${lightStr.toLowerCase()}, ${tech}, color grade: ${grade}.${platNote}${aspectNote}`;
+
+  const v1 = `${subj}${env} — wide establishing shot, subject set within vast environment, ${lightStr.toLowerCase()}, ${tech}, emphasise scale and context, ${grade}`;
+  const v2 = `Extreme close-up of ${subj}, macro detail, ${lightStr.toLowerCase()}, shallow depth of field, textures and materials prominent, ${grade}, cinematic isolation`;
+  const v3 = `${subj} in motion${env}, ${moodStr.toLowerCase()} energy, slight motion blur on environment, subject pin-sharp, dynamic diagonal composition, ${lightStr.toLowerCase()}, ${grade}`;
+
+  return `═══════════════════════════════
+IMAGE PROMPT
+Mode: ${IMG_MODES.find(m=>m.id===mode)?.name || mode}
+═══════════════════════════════
+
+[MAIN PROMPT]
+${main}
+
+[NEGATIVE PROMPT]
+${neg}, blurry, low quality, distorted, deformed, watermark, text overlay, pixelated, bad composition, ugly
+
+[GENERATION PARAMETERS]
+Steps: ${mode==="filming"?"40":"30"} | CFG Scale: ${mode==="commercial"?"7.5":"7.0"} | Sampler: DPM++ 2M Karras | Aspect: ${aspect||"16:9"}
+
+─────────────────────────────
+VARIATION 1 — Establishing
+${v1}
+
+VARIATION 2 — Intimate Close-up
+${v2}
+
+VARIATION 3 — Dynamic Motion
+${v3}
+
+─────────────────────────────
+I2V INTEGRATION NOTES
+
+Kling AI: Import as reference image → set consistency strength 0.7–0.85 → motion prompt: "${motion}"
+Seedance: Use as first frame → enable subject consistency → motion intensity: medium → duration: 5–8s
+Veo 3: Set as conditioning frame → continuation mode → add audio: ambient sound matching the ${moodStr.toLowerCase()} mood`;
+}
 
 const HOOK_TYPES = [
   { id:"bold-visual",   icon:"⚡", name:"Bold Visual Contrast",     desc:"Juxtapose two extremes to stop the scroll" },
@@ -2157,6 +2601,22 @@ function GearDrop({ label, value, options, onChange }: { label:string; value:str
 // ── MAIN APP ──────────────────────────────────────────────────────────
 export default function App() {
   const router = useRouter();
+  // Start screen + pipeline
+  const [showStart, setShowStart]       = useState(true);
+  const [pipelineMode, setPipelineMode] = useState<PipelineMode>('video');
+  // Image builder
+  const [inImgBuilder, setInImgBuilder] = useState(false);
+  const [imgStep, setImgStep]           = useState<ImgStep>('mode');
+  const [imgMode, setImgMode]           = useState('');
+  const [imgSubject, setImgSubject]     = useState('');
+  const [imgEnv, setImgEnv]             = useState('');
+  const [imgMood, setImgMood]           = useState('');
+  const [imgLighting, setImgLighting]   = useState('');
+  const [imgPlatform, setImgPlatform]   = useState('');
+  const [imgAspect, setImgAspect]       = useState('16:9 (Widescreen)');
+  const [imgPromptText, setImgPromptText] = useState('');
+  const [copiedImg, setCopiedImg]         = useState(false);
+
   const [started, setStarted]         = useState(false);
   const [stage, setStage]             = useState(0);
   const [activeScene, setActiveScene] = useState(0);
@@ -2309,12 +2769,16 @@ export default function App() {
   };
 
   const reset = () => {
-    setStage(0); setActiveScene(0); setPreviewScene(0);
+    setStage(0); setActiveScene(0); setPreviewScene(0); setStarted(false);
     setShared({...EMPTY_SHARED}); setScenes([{...EMPTY_SCENE}]);
     setConceptScreen(false); setConceptProduct(''); setConceptAudience('');
     setConceptOptions([]); setSelectedConceptId(''); setEditingConcept(false); setEditedConcept(null);
     setVoiceoverScript(''); setVoiceoverVisible(false);
     setAbVariations(null); setVariationsVisible(false);
+    setShowStart(true); setPipelineMode('video');
+    setInImgBuilder(false); setImgStep('mode'); setImgMode(''); setImgSubject('');
+    setImgEnv(''); setImgMood(''); setImgLighting(''); setImgPlatform('');
+    setImgAspect('16:9 (Widescreen)'); setImgPromptText(''); setCopiedImg(false);
   };
 
   // ── CONCEPT GENERATOR HANDLERS ───────────────────────────────────────
@@ -2391,6 +2855,190 @@ export default function App() {
 
   // ── HERO ────────────────────────────────────────────────────────────
   const userInitials = user?.email ? user.email.slice(0, 2).toUpperCase() : "";
+
+  // ── START SCREEN ─────────────────────────────────────────────────────
+  if (showStart) return (
+    <>
+      <style>{css}</style>
+      <div className="app">
+        <div className="start-screen fade-in">
+          <div className="start-logo">
+            <span className="start-logo-scene">SCENE</span>
+            <span className="start-logo-bloc">BLOC</span>
+          </div>
+          <div className="start-question">What are we creating today?</div>
+          <div className="start-cards">
+            {/* IMAGE PROMPTS */}
+            <div className="start-card" onClick={()=>{ setShowStart(false); setPipelineMode('image'); setInImgBuilder(true); }}>
+              <div className="start-card-icon">◉</div>
+              <div className="start-card-type">Image Prompts</div>
+              <div className="start-card-name">Reference<br/>Frames</div>
+              <div className="start-card-desc">Generate cinematic reference frames for I2V workflows — Kling, Seedance, Veo</div>
+              <div className="start-card-arrow">→</div>
+            </div>
+            {/* VIDEO PROMPTS */}
+            <div className="start-card featured" onClick={()=>{ setShowStart(false); setPipelineMode('video'); }}>
+              <div className="start-card-icon">▶</div>
+              <div className="start-card-type">Video Prompts</div>
+              <div className="start-card-name">Full Video<br/>Builder</div>
+              <div className="start-card-desc">Build cinematic AI video prompts step-by-step — the complete SceneBloc flow</div>
+              <div className="start-card-arrow">→</div>
+            </div>
+            {/* BOTH */}
+            <div className="start-card" onClick={()=>{ setShowStart(false); setPipelineMode('both'); setInImgBuilder(true); }}>
+              <div className="start-card-icon">⬡</div>
+              <div className="start-card-type">Full Pipeline</div>
+              <div className="start-card-name">Image +<br/>Video</div>
+              <div className="start-card-desc">Full pipeline: generate reference frames first, then animate with a video prompt</div>
+              <div className="start-card-arrow">→</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+
+  // ── IMAGE PROMPT BUILDER ──────────────────────────────────────────────
+  if (inImgBuilder) {
+    const imgGenerate = () => {
+      const result = buildImagePrompt(imgMode, imgSubject, imgEnv, imgMood, imgLighting, imgPlatform, imgAspect);
+      setImgPromptText(result);
+      setImgStep('done');
+    };
+    const imgCopy = () => { navigator.clipboard.writeText(imgPromptText); setCopiedImg(true); setTimeout(()=>setCopiedImg(false),2000); };
+    const imgContinueToVideo = () => { setInImgBuilder(false); };
+    const imgRestartImage = () => { setImgStep('mode'); setImgMode(''); setImgSubject(''); setImgEnv(''); setImgMood(''); setImgLighting(''); setImgPlatform(''); setImgAspect('16:9 (Widescreen)'); setImgPromptText(''); };
+
+    return (
+      <>
+        <style>{css}</style>
+        <div className="app">
+          <div className="img-screen">
+            <div className="img-header">
+              <div className="img-eyebrow">{pipelineMode==='both'?'Step 1 of 2 — Image Prompts':'Image Prompt Builder'}</div>
+              <div className="img-title">IMAGE PROMPT BUILDER</div>
+              <div className="img-sub">
+                {imgStep==='mode' && "Choose the visual style that matches your creative intent."}
+                {imgStep==='form' && "Describe your shot — the more specific, the better the output."}
+                {imgStep==='done' && "Your image prompt is ready. Copy it into your preferred image AI."}
+              </div>
+            </div>
+
+            {/* ── STEP: MODE SELECTION ── */}
+            {imgStep==='mode' && (
+              <>
+                <div className="img-mode-grid">
+                  {IMG_MODES.map(m=>(
+                    <div key={m.id} className={`img-mode-card${imgMode===m.id?" selected":""}`} onClick={()=>setImgMode(m.id)}>
+                      <div className="img-mode-icon">{m.icon}</div>
+                      <div className="img-mode-name">{m.name}</div>
+                      <div className="img-mode-desc">{m.desc}</div>
+                    </div>
+                  ))}
+                </div>
+                <div style={{width:'100%',maxWidth:580,display:'flex',gap:10,marginTop:8}}>
+                  <button className="img-generate-btn" disabled={!imgMode} onClick={()=>setImgStep('form')} style={{flex:1}}>
+                    {imgMode ? `Continue with ${IMG_MODES.find(m=>m.id===imgMode)?.name} →` : "Select a mode above"}
+                  </button>
+                  <button className="img-restart-btn" style={{width:'auto',padding:'14px 18px',marginTop:0}} onClick={()=>{ setShowStart(true); setPipelineMode('video'); setInImgBuilder(false); }}>← Back</button>
+                </div>
+              </>
+            )}
+
+            {/* ── STEP: FORM ── */}
+            {imgStep==='form' && (
+              <>
+                <button className="img-back-btn" onClick={()=>setImgStep('mode')}>← Change mode</button>
+                <div className="img-form">
+                  <div className="img-field">
+                    <div className="img-field-lbl">Subject</div>
+                    <input className="txt-input" placeholder="e.g. A luxury Swiss watch, a person pouring coffee, a sneaker" value={imgSubject} onChange={e=>setImgSubject(e.target.value)}/>
+                  </div>
+                  <div className="img-field">
+                    <div className="img-field-lbl">Environment / Background</div>
+                    <input className="txt-input" placeholder="e.g. Marble studio, urban rooftop, lush forest clearing" value={imgEnv} onChange={e=>setImgEnv(e.target.value)}/>
+                  </div>
+                  <div className="img-form-row">
+                    <div className="img-field">
+                      <div className="img-field-lbl">Mood</div>
+                      <select className="img-sel" value={imgMood} onChange={e=>setImgMood(e.target.value)}>
+                        <option value="">Choose mood…</option>
+                        {IMG_MOODS.map(m=><option key={m} value={m}>{m}</option>)}
+                      </select>
+                    </div>
+                    <div className="img-field">
+                      <div className="img-field-lbl">Lighting</div>
+                      <select className="img-sel" value={imgLighting} onChange={e=>setImgLighting(e.target.value)}>
+                        <option value="">Choose lighting…</option>
+                        {IMG_LIGHTINGS.map(l=><option key={l} value={l}>{l}</option>)}
+                      </select>
+                    </div>
+                  </div>
+                  <div className="img-form-row">
+                    <div className="img-field">
+                      <div className="img-field-lbl">Platform</div>
+                      <select className="img-sel" value={imgPlatform} onChange={e=>setImgPlatform(e.target.value)}>
+                        {IMG_PLATFORMS.map(p=><option key={p} value={p}>{p}</option>)}
+                      </select>
+                    </div>
+                    <div className="img-field">
+                      <div className="img-field-lbl">Aspect Ratio</div>
+                      <select className="img-sel" value={imgAspect} onChange={e=>setImgAspect(e.target.value)}>
+                        {IMG_ASPECTS.map(a=><option key={a} value={a}>{a}</option>)}
+                      </select>
+                    </div>
+                  </div>
+                  <button className="img-generate-btn" disabled={!imgSubject.trim()} onClick={imgGenerate}>
+                    Generate Image Prompt →
+                  </button>
+                </div>
+              </>
+            )}
+
+            {/* ── STEP: DONE ── */}
+            {imgStep==='done' && (
+              <>
+                <div className="img-result-card">
+                  <div className="img-result-hd">
+                    <div className="img-result-title">Image Prompt</div>
+                    <button className="ai-panel-copy" onClick={imgCopy}>{copiedImg?"✓ Copied":"Copy"}</button>
+                  </div>
+                  <div className="img-result-body">{imgPromptText}</div>
+                </div>
+                <div className="img-i2v-section">
+                  <div className="img-i2v-hd">I2V Integration Guide</div>
+                  <div className="img-i2v-body">
+                    <div className="img-i2v-tool">
+                      <div className="img-i2v-badge">Kling AI</div>
+                      <div className="img-i2v-text">Import generated image → Image-to-Video → consistency strength 0.7–0.85 → add motion prompt from the I2V notes above</div>
+                    </div>
+                    <div className="img-i2v-tool">
+                      <div className="img-i2v-badge">Seedance</div>
+                      <div className="img-i2v-text">Use as first frame → enable Subject Consistency → motion intensity medium → target duration 5–8s</div>
+                    </div>
+                    <div className="img-i2v-tool">
+                      <div className="img-i2v-badge">Veo 3</div>
+                      <div className="img-i2v-text">Set as conditioning frame → Continuation mode → add ambient audio description matching the mood → run at highest quality tier</div>
+                    </div>
+                  </div>
+                </div>
+                {pipelineMode==='both' ? (
+                  <button className="img-continue-btn" onClick={imgContinueToVideo}>
+                    Continue to Video Builder → (Step 2 of 2)
+                  </button>
+                ) : (
+                  <button className="img-continue-btn" onClick={imgRestartImage} style={{background:'transparent',border:'1.5px solid var(--border3)',color:'var(--blue)'}}>
+                    ← Build Another Image Prompt
+                  </button>
+                )}
+                <button className="img-restart-btn" onClick={reset}>↺ Start Over</button>
+              </>
+            )}
+          </div>
+        </div>
+      </>
+    );
+  }
 
   // ── CONCEPT GENERATOR SCREEN ─────────────────────────────────────────
   if (!started && conceptScreen) return (
@@ -2832,6 +3480,21 @@ export default function App() {
             Built for: <strong style={{color:"var(--blue-bright)"}}>{shared.product}</strong><br/>
             {scenes.length>1?`${scenes.length} scenes — paste each into your AI video platform in order.`:"Your prompt is ready — paste it into your preferred AI video platform."}
           </div>
+          {pipelineMode==="both" && imgPromptText && (
+            <>
+              <div className="pipeline-step-badge">Step 1 — Generate this image</div>
+              <div className="preview-card" style={{marginBottom:16}}>
+                <div className="preview-hd">
+                  <div className="preview-title">Image Prompt</div>
+                  <button className={`copy-btn${copiedImg?" copied":""}`} onClick={()=>{navigator.clipboard.writeText(imgPromptText);setCopiedImg(true);setTimeout(()=>setCopiedImg(false),2000);}}>
+                    {copiedImg?"✓ Copied!":"Copy"}
+                  </button>
+                </div>
+                <div className="preview-body">{imgPromptText}</div>
+              </div>
+              <div className="pipeline-step-badge" style={{marginTop:8,marginBottom:16}}>Step 2 — Animate with this prompt</div>
+            </>
+          )}
           {scenes.length>1&&(
             <div className="scene-preview-tabs">
               {scenes.map((_,i)=>(
