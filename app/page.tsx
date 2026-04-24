@@ -1,6 +1,9 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase/client";
+import type { User } from "@supabase/supabase-js";
 
 const css = `
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,100;0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,300;1,9..40,400&display=swap');
@@ -936,6 +939,76 @@ const css = `
     margin: 30px 0;
   }
 
+  /* ── AUTH HEADER ELEMENTS ── */
+  .auth-header-btn {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 18px;
+    background: transparent;
+    border: 1px solid rgba(68,187,255,0.18);
+    border-radius: 100px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--blue-bright);
+    cursor: pointer;
+    transition: all .18s;
+    text-decoration: none;
+  }
+  .auth-header-btn:hover { background: var(--blue-dim); border-color: rgba(68,187,255,0.35); }
+  .auth-user-dot {
+    width: 7px; height: 7px;
+    background: #3ecf6e;
+    border-radius: 50%;
+    box-shadow: 0 0 7px rgba(62,207,110,0.8);
+    flex-shrink: 0;
+  }
+  .header-right { display: flex; align-items: center; gap: 8px; }
+
+  /* ── WATERMARK BADGE ── */
+  .watermark-note {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 16px;
+    background: rgba(255,180,0,0.06);
+    border: 1px solid rgba(255,180,0,0.16);
+    border-radius: 12px;
+    font-size: 12px;
+    color: rgba(255,200,80,0.75);
+    font-weight: 600;
+    margin-bottom: 16px;
+    letter-spacing: 0.02em;
+  }
+
+  /* ── SAVE BUTTON ── */
+  .save-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    width: 100%;
+    padding: 17px;
+    background: transparent;
+    border: 1px solid rgba(62,207,110,0.25);
+    border-radius: var(--radius);
+    color: #3ecf6e;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 11px;
+    transition: all .20s;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .save-btn:hover:not(:disabled) { background: rgba(62,207,110,0.08); border-color: rgba(62,207,110,0.40); transform: translateY(-1px); }
+  .save-btn:disabled { opacity: 0.50; cursor: not-allowed; }
+  .save-btn.saved { border-color: rgba(62,207,110,0.40); background: rgba(62,207,110,0.10); }
+
   /* ── SHARE BUTTON ── */
   .share-btn {
     display: flex;
@@ -1400,6 +1473,7 @@ Tagline: "${shared.tagline||"Your Slogan Here"}"`;
 
 // ── MAIN APP ──────────────────────────────────────────────────────────
 export default function App() {
+  const router = useRouter();
   const [started, setStarted]         = useState(false);
   const [stage, setStage]             = useState(0);
   const [activeScene, setActiveScene] = useState(0);
@@ -1408,19 +1482,44 @@ export default function App() {
   const [shared, setShared]           = useState({...EMPTY_SHARED});
   const [scenes, setScenes]           = useState([{...EMPTY_SCENE}]);
   const [shared_link, setSharedLink]  = useState(false);
+  // Auth state
+  const [user, setUser]               = useState<User | null>(null);
+  const [plan, setPlan]               = useState<"free"|"pro">("free");
+  const [saving, setSaving]           = useState(false);
+  const [saved, setSaved]             = useState(false);
 
-  // Restore state from share URL
+  // Restore state from share URL + hydrate auth session
   useEffect(() => {
+    // Auth listener
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user);
+      if (user) fetchPlan(user.id);
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      if (session?.user) fetchPlan(session.user.id);
+      else setPlan("free");
+    });
+
+    // Share URL restore
     try {
       const p = new URLSearchParams(window.location.search).get("p");
-      if (!p) return;
-      const { shared: s, scenes: sc, stage: st } = JSON.parse(atob(p));
-      setShared({ ...EMPTY_SHARED, ...s });
-      setScenes(sc.map((x: typeof EMPTY_SCENE) => ({ ...EMPTY_SCENE, ...x, refImgs: [], startImg: null, endImg: null })));
-      setStage(st ?? STAGES.length - 1);
-      setStarted(true);
+      if (p) {
+        const { shared: s, scenes: sc, stage: st } = JSON.parse(atob(p));
+        setShared({ ...EMPTY_SHARED, ...s });
+        setScenes(sc.map((x: typeof EMPTY_SCENE) => ({ ...EMPTY_SCENE, ...x, refImgs: [], startImg: null, endImg: null })));
+        setStage(st ?? STAGES.length - 1);
+        setStarted(true);
+      }
     } catch { /* malformed URL param — ignore */ }
+
+    return () => subscription.unsubscribe();
   }, []);
+
+  const fetchPlan = async (userId: string) => {
+    const { data } = await supabase.from("profiles").select("plan").eq("id", userId).single();
+    if (data?.plan) setPlan(data.plan as "free"|"pro");
+  };
 
   const setS  = (k: string) => (v: string) => setShared(p=>({...p,[k]:v}));
   const setScene = (idx: number, k: string, v: unknown) => setScenes(prev=>prev.map((s,i)=>i===idx?{...s,[k]:v}:s));
@@ -1451,8 +1550,8 @@ export default function App() {
   const allPrompts = scenes.map((s,i)=>buildScenePrompt(shared,s,i+1,scenes.length)).join("\n\n");
 
   const copy = (which: number|"all") => {
-    const text = which==="all" ? allPrompts : buildScenePrompt(shared,scenes[which as number],(which as number)+1,scenes.length);
-    navigator.clipboard.writeText(text);
+    const raw = which==="all" ? allPrompts : buildScenePrompt(shared,scenes[which as number],(which as number)+1,scenes.length);
+    navigator.clipboard.writeText(withWatermark(raw));
     setCopied(which);
     setTimeout(()=>setCopied(null),2000);
   };
@@ -1464,6 +1563,32 @@ export default function App() {
     navigator.clipboard.writeText(url);
     setSharedLink(true);
     setTimeout(()=>setSharedLink(false),2500);
+  };
+
+  const withWatermark = (text: string) => {
+    if (plan === "pro") return text;
+    return text + "\n\n━━━━━━━━━━━━━━━━━━━━━━━\nCreated with SceneBloc Free · Upgrade at sceneblocapp.com\n━━━━━━━━━━━━━━━━━━━━━━━";
+  };
+
+  const savePrompt = async () => {
+    if (!user) { router.push("/auth"); return; }
+    setSaving(true);
+    try {
+      const res = await fetch("/api/prompts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title:       shared.product || "Untitled Prompt",
+          product:     shared.product,
+          scene_count: scenes.length,
+          prompt_text: allPrompts,
+          scenes_json: { shared, scenes: scenes.map(s=>({ ...s, refImgs:[], startImg:null, endImg:null })) },
+        }),
+      });
+      if (res.ok) { setSaved(true); setTimeout(() => setSaved(false), 3000); }
+    } finally {
+      setSaving(false);
+    }
   };
 
   const reset = () => { setStage(0);setActiveScene(0);setPreviewScene(0);setShared({...EMPTY_SHARED});setScenes([{...EMPTY_SCENE}]); };
@@ -1662,6 +1787,18 @@ export default function App() {
               {copied===0?"✓ Prompt Copied!":"⬆ Copy Prompt"}
             </button>
           )}
+          {plan==="free"&&(
+            <div className="watermark-note">
+              ⚠ Free tier — copied prompts include a SceneBloc watermark.{!user&&<> <strong style={{cursor:"pointer",textDecoration:"underline"}} onClick={()=>router.push("/auth")}>Sign in</strong> to save history.</>}
+            </div>
+          )}
+          <button
+            className={`save-btn${saved?" saved":""}`}
+            onClick={savePrompt}
+            disabled={saving}
+          >
+            {saved?"✓ Saved to Account":saving?"Saving…":(user?"⬆ Save to Account":"⬆ Save to Account (Sign In Required)")}
+          </button>
           <button className={`share-btn${shared_link?" shared":""}`} onClick={shareLink}>
             {shared_link ? "✓ Link Copied to Clipboard!" : "↗ Share Prompt via Link"}
           </button>
@@ -1686,7 +1823,16 @@ export default function App() {
             <span className="logo-scene">SCENE</span>
             <span className="logo-bloc">BLOC</span>
           </div>
-          <div className="stage-pill"><div className="dot"/>{visibleStages[stage]?.label}</div>
+          <div className="header-right">
+            <div className="stage-pill"><div className="dot"/>{visibleStages[stage]?.label}</div>
+            {user ? (
+              <button className="auth-header-btn" onClick={()=>router.push("/history")}>
+                <div className="auth-user-dot"/>History
+              </button>
+            ) : (
+              <button className="auth-header-btn" onClick={()=>router.push("/auth")}>Sign In</button>
+            )}
+          </div>
         </div>
         <div className="progress-wrap">
           {visibleStages.map((s,i)=>(
