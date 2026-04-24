@@ -1097,6 +1097,184 @@ const css = `
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+
+  /* ── HERO ACCOUNT BUTTON ── */
+  .hero-account {
+    position: fixed;
+    top: 24px;
+    right: 32px;
+    z-index: 100;
+  }
+
+  .hero-signin-btn {
+    padding: 10px 22px;
+    background: transparent;
+    border: 1px solid rgba(68,187,255,0.28);
+    border-radius: 100px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: #74d0ff;
+    cursor: pointer;
+    transition: all .18s;
+    backdrop-filter: blur(14px);
+    background: rgba(2,8,16,0.55);
+  }
+  .hero-signin-btn:hover {
+    background: rgba(68,187,255,0.10);
+    border-color: rgba(68,187,255,0.50);
+    transform: translateY(-1px);
+  }
+
+  .hero-avatar-btn {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(68,187,255,0.22) 0%, rgba(120,80,255,0.18) 100%);
+    border: 1.5px solid rgba(68,187,255,0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 15px;
+    letter-spacing: 1px;
+    color: #74d0ff;
+    cursor: pointer;
+    transition: all .18s;
+    box-shadow: 0 0 18px rgba(68,187,255,0.20), 0 4px 16px rgba(0,0,0,0.55);
+    backdrop-filter: blur(14px);
+    position: relative;
+  }
+  .hero-avatar-btn:hover {
+    border-color: rgba(68,187,255,0.65);
+    box-shadow: 0 0 28px rgba(68,187,255,0.35), 0 6px 22px rgba(0,0,0,0.65);
+    transform: translateY(-1px);
+  }
+  .hero-avatar-dot {
+    position: absolute;
+    bottom: 1px;
+    right: 1px;
+    width: 9px;
+    height: 9px;
+    background: #3ecf6e;
+    border-radius: 50%;
+    border: 1.5px solid #020810;
+    box-shadow: 0 0 8px rgba(62,207,110,0.8);
+  }
+
+  /* ── DROPDOWN ── */
+  .hero-dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    width: 240px;
+    background: rgba(5,12,24,0.97);
+    border: 1px solid rgba(68,187,255,0.16);
+    border-radius: 18px;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.75), 0 0 0 1px rgba(68,187,255,0.06);
+    backdrop-filter: blur(32px);
+    overflow: hidden;
+    animation: dropdownFade .16s ease;
+    transform-origin: top right;
+  }
+  @keyframes dropdownFade {
+    from { opacity: 0; transform: scale(0.94) translateY(-6px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .dd-header {
+    padding: 16px 16px 13px;
+    border-bottom: 1px solid rgba(68,187,255,0.09);
+  }
+  .dd-email {
+    font-size: 12px;
+    font-weight: 600;
+    color: #eef5ff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 7px;
+  }
+  .dd-tier {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    background: rgba(68,187,255,0.10);
+    border: 1px solid rgba(68,187,255,0.18);
+    border-radius: 100px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: #74d0ff;
+  }
+  .dd-tier-dot {
+    width: 5px;
+    height: 5px;
+    background: #44bbff;
+    border-radius: 50%;
+    box-shadow: 0 0 6px rgba(68,187,255,0.9);
+  }
+
+  .dd-items { padding: 6px; }
+  .dd-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 11px;
+    border-radius: 11px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(220,240,255,0.85);
+    cursor: pointer;
+    transition: background .14s, color .14s;
+    border: none;
+    background: transparent;
+    width: 100%;
+    text-align: left;
+  }
+  .dd-item:hover { background: rgba(68,187,255,0.09); color: #eef5ff; }
+  .dd-item-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+    background: rgba(68,187,255,0.08);
+  }
+  .dd-item-label { flex: 1; }
+  .dd-item-arrow { font-size: 14px; color: rgba(155,210,248,0.30); }
+
+  .dd-item-disabled {
+    opacity: 0.40;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  .dd-item-disabled:hover { background: transparent; }
+  .dd-soon {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(155,210,248,0.35);
+    background: rgba(68,187,255,0.06);
+    border: 1px solid rgba(68,187,255,0.10);
+    border-radius: 100px;
+    padding: 2px 7px;
+  }
+
+  .dd-divider { height: 1px; background: rgba(68,187,255,0.08); margin: 4px 6px; }
+
+  .dd-item-signout { color: rgba(255,130,130,0.70); }
+  .dd-item-signout:hover { background: rgba(255,80,80,0.07); color: rgba(255,150,150,0.90); }
+  .dd-item-signout .dd-item-icon { background: rgba(255,80,80,0.08); }
 `;
 
 const MAX_REF = 8;
@@ -1487,6 +1665,9 @@ export default function App() {
   const [plan, setPlan]               = useState<"free"|"pro">("free");
   const [saving, setSaving]           = useState(false);
   const [saved, setSaved]             = useState(false);
+  // Hero account dropdown
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Restore state from share URL + hydrate auth session
   useEffect(() => {
@@ -1515,6 +1696,18 @@ export default function App() {
 
     return () => subscription.unsubscribe();
   }, []);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    if (!dropdownOpen) return;
+    const handle = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handle);
+    return () => document.removeEventListener("mousedown", handle);
+  }, [dropdownOpen]);
 
   const fetchPlan = async (userId: string) => {
     const { data } = await supabase.from("profiles").select("plan").eq("id", userId).single();
@@ -1596,12 +1789,59 @@ export default function App() {
   const visibleStages = isNewScene ? STAGES.filter(s=>!["product","visual","brand"].includes(s.id)) : STAGES;
 
   // ── HERO ────────────────────────────────────────────────────────────
+  const userInitials = user?.email ? user.email.slice(0, 2).toUpperCase() : "";
+
   if (!started) return (
     <>
       <style>{css}</style>
       <BlobBackground />
       <Particles />
       <div className="app">
+        {/* Account button — fixed top-right */}
+        <div className="hero-account" ref={dropdownRef}>
+          {user ? (
+            <>
+              <button className="hero-avatar-btn" onClick={() => setDropdownOpen(o => !o)} aria-label="Account menu">
+                {userInitials}
+                <div className="hero-avatar-dot"/>
+              </button>
+              {dropdownOpen && (
+                <div className="hero-dropdown">
+                  <div className="dd-header">
+                    <div className="dd-email">{user.email}</div>
+                    <div className="dd-tier"><div className="dd-tier-dot"/>Free Tier</div>
+                  </div>
+                  <div className="dd-items">
+                    <button className="dd-item" onClick={()=>{setDropdownOpen(false);router.push("/profile");}}>
+                      <div className="dd-item-icon">👤</div>
+                      <span className="dd-item-label">View Profile</span>
+                      <span className="dd-item-arrow">›</span>
+                    </button>
+                    <button className="dd-item" onClick={()=>{setDropdownOpen(false);router.push("/history");}}>
+                      <div className="dd-item-icon">📂</div>
+                      <span className="dd-item-label">Prompt History</span>
+                      <span className="dd-item-arrow">›</span>
+                    </button>
+                    <div className="dd-divider"/>
+                    <button className="dd-item dd-item-disabled" tabIndex={-1}>
+                      <div className="dd-item-icon">⚡</div>
+                      <span className="dd-item-label">Upgrade</span>
+                      <span className="dd-soon">Coming Soon</span>
+                    </button>
+                    <div className="dd-divider"/>
+                    <button className="dd-item dd-item-signout" onClick={async()=>{setDropdownOpen(false);await supabase.auth.signOut();router.refresh();}}>
+                      <div className="dd-item-icon">→</div>
+                      <span className="dd-item-label">Sign Out</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </>
+          ) : (
+            <button className="hero-signin-btn" onClick={() => router.push("/auth")}>Sign In</button>
+          )}
+        </div>
+
         <div className="hero fade-in">
           <div className="hero-eyebrow">AI Video Prompt Builder</div>
           <div className="hero-logo">
