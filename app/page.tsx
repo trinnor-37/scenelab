@@ -1258,7 +1258,320 @@ const css = `
   .dd-item-signout { color: rgba(255,130,130,0.70); }
   .dd-item-signout:hover { background: rgba(255,80,80,0.07); color: rgba(255,150,150,0.90); }
   .dd-item-signout .dd-item-icon { background: rgba(255,80,80,0.08); }
+
+  /* ── CONCEPT GENERATOR ── */
+  .concept-screen {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 7vw 80px;
+    text-align: center;
+  }
+  .concept-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 16px;
+    opacity: 0.78;
+  }
+  .concept-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(28px, 7vw, 54px);
+    color: var(--cream);
+    letter-spacing: 4px;
+    margin-bottom: 8px;
+    line-height: 1;
+  }
+  .concept-sub {
+    font-size: 15px;
+    color: var(--muted2);
+    margin-bottom: 36px;
+    max-width: 420px;
+    line-height: 1.6;
+  }
+  .concept-form {
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .concept-generate-btn {
+    background: var(--blue);
+    color: #000;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    border: none;
+    border-radius: var(--radius);
+    padding: 17px 36px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    width: 100%;
+  }
+  .concept-generate-btn:hover:not(:disabled) { opacity: 0.85; }
+  .concept-generate-btn:disabled { opacity: 0.45; cursor: default; }
+  .concept-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: var(--muted2);
+    font-size: 14px;
+    padding: 20px 0;
+  }
+  .concept-loading-dots { display: flex; gap: 5px; }
+  .concept-loading-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--blue);
+  }
+  .concept-loading-dot:nth-child(1) { animation: cldot 1.2s 0s infinite both; }
+  .concept-loading-dot:nth-child(2) { animation: cldot 1.2s 0.2s infinite both; }
+  .concept-loading-dot:nth-child(3) { animation: cldot 1.2s 0.4s infinite both; }
+  @keyframes cldot { 0%,80%,100%{opacity:0.2;transform:scale(0.8)} 40%{opacity:1;transform:scale(1)} }
+  .concept-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+    max-width: 580px;
+    margin-top: 28px;
+    text-align: left;
+  }
+  .concept-card {
+    background: var(--surface);
+    border: 1.5px solid var(--border2);
+    border-radius: var(--radius);
+    padding: 20px 22px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .concept-card:hover { border-color: rgba(68,187,255,0.35); background: var(--surface2); }
+  .concept-card.selected { border-color: var(--blue); background: var(--blue-dim); }
+  .concept-card-hd {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .concept-badge {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--blue);
+    background: var(--blue-dim);
+    border-radius: 100px;
+    padding: 3px 10px;
+  }
+  .concept-card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .concept-struct {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .concept-struct-item { display: flex; flex-direction: column; gap: 3px; }
+  .concept-struct-lbl {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .concept-struct-val {
+    font-size: 12px;
+    color: var(--muted2);
+    line-height: 1.45;
+  }
+  .concept-cta-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 22px;
+    width: 100%;
+    max-width: 580px;
+  }
+  .concept-proceed-btn {
+    flex: 1;
+    background: var(--blue);
+    color: #000;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    border: none;
+    border-radius: var(--radius);
+    padding: 15px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .concept-proceed-btn:disabled { opacity: 0.4; cursor: default; }
+  .concept-proceed-btn:hover:not(:disabled) { opacity: 0.85; }
+  .concept-skip-btn {
+    background: transparent;
+    color: var(--muted2);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    border: 1.5px solid var(--border2);
+    border-radius: var(--radius);
+    padding: 15px 18px;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+    white-space: nowrap;
+  }
+  .concept-skip-btn:hover { border-color: var(--border3); color: var(--text); }
+
+  /* ── HOOK SELECTOR ── */
+  .hook-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 11px;
+    margin-top: 8px;
+  }
+  .hook-card {
+    background: var(--surface);
+    border: 1.5px solid var(--border2);
+    border-radius: var(--radius-sm);
+    padding: 17px 15px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    text-align: left;
+  }
+  .hook-card:hover { border-color: rgba(68,187,255,0.30); }
+  .hook-card.selected { border-color: var(--blue); background: var(--blue-dim); }
+  .hook-card-icon { font-size: 20px; margin-bottom: 8px; }
+  .hook-card-name { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .hook-card-desc { font-size: 11px; color: var(--muted); line-height: 1.4; }
+
+  /* ── AI PANELS ── */
+  .ai-generate-btn {
+    width: 100%;
+    background: transparent;
+    color: var(--blue);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    border: 1.5px solid var(--border3);
+    border-radius: var(--radius);
+    padding: 15px;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .ai-generate-btn:hover:not(:disabled) { background: var(--blue-dim); }
+  .ai-generate-btn:disabled { opacity: 0.45; cursor: default; }
+  .ai-panel {
+    background: var(--surface);
+    border: 1.5px solid var(--border2);
+    border-radius: var(--radius);
+    margin-top: 10px;
+    overflow: hidden;
+  }
+  .ai-panel-hd {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .ai-panel-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--blue);
+  }
+  .ai-panel-copy {
+    font-size: 12px;
+    background: transparent;
+    color: var(--muted2);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    padding: 4px 10px;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  .ai-panel-copy:hover { color: var(--text); }
+  .ai-panel-body { padding: 18px; }
+  .voiceover-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 12.5px;
+    color: var(--text);
+    line-height: 1.85;
+    white-space: pre-wrap;
+    max-height: 420px;
+    overflow-y: auto;
+  }
+  .variation-group { margin-bottom: 20px; }
+  .variation-group:last-child { margin-bottom: 0; }
+  .variation-group-title {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 9px;
+  }
+  .variation-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 11px 13px;
+    margin-bottom: 7px;
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.5;
+  }
+  .variation-item:last-child { margin-bottom: 0; }
+  .variation-letter {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--blue);
+    margin-bottom: 4px;
+    letter-spacing: 1px;
+  }
+  .ai-loading-row {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: var(--muted2);
+    font-size: 13px;
+    padding: 4px 0;
+  }
+  .ai-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--blue);
+  }
+  .ai-dot:nth-child(1){animation:cldot 1.2s 0s infinite both}
+  .ai-dot:nth-child(2){animation:cldot 1.2s 0.2s infinite both}
+  .ai-dot:nth-child(3){animation:cldot 1.2s 0.4s infinite both}
 `;
+
+type ConceptOption = { id:string; title:string; hook:string; build:string; peak:string; closure:string };
+type AbVariations  = { hookVariations:string[]; emotionalAngles:string[]; ctaVariations:string[] };
+
+const HOOK_TYPES = [
+  { id:"bold-visual",   icon:"⚡", name:"Bold Visual Contrast",     desc:"Juxtapose two extremes to stop the scroll" },
+  { id:"transform",     icon:"✦",  name:"Transformation Promise",   desc:"Before → after that feels inevitable" },
+  { id:"micro-fail",    icon:"↩",  name:"Micro-Fail to Win",        desc:"Tiny relatable friction, then the product solves it" },
+  { id:"hyper-benefit", icon:"◈",  name:"Hyper-Specific Benefit",   desc:"One ultra-precise benefit lands harder than ten generic ones" },
+  { id:"incomplete",    icon:"?",  name:"Incomplete Information",    desc:"Open a loop the brain must close" },
+  { id:"social-proof",  icon:"✦",  name:"Social Proof Trigger",     desc:"Credibility through implied consensus or authority" },
+];
 
 const MAX_REF = 8;
 const CUSTOM_KEY = "__custom__";
@@ -1310,17 +1623,18 @@ const CUSTOM_PLACEHOLDERS: Record<string,string> = {
 };
 
 const STAGES = [
-  { id:"product",   short:"Product", label:"Product Brief" },
-  { id:"reference", short:"Frames",  label:"Frame Setup" },
-  { id:"visual",    short:"Visual",  label:"Visual DNA" },
-  { id:"light",     short:"Light",   label:"Landscape" },
-  { id:"choreo",    short:"Motion",  label:"Motion" },
-  { id:"brand",     short:"Brand",   label:"Branding" },
-  { id:"preview",   short:"Done",    label:"Done" },
+  { id:"product",   short:"Brief",  label:"Product Brief" },
+  { id:"hook",      short:"Hook",   label:"Hook Type" },
+  { id:"reference", short:"Frames", label:"Frame Setup" },
+  { id:"visual",    short:"Visual", label:"Visual DNA" },
+  { id:"light",     short:"Light",  label:"Landscape" },
+  { id:"choreo",    short:"Motion", label:"Motion" },
+  { id:"brand",     short:"Brand",  label:"Branding" },
+  { id:"preview",   short:"Done",   label:"Done" },
 ];
 
 const EMPTY_SCENE  = { envA:"", envB:"", lightTrans:"", detail1:"", motion:"", detail2:"", particles:"", lightFx:"", refMode:"none", refImgs:[] as string[], startImg:null as string|null, endImg:null as string|null, cameraAngle:"", cameraMovement:"", timeOfDay:"", weather:"", shotDuration:"" };
-const EMPTY_SHARED = { product:"", commercialStyle:"", aesthetic:"", optics:"", atmosphere:"", bg:"", tagline:"", colorGrading:"" };
+const EMPTY_SHARED = { product:"", commercialStyle:"", aesthetic:"", optics:"", atmosphere:"", bg:"", tagline:"", colorGrading:"", hookType:"", conceptTitle:"", conceptHook:"", conceptBuild:"", conceptPeak:"", conceptClosure:"" };
 
 // ── SELECT WITH CUSTOM ────────────────────────────────────────────────
 function Sel({ label, value, onChange, optKey, placeholder="Choose an option...", locked=false }: {
@@ -1459,6 +1773,20 @@ function UploadZone({ label, sub, value, onChange }: { label:string; sub?:string
   );
 }
 
+// ── MUSIC DIRECTION ───────────────────────────────────────────────────
+function getMusicDirection(style: string) {
+  const s = style.toLowerCase();
+  if (s.includes("luxury"))                           return { emotion:"Aspirational awe",   musicStyle:"Neo-classical orchestral", bpm:"50–70",   instruments:"Strings, solo piano, subtle harp" };
+  if (s.includes("energetic")||s.includes("bold"))    return { emotion:"Power & momentum",   musicStyle:"Cinematic trap / hip-hop", bpm:"130–155", instruments:"808 bass, epic brass, heavy percussion" };
+  if (s.includes("emotional")||s.includes("soft"))    return { emotion:"Tender nostalgia",   musicStyle:"Indie folk / acoustic",    bpm:"60–80",   instruments:"Acoustic guitar, light piano, breathy vocals" };
+  if (s.includes("minimal")||s.includes("clean"))     return { emotion:"Calm clarity",       musicStyle:"Ambient minimal",          bpm:"70–90",   instruments:"Sparse piano, subtle synth pads, silence" };
+  if (s.includes("epic")||s.includes("cinematic"))    return { emotion:"Grandeur & triumph", musicStyle:"Hybrid orchestral",        bpm:"120–140", instruments:"Full orchestra, epic brass, choir" };
+  if (s.includes("urban")||s.includes("street"))      return { emotion:"Raw authenticity",   musicStyle:"Neo-soul / lo-fi",         bpm:"85–100",  instruments:"Rhodes piano, vinyl crackle, smooth bass" };
+  if (s.includes("futuristic")||s.includes("tech"))   return { emotion:"Precision & wonder", musicStyle:"Synthwave / electronic",   bpm:"110–130", instruments:"Synthesizers, digital FX, pulsing bass" };
+  if (s.includes("natural")||s.includes("organic"))   return { emotion:"Grounded serenity",  musicStyle:"Acoustic world music",     bpm:"65–85",   instruments:"Flute, acoustic guitar, gentle percussion" };
+  return { emotion:"Cinematic grandeur", musicStyle:"Hybrid orchestral", bpm:"110–130", instruments:"Full orchestra, epic brass, strings" };
+}
+
 // ── PROMPT BUILDER ────────────────────────────────────────────────────
 function buildScenePrompt(shared: typeof EMPTY_SHARED, scene: typeof EMPTY_SCENE, sceneNum: number, totalScenes: number) {
   const isCont = sceneNum > 1;
@@ -1470,13 +1798,17 @@ function buildScenePrompt(shared: typeof EMPTY_SHARED, scene: typeof EMPTY_SCENE
     : `\nREFERENCE: None — generate freely within the established visual language.`;
   const contNote = isCont ? `\nSCENE CONTINUITY: Scene ${sceneNum} of ${totalScenes}. Maintain identical visual DNA, color grading, optics, and atmosphere from Scene 1. Seamless continuation — do NOT reinvent the aesthetic.\n` : "";
   const optLine = (label: string, val: string) => val ? `\n${label}: ${val}` : "";
+  const conceptBlock = shared.conceptTitle ? `\n[0. CREATIVE CONCEPT]${isCont?" (LOCKED — inherited from Scene 1)":""}\nConcept: "${shared.conceptTitle}"\nHook: ${shared.conceptHook}\nBuild: ${shared.conceptBuild}\nPeak: ${shared.conceptPeak}\nClosure: ${shared.conceptClosure}\n` : "";
+  const hookLine = shared.hookType && !isCont ? `\nHOOK TYPE: ${shared.hookType}` : "";
+  const music = !isCont ? getMusicDirection(shared.commercialStyle) : null;
+  const musicBlock = music ? `\n\n[5. MUSIC DIRECTION]\nEmotion Target: ${music.emotion}\nMusic Style: ${music.musicStyle}\nBPM Range: ${music.bpm} BPM\nKey Instruments: ${music.instruments}` : "";
   return `═══════════════════════════════
 SCENE ${sceneNum} OF ${totalScenes}${isCont?" — CONTINUATION":""}
 ═══════════════════════════════
 PRODUCT: ${shared.product||"—"}
-COMMERCIAL STYLE: ${shared.commercialStyle||"—"}
+COMMERCIAL STYLE: ${shared.commercialStyle||"—"}${hookLine}
 SHOT DURATION: ${dur}
-${contNote}
+${contNote}${conceptBlock}
 [1. VISUAL DNA]${isCont?" (LOCKED — inherited from Scene 1)":""}
 Aesthetic: ${shared.aesthetic||"—"}
 Optics / Lens: ${shared.optics||"—"}
@@ -1514,7 +1846,7 @@ Highlight: ${scene.lightFx||"—"} passes over the brand logo.
 
 [4. BRANDING]${isCont?" (LOCKED — inherited from Scene 1)":""}
 Background: ${shared.bg||"—"}
-Tagline: "${shared.tagline||"Your Slogan Here"}"`;
+Tagline: "${shared.tagline||"Your Slogan Here"}"${musicBlock}`;
 }
 
 // ── MAIN APP ──────────────────────────────────────────────────────────
@@ -1536,6 +1868,21 @@ export default function App() {
   // Hero account dropdown
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  // Concept Generator
+  const [conceptScreen, setConceptScreen]     = useState(false);
+  const [conceptProduct, setConceptProduct]   = useState('');
+  const [conceptAudience, setConceptAudience] = useState('');
+  const [conceptOptions, setConceptOptions]   = useState<ConceptOption[]>([]);
+  const [loadingConcepts, setLoadingConcepts] = useState(false);
+  const [selectedConceptId, setSelectedConceptId] = useState('');
+  // AI features on Done screen
+  const [voiceoverScript, setVoiceoverScript]     = useState('');
+  const [loadingVoiceover, setLoadingVoiceover]   = useState(false);
+  const [voiceoverVisible, setVoiceoverVisible]   = useState(false);
+  const [copiedVoiceover, setCopiedVoiceover]     = useState(false);
+  const [abVariations, setAbVariations]           = useState<AbVariations|null>(null);
+  const [loadingVariations, setLoadingVariations] = useState(false);
+  const [variationsVisible, setVariationsVisible] = useState(false);
 
   // Restore state from share URL + hydrate auth session
   useEffect(() => {
@@ -1592,13 +1939,14 @@ export default function App() {
     || (sc.refMode==="startend" && !!sc.startImg && !!sc.endImg);
 
   const valid = [
-    shared.product.trim().length>=2 && !!shared.commercialStyle,
-    refValid,
-    !isNewScene ? !!(shared.aesthetic && shared.optics && shared.atmosphere) : true,
-    !!(sc.envA && sc.envB && sc.lightTrans),
-    !!(sc.detail1 && sc.motion && sc.detail2 && sc.particles && sc.lightFx),
-    !!shared.bg,
-    true,
+    shared.product.trim().length>=2 && !!shared.commercialStyle, // product
+    !!shared.hookType,                                             // hook
+    refValid,                                                      // reference
+    !isNewScene ? !!(shared.aesthetic && shared.optics && shared.atmosphere) : true, // visual
+    !!(sc.envA && sc.envB && sc.lightTrans),                      // light
+    !!(sc.detail1 && sc.motion && sc.detail2 && sc.particles && sc.lightFx), // choreo
+    !!shared.bg,                                                   // brand
+    true,                                                          // preview
   ];
 
   const addScene = () => {
@@ -1652,12 +2000,185 @@ export default function App() {
     }
   };
 
-  const reset = () => { setStage(0);setActiveScene(0);setPreviewScene(0);setShared({...EMPTY_SHARED});setScenes([{...EMPTY_SCENE}]); };
+  const reset = () => {
+    setStage(0); setActiveScene(0); setPreviewScene(0);
+    setShared({...EMPTY_SHARED}); setScenes([{...EMPTY_SCENE}]);
+    setConceptScreen(false); setConceptProduct(''); setConceptAudience('');
+    setConceptOptions([]); setSelectedConceptId('');
+    setVoiceoverScript(''); setVoiceoverVisible(false);
+    setAbVariations(null); setVariationsVisible(false);
+  };
 
-  const visibleStages = isNewScene ? STAGES.filter(s=>!["product","visual","brand"].includes(s.id)) : STAGES;
+  // ── CONCEPT GENERATOR HANDLERS ───────────────────────────────────────
+  const generateConcepts = async () => {
+    if (!conceptProduct.trim()) return;
+    setLoadingConcepts(true);
+    setConceptOptions([]);
+    try {
+      const res = await fetch('/api/ai/concepts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ product: conceptProduct, audience: conceptAudience }),
+      });
+      const data = await res.json();
+      if (data.concepts) setConceptOptions(data.concepts);
+    } catch { /* ignore */ } finally {
+      setLoadingConcepts(false);
+    }
+  };
+
+  const proceedWithConcept = () => {
+    const chosen = conceptOptions.find(c => c.id === selectedConceptId);
+    setShared(prev => ({
+      ...prev,
+      product: conceptProduct,
+      ...(chosen ? {
+        conceptTitle:   chosen.title,
+        conceptHook:    chosen.hook,
+        conceptBuild:   chosen.build,
+        conceptPeak:    chosen.peak,
+        conceptClosure: chosen.closure,
+      } : {}),
+    }));
+    setConceptScreen(false);
+    setStarted(true);
+  };
+
+  // ── AI DONE-SCREEN HANDLERS ──────────────────────────────────────────
+  const generateVoiceover = async () => {
+    setLoadingVoiceover(true);
+    setVoiceoverScript('');
+    try {
+      const sceneIdx = previewScene === -1 ? 0 : previewScene;
+      const currentPrompt = previewScene === -1 ? allPrompts : buildScenePrompt(shared, scenes[sceneIdx], sceneIdx+1, scenes.length);
+      const duration = scenes[sceneIdx].shotDuration || "7 seconds";
+      const res = await fetch('/api/ai/voiceover', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: currentPrompt, duration, product: shared.product }),
+      });
+      const data = await res.json();
+      if (data.script) { setVoiceoverScript(data.script); setVoiceoverVisible(true); }
+    } catch { /* ignore */ } finally {
+      setLoadingVoiceover(false);
+    }
+  };
+
+  const generateVariations = async () => {
+    setLoadingVariations(true);
+    setAbVariations(null);
+    try {
+      const res = await fetch('/api/ai/variations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: allPrompts, product: shared.product, hookType: shared.hookType, commercialStyle: shared.commercialStyle }),
+      });
+      const data = await res.json();
+      if (data.hookVariations) { setAbVariations(data); setVariationsVisible(true); }
+    } catch { /* ignore */ } finally {
+      setLoadingVariations(false);
+    }
+  };
+
+  const visibleStages = isNewScene ? STAGES.filter(s=>!["product","hook","visual","brand"].includes(s.id)) : STAGES;
 
   // ── HERO ────────────────────────────────────────────────────────────
   const userInitials = user?.email ? user.email.slice(0, 2).toUpperCase() : "";
+
+  // ── CONCEPT GENERATOR SCREEN ─────────────────────────────────────────
+  if (!started && conceptScreen) return (
+    <>
+      <style>{css}</style>
+      <div className="app">
+        <div className="concept-screen fade-in">
+          <div className="concept-eyebrow">AI Creative Director</div>
+          <div className="concept-title">CONCEPT GENERATOR</div>
+          <p className="concept-sub">Enter your product and audience — SceneBloc generates 3 distinct storyboard concepts to choose from.</p>
+          <div className="concept-form">
+            <input
+              className="txt-input"
+              placeholder="Product name & description (e.g. A premium Swiss watch)"
+              value={conceptProduct}
+              onChange={e=>setConceptProduct(e.target.value)}
+              onKeyDown={e=>{ if(e.key==='Enter' && conceptProduct.trim()) generateConcepts(); }}
+            />
+            <input
+              className="txt-input"
+              placeholder="Target audience (e.g. High-income men 30–45, luxury lifestyle)"
+              value={conceptAudience}
+              onChange={e=>setConceptAudience(e.target.value)}
+              onKeyDown={e=>{ if(e.key==='Enter' && conceptProduct.trim()) generateConcepts(); }}
+            />
+            <button
+              className="concept-generate-btn"
+              onClick={generateConcepts}
+              disabled={!conceptProduct.trim() || loadingConcepts}
+            >
+              {loadingConcepts ? (
+                <span className="ai-loading-row" style={{justifyContent:'center'}}>
+                  <span className="ai-dot"/><span className="ai-dot"/><span className="ai-dot"/>
+                  &nbsp;Generating concepts…
+                </span>
+              ) : "Generate 3 Concepts →"}
+            </button>
+          </div>
+          {conceptOptions.length > 0 && (
+            <div className="concept-cards">
+              {conceptOptions.map(c => (
+                <div
+                  key={c.id}
+                  className={`concept-card${selectedConceptId===c.id?" selected":""}`}
+                  onClick={()=>setSelectedConceptId(c.id)}
+                >
+                  <div className="concept-card-hd">
+                    <span className="concept-badge">OPTION {c.id}</span>
+                    <span className="concept-card-title">{c.title}</span>
+                  </div>
+                  <div className="concept-struct">
+                    <div className="concept-struct-item">
+                      <div className="concept-struct-lbl">Hook</div>
+                      <div className="concept-struct-val">{c.hook}</div>
+                    </div>
+                    <div className="concept-struct-item">
+                      <div className="concept-struct-lbl">Build</div>
+                      <div className="concept-struct-val">{c.build}</div>
+                    </div>
+                    <div className="concept-struct-item">
+                      <div className="concept-struct-lbl">Peak</div>
+                      <div className="concept-struct-val">{c.peak}</div>
+                    </div>
+                    <div className="concept-struct-item">
+                      <div className="concept-struct-lbl">Closure</div>
+                      <div className="concept-struct-val">{c.closure}</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              <div className="concept-cta-row">
+                <button
+                  className="concept-proceed-btn"
+                  disabled={!selectedConceptId}
+                  onClick={proceedWithConcept}
+                >
+                  {selectedConceptId ? "Build with this Concept →" : "Select a concept above"}
+                </button>
+                <button className="concept-skip-btn" onClick={proceedWithConcept}>
+                  Skip concept
+                </button>
+              </div>
+            </div>
+          )}
+          {!loadingConcepts && conceptOptions.length === 0 && (
+            <div style={{marginTop:8}}>
+              <button className="concept-skip-btn" onClick={()=>{setConceptScreen(false);setStarted(true);}}>
+                Skip — Enter builder directly
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </>
+  );
 
   if (!started) return (
     <>
@@ -1723,7 +2244,7 @@ export default function App() {
             <div className="hero-feat"><div className="hero-feat-dot"/><span>4-Stage Choreography</span></div>
             <div className="hero-feat"><div className="hero-feat-dot"/><span>Start &amp; End Frames</span></div>
           </div>
-          <button className="hero-cta" onClick={()=>setStarted(true)}>
+          <button className="hero-cta" onClick={()=>setConceptScreen(true)}>
             Begin Building →
           </button>
           <div className="hero-scroll">
@@ -1743,9 +2264,15 @@ export default function App() {
     switch(s.id) {
       case "product": return (
         <div className="fade-in">
-          <div className="stage-num">Step 01 / 06</div>
+          <div className="stage-num">Step 01 / 07</div>
           <div className="stage-title">PRODUCT BRIEF</div>
           <div className="stage-desc">Tell us exactly what you&apos;re advertising. This shapes every scene.</div>
+          {shared.conceptTitle && (
+            <div className="locked-banner" style={{marginBottom:18}}>
+              <div className="locked-banner-icon">✦</div>
+              <div className="locked-banner-text">Concept: <strong>{shared.conceptTitle}</strong> <span>— selected from Concept Generator</span></div>
+            </div>
+          )}
           <div className="field">
             <div className="field-lbl">Product Name &amp; Description</div>
             <input className="txt-input" placeholder="e.g. A luxurious Swiss automatic watch" value={shared.product} onChange={e=>setS("product")(e.target.value)}/>
@@ -1755,9 +2282,26 @@ export default function App() {
         </div>
       );
 
+      case "hook": return (
+        <div className="fade-in">
+          <div className="stage-num">Step 02 / 07</div>
+          <div className="stage-title">HOOK TYPE</div>
+          <div className="stage-desc">Choose your psychological trigger — the opening seconds that stop the scroll and demand attention.</div>
+          <div className="hook-grid">
+            {HOOK_TYPES.map(h=>(
+              <div key={h.id} className={`hook-card${shared.hookType===h.name?" selected":""}`} onClick={()=>setS("hookType")(h.name)}>
+                <div className="hook-card-icon">{h.icon}</div>
+                <div className="hook-card-name">{h.name}</div>
+                <div className="hook-card-desc">{h.desc}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+
       case "reference": return (
         <div className="fade-in">
-          <div className="stage-num">{isNewScene?`Scene ${activeScene+1} — Step 1`:"Step 02 / 06"}</div>
+          <div className="stage-num">{isNewScene?`Scene ${activeScene+1} — Step 1`:"Step 03 / 07"}</div>
           <div className="stage-title">FRAME SETUP</div>
           <div className="stage-desc">{isNewScene?`Choose how Scene ${activeScene+1} connects visually to your previous footage.`:"Choose how you want to guide this scene visually."}</div>
           <div className="field-lbl" style={{marginBottom:13}}>Input Mode</div>
@@ -1796,7 +2340,7 @@ export default function App() {
 
       case "visual": return (
         <div className="fade-in">
-          <div className="stage-num">Step 03 / 06</div>
+          <div className="stage-num">Step 04 / 07</div>
           <div className="stage-title">VISUAL DNA</div>
           <div className="stage-desc">These lock across all scenes to keep your entire video consistent.</div>
           <Sel label="Aesthetic" value={shared.aesthetic} onChange={setS("aesthetic")} optKey="aesthetic"/>
@@ -1809,7 +2353,7 @@ export default function App() {
 
       case "light": return (
         <div className="fade-in">
-          <div className="stage-num">{isNewScene?`Scene ${activeScene+1} — Step 2`:"Step 04 / 06"}</div>
+          <div className="stage-num">{isNewScene?`Scene ${activeScene+1} — Step 2`:"Step 05 / 07"}</div>
           <div className="stage-title">LIGHT & LANDSCAPE</div>
           <div className="stage-desc">{isNewScene?`Set the environment for Scene ${activeScene+1} — can differ from Scene 1.`:`Set the two environments your ${shared.product||"product"} moves through.`}</div>
           {isNewScene&&<div className="locked-banner"><div className="locked-banner-icon">🔒</div><div className="locked-banner-text">Visual DNA locked from Scene 1 <span>— Aesthetic, Optics &amp; Atmosphere carry over automatically.</span></div></div>}
@@ -1824,7 +2368,7 @@ export default function App() {
 
       case "choreo": return (
         <div className="fade-in">
-          <div className="stage-num">{isNewScene?`Scene ${activeScene+1} — Step 3`:"Step 05 / 06"}</div>
+          <div className="stage-num">{isNewScene?`Scene ${activeScene+1} — Step 3`:"Step 06 / 07"}</div>
           <div className="stage-title">CHOREOGRAPHY</div>
           <div className="stage-desc">{isNewScene?`New motion for Scene ${activeScene+1}. Visual DNA stays locked from Scene 1.`:`Build the 4-stage motion for your ${shared.product||"product"}.`}</div>
           <div className="section-label">Camera</div>
@@ -1842,7 +2386,7 @@ export default function App() {
 
       case "brand": return (
         <div className="fade-in">
-          <div className="stage-num">Step 06 / 06</div>
+          <div className="stage-num">Step 07 / 07</div>
           <div className="stage-title">BRANDING</div>
           <div className="stage-desc">Final frame — locked across all scenes.</div>
           <Sel label="Background Color" value={shared.bg} onChange={setS("bg")} optKey="bg"/>
@@ -1908,7 +2452,71 @@ export default function App() {
           <button className={`share-btn${shared_link?" shared":""}`} onClick={shareLink}>
             {shared_link ? "✓ Link Copied to Clipboard!" : "↗ Share Prompt via Link"}
           </button>
-          <button className="btn-outline" onClick={addScene}>+ Add Scene {scenes.length+1} — Continue This Video</button>
+
+          {/* ── VOICEOVER SCRIPT ── */}
+          <button className="ai-generate-btn" onClick={generateVoiceover} disabled={loadingVoiceover}>
+            {loadingVoiceover
+              ? <><span className="ai-dot"/><span className="ai-dot"/><span className="ai-dot"/> Generating script…</>
+              : "🎙 Generate Voiceover Script"}
+          </button>
+          {voiceoverVisible && voiceoverScript && (
+            <div className="ai-panel fade-in">
+              <div className="ai-panel-hd">
+                <div className="ai-panel-title">Voiceover Script</div>
+                <button className="ai-panel-copy" onClick={()=>{navigator.clipboard.writeText(voiceoverScript);setCopiedVoiceover(true);setTimeout(()=>setCopiedVoiceover(false),2000);}}>
+                  {copiedVoiceover?"✓ Copied":"Copy"}
+                </button>
+              </div>
+              <div className="ai-panel-body">
+                <div className="voiceover-text">{voiceoverScript}</div>
+              </div>
+            </div>
+          )}
+
+          {/* ── A/B VARIATIONS ── */}
+          <button className="ai-generate-btn" onClick={generateVariations} disabled={loadingVariations} style={{marginTop:8}}>
+            {loadingVariations
+              ? <><span className="ai-dot"/><span className="ai-dot"/><span className="ai-dot"/> Generating variations…</>
+              : "⚡ Generate A/B Variations"}
+          </button>
+          {variationsVisible && abVariations && (
+            <div className="ai-panel fade-in">
+              <div className="ai-panel-hd">
+                <div className="ai-panel-title">A/B Variations</div>
+              </div>
+              <div className="ai-panel-body">
+                <div className="variation-group">
+                  <div className="variation-group-title">Hook Variations — opening 3 seconds</div>
+                  {abVariations.hookVariations.map((v,i)=>(
+                    <div key={i} className="variation-item">
+                      <div className="variation-letter">HOOK {String.fromCharCode(65+i)}</div>
+                      {v}
+                    </div>
+                  ))}
+                </div>
+                <div className="variation-group">
+                  <div className="variation-group-title">Emotional Angle Variations</div>
+                  {abVariations.emotionalAngles.map((v,i)=>(
+                    <div key={i} className="variation-item">
+                      <div className="variation-letter">ANGLE {String.fromCharCode(65+i)}</div>
+                      {v}
+                    </div>
+                  ))}
+                </div>
+                <div className="variation-group">
+                  <div className="variation-group-title">CTA Variations</div>
+                  {abVariations.ctaVariations.map((v,i)=>(
+                    <div key={i} className="variation-item">
+                      <div className="variation-letter">CTA {String.fromCharCode(65+i)}</div>
+                      {v}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          <button className="btn-outline" onClick={addScene} style={{marginTop:8}}>+ Add Scene {scenes.length+1} — Continue This Video</button>
           <button className="btn-outline" onClick={reset} style={{marginTop:4}}>↺ Build a New Commercial</button>
         </div>
       );
