@@ -22,10 +22,6 @@ const css = `
   .hist-page {
     min-height: 100vh;
     font-family: 'DM Sans', sans-serif;
-    background:
-      radial-gradient(ellipse 60% 50% at 20% 15%, rgba(68,187,255,0.11) 0%, transparent 70%),
-      radial-gradient(ellipse 50% 45% at 80% 80%, rgba(120,80,255,0.08) 0%, transparent 70%),
-      #020810;
     color: #eef5ff;
   }
 

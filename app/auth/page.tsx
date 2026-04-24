@@ -16,12 +16,6 @@ const css = `
     justify-content: center;
     padding: 40px 24px;
     font-family: 'DM Sans', sans-serif;
-    position: relative;
-    background:
-      radial-gradient(ellipse 70% 55% at 15% 20%, rgba(68,187,255,0.14) 0%, transparent 70%),
-      radial-gradient(ellipse 60% 50% at 85% 75%, rgba(120,80,255,0.10) 0%, transparent 70%),
-      radial-gradient(ellipse 50% 60% at 50% 50%, rgba(68,187,255,0.04) 0%, transparent 100%),
-      #020810;
   }
 
   .auth-logo {
