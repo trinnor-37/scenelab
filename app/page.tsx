@@ -1641,6 +1641,129 @@ const css = `
   .ai-dot:nth-child(1){animation:cldot 1.2s 0s infinite both}
   .ai-dot:nth-child(2){animation:cldot 1.2s 0.2s infinite both}
   .ai-dot:nth-child(3){animation:cldot 1.2s 0.4s infinite both}
+
+  /* ── CINEMATOGRAPHY STEP ── */
+  .cine-mood-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 8px;
+  }
+  .cine-mood-card {
+    background: var(--surface);
+    border: 1.5px solid var(--border2);
+    border-radius: var(--radius-sm);
+    padding: 16px 14px;
+    cursor: pointer;
+    transition: border-color 0.18s, background 0.18s;
+    text-align: left;
+  }
+  .cine-mood-card:hover { border-color: rgba(68,187,255,0.30); }
+  .cine-mood-card.selected { border-color: var(--blue); background: var(--blue-dim); }
+  .cine-mood-icon { font-size: 18px; margin-bottom: 7px; }
+  .cine-mood-name { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+  .cine-mood-subdesc { font-size: 11px; color: var(--muted); line-height: 1.35; }
+
+  .cine-gear-panel {
+    background: var(--surface);
+    border: 1.5px solid var(--border2);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    margin-top: 16px;
+  }
+  .cine-gear-hd {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 14px;
+  }
+  .cine-gear-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .cine-gear-item { display: flex; flex-direction: column; gap: 5px; }
+  .cine-gear-lbl {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .cine-gear-sel-wrap { position: relative; }
+  .cine-gear-sel {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-sm);
+    padding: 9px 10px 9px 12px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+  }
+  .cine-gear-sel:hover, .cine-gear-sel.open { border-color: var(--blue); }
+  .cine-gear-sel-val { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .cine-gear-arr { font-size: 9px; color: var(--muted); flex-shrink: 0; }
+  .cine-gear-dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background: var(--surface3);
+    border: 1.5px solid var(--border3);
+    border-radius: var(--radius-sm);
+    z-index: 120;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.55);
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  .cine-gear-opt {
+    padding: 9px 12px;
+    font-size: 12px;
+    color: var(--muted2);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    transition: background 0.1s;
+  }
+  .cine-gear-opt:hover { background: var(--blue-glow); color: var(--text); }
+  .cine-gear-opt.sel { color: var(--blue); font-weight: 600; }
+
+  .cine-presets-section { margin-top: 18px; }
+  .cine-presets-lbl {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .cine-presets-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .cine-preset-btn {
+    background: transparent;
+    color: var(--muted2);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1.5px solid var(--border2);
+    border-radius: 100px;
+    padding: 7px 14px;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+    white-space: nowrap;
+  }
+  .cine-preset-btn:hover { border-color: rgba(68,187,255,0.35); color: var(--text); }
+  .cine-preset-btn.active { border-color: var(--blue); color: var(--blue); background: var(--blue-dim); }
 `;
 
 type ConceptOption = { id:string; title:string; hook:string; build:string; peak:string; closure:string };
@@ -1654,6 +1777,71 @@ const HOOK_TYPES = [
   { id:"incomplete",    icon:"?",  name:"Incomplete Information",    desc:"Open a loop the brain must close" },
   { id:"social-proof",  icon:"✦",  name:"Social Proof Trigger",     desc:"Credibility through implied consensus or authority" },
 ];
+
+// ── CINEMA GEAR 2.0 ───────────────────────────────────────────────────
+const CINE_CAMERAS      = ["Modular 8K Digital","Full-Frame Cine Digital","Studio Digital S35","Grand Format 70mm Film","Classic 16mm Film","Premium Large Format"];
+const CINE_LENSES       = ["Creative Tilt","70s Cinema Prime","Premium Modern Prime","Warm Cinema Prime","Swirl Bokeh Portrait","Vintage Prime","Clinical Sharp Prime","Compact Anamorphic","Classic Anamorphic","Halation Diffusion"];
+const CINE_FOCAL_LENGTHS = ["8–14mm","24–35mm","50mm","85mm+"];
+const CINE_APERTURES    = ["f/1.4–f/2","f/4–f/5.6","f/8–f/11"];
+
+const CINE_MOODS = [
+  { id:"clean",      icon:"◻",  name:"Clean / Premium",        desc:"Technical perfection, clinical clarity" },
+  { id:"cinematic",  icon:"◈",  name:"Cinematic / Narrative",  desc:"Story-first, character-driven depth" },
+  { id:"raw",        icon:"⬡",  name:"Raw / Human",            desc:"Documentary grain, organic truth" },
+  { id:"epic",       icon:"▲",  name:"Epic / Monumental",      desc:"Colossal scale, deliberate grandeur" },
+  { id:"dreamlike",  icon:"◎",  name:"Dreamlike / Nostalgic",  desc:"Hazy memory, emotional warmth" },
+  { id:"tense",      icon:"◆",  name:"Tense / Psychological",  desc:"Selective distortion, unease" },
+  { id:"hyperreal",  icon:"✦",  name:"Hyperreal / Sharp",      desc:"Maximum resolution, hyper-conscious" },
+];
+
+type CineGear = { camera:string; lens:string; focalLength:string; aperture:string };
+
+const CINE_MOOD_MAP: Record<string, CineGear> = {
+  "Clean / Premium":        { camera:"Studio Digital S35",      lens:"Premium Modern Prime",  focalLength:"50mm",    aperture:"f/4–f/5.6" },
+  "Cinematic / Narrative":  { camera:"Full-Frame Cine Digital", lens:"Warm Cinema Prime",     focalLength:"24–35mm", aperture:"f/1.4–f/2" },
+  "Raw / Human":            { camera:"Classic 16mm Film",       lens:"Vintage Prime",         focalLength:"24–35mm", aperture:"f/1.4–f/2" },
+  "Epic / Monumental":      { camera:"Grand Format 70mm Film",  lens:"Classic Anamorphic",    focalLength:"8–14mm",  aperture:"f/8–f/11" },
+  "Dreamlike / Nostalgic":  { camera:"Classic 16mm Film",       lens:"Halation Diffusion",    focalLength:"85mm+",   aperture:"f/1.4–f/2" },
+  "Tense / Psychological":  { camera:"Modular 8K Digital",      lens:"Creative Tilt",         focalLength:"50mm",    aperture:"f/4–f/5.6" },
+  "Hyperreal / Sharp":      { camera:"Modular 8K Digital",      lens:"Clinical Sharp Prime",  focalLength:"50mm",    aperture:"f/8–f/11" },
+};
+
+const SIGNATURE_LOOKS: Array<{ name:string } & CineGear & { mood:string }> = [
+  { name:"The Nolan",        mood:"Epic / Monumental",    camera:"Grand Format 70mm Film",  lens:"Classic Anamorphic",   focalLength:"8–14mm",  aperture:"f/8–f/11" },
+  { name:"The A24",          mood:"Raw / Human",          camera:"Classic 16mm Film",       lens:"Vintage Prime",        focalLength:"24–35mm", aperture:"f/1.4–f/2" },
+  { name:"The Apple Ad",     mood:"Clean / Premium",      camera:"Studio Digital S35",      lens:"Premium Modern Prime", focalLength:"50mm",    aperture:"f/4–f/5.6" },
+  { name:"The Villeneuve",   mood:"Epic / Monumental",    camera:"Modular 8K Digital",      lens:"Classic Anamorphic",   focalLength:"8–14mm",  aperture:"f/4–f/5.6" },
+  { name:"The Wong Kar-wai", mood:"Dreamlike / Nostalgic",camera:"Classic 16mm Film",       lens:"Swirl Bokeh Portrait", focalLength:"85mm+",   aperture:"f/1.4–f/2" },
+];
+
+function buildCineDescriptor(camera:string, lens:string, focalLength:string, aperture:string): string {
+  const camChar: Record<string,string> = {
+    "Modular 8K Digital":     "hyper-resolving digital",
+    "Full-Frame Cine Digital": "full-frame cinematic digital",
+    "Studio Digital S35":      "clean S35 digital",
+    "Grand Format 70mm Film":  "grand-format 70mm film",
+    "Classic 16mm Film":       "organic 16mm film grain",
+    "Premium Large Format":    "large-format cinematic digital",
+  };
+  const lenChar: Record<string,string> = {
+    "Creative Tilt":        "tilt-shift selective-focus optics",
+    "70s Cinema Prime":     "vintage 1970s cinema prime",
+    "Premium Modern Prime": "high-resolving modern prime",
+    "Warm Cinema Prime":    "warm character-driven prime",
+    "Swirl Bokeh Portrait": "Petzval swirl-bokeh portrait optics",
+    "Vintage Prime":        "vintage character prime",
+    "Clinical Sharp Prime": "clinical high-contrast prime",
+    "Compact Anamorphic":   "compact anamorphic",
+    "Classic Anamorphic":   "classic anamorphic with horizontal flares",
+    "Halation Diffusion":   "halation diffusion optics",
+  };
+  const aptChar: Record<string,string> = {
+    "f/1.4–f/2":  "razor-shallow depth of field",
+    "f/4–f/5.6":  "controlled selective depth",
+    "f/8–f/11":   "deep focus — everything sharp",
+  };
+  return `${camChar[camera]||camera} paired with ${lenChar[lens]||lens} at ${focalLength}, ${aptChar[aperture]||aperture}.`;
+}
 
 const MAX_REF = 8;
 const CUSTOM_KEY = "__custom__";
@@ -1709,6 +1897,7 @@ const STAGES = [
   { id:"hook",      short:"Hook",   label:"Hook Type" },
   { id:"reference", short:"Frames", label:"Frame Setup" },
   { id:"visual",    short:"Visual", label:"Visual DNA" },
+  { id:"cine",      short:"Cinema", label:"Cinematography" },
   { id:"light",     short:"Light",  label:"Landscape" },
   { id:"choreo",    short:"Motion", label:"Motion" },
   { id:"brand",     short:"Brand",  label:"Branding" },
@@ -1716,7 +1905,7 @@ const STAGES = [
 ];
 
 const EMPTY_SCENE  = { envA:"", envB:"", lightTrans:"", detail1:"", motion:"", detail2:"", particles:"", lightFx:"", refMode:"none", refImgs:[] as string[], startImg:null as string|null, endImg:null as string|null, cameraAngle:"", cameraMovement:"", timeOfDay:"", weather:"", shotDuration:"" };
-const EMPTY_SHARED = { product:"", commercialStyle:"", aesthetic:"", optics:"", atmosphere:"", bg:"", tagline:"", colorGrading:"", hookType:"", conceptTitle:"", conceptHook:"", conceptBuild:"", conceptPeak:"", conceptClosure:"" };
+const EMPTY_SHARED = { product:"", commercialStyle:"", aesthetic:"", optics:"", atmosphere:"", bg:"", tagline:"", colorGrading:"", hookType:"", conceptTitle:"", conceptHook:"", conceptBuild:"", conceptPeak:"", conceptClosure:"", cineMood:"", cineCamera:"", cineLens:"", cineFocalLength:"", cineAperture:"" };
 
 // ── SELECT WITH CUSTOM ────────────────────────────────────────────────
 function Sel({ label, value, onChange, optKey, placeholder="Choose an option...", locked=false }: {
@@ -1882,6 +2071,7 @@ function buildScenePrompt(shared: typeof EMPTY_SHARED, scene: typeof EMPTY_SCENE
   const optLine = (label: string, val: string) => val ? `\n${label}: ${val}` : "";
   const conceptBlock = shared.conceptTitle ? `\n[0. CREATIVE CONCEPT]${isCont?" (LOCKED — inherited from Scene 1)":""}\nConcept: "${shared.conceptTitle}"\nHook: ${shared.conceptHook}\nBuild: ${shared.conceptBuild}\nPeak: ${shared.conceptPeak}\nClosure: ${shared.conceptClosure}\n` : "";
   const hookLine = shared.hookType && !isCont ? `\nHOOK TYPE: ${shared.hookType}` : "";
+  const cineBlock = shared.cineCamera ? `\n\n[CINEMATOGRAPHY]${isCont?" (LOCKED — inherited from Scene 1)":""}\nEmotional Core: ${shared.cineMood||"—"}\nCamera: ${shared.cineCamera}\nLens: ${shared.cineLens||"—"}\nFocal Length: ${shared.cineFocalLength||"—"}\nAperture: ${shared.cineAperture||"—"}\nVisual Character: ${buildCineDescriptor(shared.cineCamera,shared.cineLens,shared.cineFocalLength,shared.cineAperture)}` : "";
   const music = !isCont ? getMusicDirection(shared.commercialStyle) : null;
   const musicBlock = music ? `\n\n[5. MUSIC DIRECTION]\nEmotion Target: ${music.emotion}\nMusic Style: ${music.musicStyle}\nBPM Range: ${music.bpm} BPM\nKey Instruments: ${music.instruments}` : "";
   return `═══════════════════════════════
@@ -1928,7 +2118,40 @@ Highlight: ${scene.lightFx||"—"} passes over the brand logo.
 
 [4. BRANDING]${isCont?" (LOCKED — inherited from Scene 1)":""}
 Background: ${shared.bg||"—"}
-Tagline: "${shared.tagline||"Your Slogan Here"}"${musicBlock}`;
+Tagline: "${shared.tagline||"Your Slogan Here"}"${cineBlock}${musicBlock}`;
+}
+
+// ── GEAR DROPDOWN (Cinema override) ──────────────────────────────────
+function GearDrop({ label, value, options, onChange }: { label:string; value:string; options:string[]; onChange:(v:string)=>void }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: MouseEvent) => { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false); };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [open]);
+  return (
+    <div className="cine-gear-item">
+      <div className="cine-gear-lbl">{label}</div>
+      <div className="cine-gear-sel-wrap" ref={ref}>
+        <button className={`cine-gear-sel${open?" open":""}`} onClick={()=>setOpen(o=>!o)}>
+          <span className="cine-gear-sel-val">{value||"—"}</span>
+          <span className="cine-gear-arr">▼</span>
+        </button>
+        {open && (
+          <div className="cine-gear-dropdown">
+            {options.map(opt=>(
+              <div key={opt} className={`cine-gear-opt${value===opt?" sel":""}`} onClick={()=>{onChange(opt);setOpen(false);}}>
+                <span>{opt}</span>
+                {value===opt && <span>✓</span>}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }
 
 // ── MAIN APP ──────────────────────────────────────────────────────────
@@ -2023,14 +2246,15 @@ export default function App() {
     || (sc.refMode==="startend" && !!sc.startImg && !!sc.endImg);
 
   const valid = [
-    shared.product.trim().length>=2 && !!shared.commercialStyle, // product
-    !!shared.hookType,                                             // hook
-    refValid,                                                      // reference
-    !isNewScene ? !!(shared.aesthetic && shared.optics && shared.atmosphere) : true, // visual
-    !!(sc.envA && sc.envB && sc.lightTrans),                      // light
-    !!(sc.detail1 && sc.motion && sc.detail2 && sc.particles && sc.lightFx), // choreo
-    !!shared.bg,                                                   // brand
-    true,                                                          // preview
+    shared.product.trim().length>=2 && !!shared.commercialStyle, // 0: product
+    !!shared.hookType,                                             // 1: hook
+    refValid,                                                      // 2: reference
+    !isNewScene ? !!(shared.aesthetic && shared.optics && shared.atmosphere) : true, // 3: visual
+    true,                                                          // 4: cine (always passable)
+    !!(sc.envA && sc.envB && sc.lightTrans),                      // 5: light
+    !!(sc.detail1 && sc.motion && sc.detail2 && sc.particles && sc.lightFx), // 6: choreo
+    !!shared.bg,                                                   // 7: brand
+    true,                                                          // 8: preview
   ];
 
   const addScene = () => {
@@ -2163,7 +2387,7 @@ export default function App() {
     }
   };
 
-  const visibleStages = isNewScene ? STAGES.filter(s=>!["product","hook","visual","brand"].includes(s.id)) : STAGES;
+  const visibleStages = isNewScene ? STAGES.filter(s=>!["product","hook","visual","cine","brand"].includes(s.id)) : STAGES;
 
   // ── HERO ────────────────────────────────────────────────────────────
   const userInitials = user?.email ? user.email.slice(0, 2).toUpperCase() : "";
@@ -2405,7 +2629,7 @@ export default function App() {
     switch(s.id) {
       case "product": return (
         <div className="fade-in">
-          <div className="stage-num">Step 01 / 07</div>
+          <div className="stage-num">Step 01 / 08</div>
           <div className="stage-title">PRODUCT BRIEF</div>
           <div className="stage-desc">Tell us exactly what you&apos;re advertising. This shapes every scene.</div>
           {shared.conceptTitle && (
@@ -2425,7 +2649,7 @@ export default function App() {
 
       case "hook": return (
         <div className="fade-in">
-          <div className="stage-num">Step 02 / 07</div>
+          <div className="stage-num">Step 02 / 08</div>
           <div className="stage-title">HOOK TYPE</div>
           <div className="stage-desc">Choose your psychological trigger — the opening seconds that stop the scroll and demand attention.</div>
           <div className="hook-grid">
@@ -2442,7 +2666,7 @@ export default function App() {
 
       case "reference": return (
         <div className="fade-in">
-          <div className="stage-num">{isNewScene?`Scene ${activeScene+1} — Step 1`:"Step 03 / 07"}</div>
+          <div className="stage-num">{isNewScene?`Scene ${activeScene+1} — Step 1`:"Step 03 / 08"}</div>
           <div className="stage-title">FRAME SETUP</div>
           <div className="stage-desc">{isNewScene?`Choose how Scene ${activeScene+1} connects visually to your previous footage.`:"Choose how you want to guide this scene visually."}</div>
           <div className="field-lbl" style={{marginBottom:13}}>Input Mode</div>
@@ -2481,7 +2705,7 @@ export default function App() {
 
       case "visual": return (
         <div className="fade-in">
-          <div className="stage-num">Step 04 / 07</div>
+          <div className="stage-num">Step 04 / 08</div>
           <div className="stage-title">VISUAL DNA</div>
           <div className="stage-desc">These lock across all scenes to keep your entire video consistent.</div>
           <Sel label="Aesthetic" value={shared.aesthetic} onChange={setS("aesthetic")} optKey="aesthetic"/>
@@ -2492,9 +2716,71 @@ export default function App() {
         </div>
       );
 
+      case "cine": {
+        const applyMood = (moodName: string) => {
+          const gear = CINE_MOOD_MAP[moodName];
+          setShared(p=>({ ...p, cineMood:moodName, cineCamera:gear.camera, cineLens:gear.lens, cineFocalLength:gear.focalLength, cineAperture:gear.aperture }));
+        };
+        const applyLook = (look: typeof SIGNATURE_LOOKS[number]) => {
+          setShared(p=>({ ...p, cineMood:look.mood, cineCamera:look.camera, cineLens:look.lens, cineFocalLength:look.focalLength, cineAperture:look.aperture }));
+        };
+        const isLookActive = (look: typeof SIGNATURE_LOOKS[number]) =>
+          shared.cineCamera===look.camera && shared.cineLens===look.lens && shared.cineFocalLength===look.focalLength && shared.cineAperture===look.aperture;
+        return (
+          <div className="fade-in">
+            <div className="stage-num">Step 05 / 08</div>
+            <div className="stage-title">CINEMATOGRAPHY</div>
+            <div className="stage-desc">Set the physical camera language — locked across all scenes.</div>
+
+            {/* Signature Looks — shown first so users can one-tap */}
+            <div className="cine-presets-section">
+              <div className="cine-presets-lbl">Signature Looks</div>
+              <div className="cine-presets-row">
+                {SIGNATURE_LOOKS.map(look=>(
+                  <button key={look.name} className={`cine-preset-btn${isLookActive(look)?" active":""}`} onClick={()=>applyLook(look)}>
+                    {look.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Mood selector */}
+            <div className="section-label" style={{marginTop:20}}>Emotional Core</div>
+            <div className="cine-mood-grid">
+              {CINE_MOODS.map(m=>(
+                <div key={m.id} className={`cine-mood-card${shared.cineMood===m.name?" selected":""}`} onClick={()=>applyMood(m.name)}>
+                  <div className="cine-mood-icon">{m.icon}</div>
+                  <div className="cine-mood-name">{m.name}</div>
+                  <div className="cine-mood-subdesc">{m.desc}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* Auto gear stack — always visible after first selection, shows defaults if nothing yet */}
+            <div className="cine-gear-panel">
+              <div className="cine-gear-hd">
+                {shared.cineCamera ? "Gear Stack — tap any field to override" : "Recommended Gear Stack — select a mood or look above"}
+              </div>
+              <div className="cine-gear-grid">
+                <GearDrop label="Camera"       value={shared.cineCamera}      options={CINE_CAMERAS}       onChange={v=>setS("cineCamera")(v)}/>
+                <GearDrop label="Lens"         value={shared.cineLens}        options={CINE_LENSES}        onChange={v=>setS("cineLens")(v)}/>
+                <GearDrop label="Focal Length" value={shared.cineFocalLength} options={CINE_FOCAL_LENGTHS} onChange={v=>setS("cineFocalLength")(v)}/>
+                <GearDrop label="Aperture"     value={shared.cineAperture}    options={CINE_APERTURES}     onChange={v=>setS("cineAperture")(v)}/>
+              </div>
+              {shared.cineCamera && (
+                <div style={{marginTop:14,padding:"10px 12px",background:"var(--surface2)",borderRadius:"var(--radius-sm)",fontSize:12,color:"var(--muted2)",lineHeight:1.55}}>
+                  <span style={{color:"var(--muted)",fontSize:10,fontWeight:700,letterSpacing:"2px",textTransform:"uppercase",display:"block",marginBottom:4}}>Visual Character</span>
+                  {buildCineDescriptor(shared.cineCamera,shared.cineLens,shared.cineFocalLength,shared.cineAperture)}
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      }
+
       case "light": return (
         <div className="fade-in">
-          <div className="stage-num">{isNewScene?`Scene ${activeScene+1} — Step 2`:"Step 05 / 07"}</div>
+          <div className="stage-num">{isNewScene?`Scene ${activeScene+1} — Step 2`:"Step 06 / 08"}</div>
           <div className="stage-title">LIGHT & LANDSCAPE</div>
           <div className="stage-desc">{isNewScene?`Set the environment for Scene ${activeScene+1} — can differ from Scene 1.`:`Set the two environments your ${shared.product||"product"} moves through.`}</div>
           {isNewScene&&<div className="locked-banner"><div className="locked-banner-icon">🔒</div><div className="locked-banner-text">Visual DNA locked from Scene 1 <span>— Aesthetic, Optics &amp; Atmosphere carry over automatically.</span></div></div>}
@@ -2509,7 +2795,7 @@ export default function App() {
 
       case "choreo": return (
         <div className="fade-in">
-          <div className="stage-num">{isNewScene?`Scene ${activeScene+1} — Step 3`:"Step 06 / 07"}</div>
+          <div className="stage-num">{isNewScene?`Scene ${activeScene+1} — Step 3`:"Step 07 / 08"}</div>
           <div className="stage-title">CHOREOGRAPHY</div>
           <div className="stage-desc">{isNewScene?`New motion for Scene ${activeScene+1}. Visual DNA stays locked from Scene 1.`:`Build the 4-stage motion for your ${shared.product||"product"}.`}</div>
           <div className="section-label">Camera</div>
@@ -2527,7 +2813,7 @@ export default function App() {
 
       case "brand": return (
         <div className="fade-in">
-          <div className="stage-num">Step 07 / 07</div>
+          <div className="stage-num">Step 08 / 08</div>
           <div className="stage-title">BRANDING</div>
           <div className="stage-desc">Final frame — locked across all scenes.</div>
           <Sel label="Background Color" value={shared.bg} onChange={setS("bg")} optKey="bg"/>
