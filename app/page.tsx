@@ -1429,6 +1429,88 @@ const css = `
   }
   .concept-skip-btn:hover { border-color: var(--border3); color: var(--text); }
 
+  .concept-edit-panel {
+    background: var(--surface2);
+    border: 1.5px solid var(--border3);
+    border-radius: var(--radius);
+    padding: 20px 22px;
+    width: 100%;
+    max-width: 580px;
+    text-align: left;
+    margin-top: 4px;
+  }
+  .concept-edit-hd {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+  }
+  .concept-edit-badge {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--blue);
+  }
+  .concept-edit-cancel {
+    font-size: 12px;
+    color: var(--muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    font-family: 'DM Sans', sans-serif;
+    transition: color 0.15s;
+  }
+  .concept-edit-cancel:hover { color: var(--text); }
+  .concept-edit-field { margin-bottom: 13px; }
+  .concept-edit-field:last-of-type { margin-bottom: 0; }
+  .concept-edit-lbl {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 5px;
+  }
+  .concept-edit-input {
+    width: 100%;
+    background: var(--surface);
+    border: 1.5px solid var(--border2);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    line-height: 1.55;
+    resize: vertical;
+    min-height: 56px;
+    transition: border-color 0.15s;
+  }
+  .concept-edit-input.single-line { min-height: 0; resize: none; height: 40px; }
+  .concept-edit-input:focus { outline: none; border-color: var(--blue); }
+  .concept-use-btn {
+    width: 100%;
+    background: var(--blue);
+    color: #000;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    border: none;
+    border-radius: var(--radius);
+    padding: 14px;
+    cursor: pointer;
+    margin-top: 16px;
+    transition: opacity 0.2s;
+  }
+  .concept-use-btn:hover { opacity: 0.85; }
+  .concept-edit-hint {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 10px;
+    text-align: center;
+  }
+
   /* ── HOOK SELECTOR ── */
   .hook-grid {
     display: grid;
@@ -1875,6 +1957,8 @@ export default function App() {
   const [conceptOptions, setConceptOptions]   = useState<ConceptOption[]>([]);
   const [loadingConcepts, setLoadingConcepts] = useState(false);
   const [selectedConceptId, setSelectedConceptId] = useState('');
+  const [editingConcept, setEditingConcept]       = useState(false);
+  const [editedConcept, setEditedConcept]         = useState<ConceptOption|null>(null);
   // AI features on Done screen
   const [voiceoverScript, setVoiceoverScript]     = useState('');
   const [loadingVoiceover, setLoadingVoiceover]   = useState(false);
@@ -2004,7 +2088,7 @@ export default function App() {
     setStage(0); setActiveScene(0); setPreviewScene(0);
     setShared({...EMPTY_SHARED}); setScenes([{...EMPTY_SCENE}]);
     setConceptScreen(false); setConceptProduct(''); setConceptAudience('');
-    setConceptOptions([]); setSelectedConceptId('');
+    setConceptOptions([]); setSelectedConceptId(''); setEditingConcept(false); setEditedConcept(null);
     setVoiceoverScript(''); setVoiceoverVisible(false);
     setAbVariations(null); setVariationsVisible(false);
   };
@@ -2028,16 +2112,15 @@ export default function App() {
   };
 
   const proceedWithConcept = () => {
-    const chosen = conceptOptions.find(c => c.id === selectedConceptId);
     setShared(prev => ({
       ...prev,
       product: conceptProduct,
-      ...(chosen ? {
-        conceptTitle:   chosen.title,
-        conceptHook:    chosen.hook,
-        conceptBuild:   chosen.build,
-        conceptPeak:    chosen.peak,
-        conceptClosure: chosen.closure,
+      ...(editedConcept ? {
+        conceptTitle:   editedConcept.title,
+        conceptHook:    editedConcept.hook,
+        conceptBuild:   editedConcept.build,
+        conceptPeak:    editedConcept.peak,
+        conceptClosure: editedConcept.closure,
       } : {}),
     }));
     setConceptScreen(false);
@@ -2128,7 +2211,7 @@ export default function App() {
                 <div
                   key={c.id}
                   className={`concept-card${selectedConceptId===c.id?" selected":""}`}
-                  onClick={()=>setSelectedConceptId(c.id)}
+                  onClick={()=>{ setSelectedConceptId(c.id); setEditedConcept({...c}); setEditingConcept(false); }}
                 >
                   <div className="concept-card-hd">
                     <span className="concept-badge">OPTION {c.id}</span>
@@ -2154,17 +2237,75 @@ export default function App() {
                   </div>
                 </div>
               ))}
+
+              {/* ── Edit panel ── */}
+              {editingConcept && editedConcept && (
+                <div className="concept-edit-panel fade-in">
+                  <div className="concept-edit-hd">
+                    <div className="concept-edit-badge">Editing — Option {editedConcept.id}</div>
+                    <button className="concept-edit-cancel" onClick={()=>setEditingConcept(false)}>✕ Cancel</button>
+                  </div>
+                  <div className="concept-edit-field">
+                    <div className="concept-edit-lbl">Concept Title</div>
+                    <textarea
+                      className="concept-edit-input single-line"
+                      value={editedConcept.title}
+                      onChange={e=>setEditedConcept(p=>p?{...p,title:e.target.value}:p)}
+                    />
+                  </div>
+                  <div className="concept-edit-field">
+                    <div className="concept-edit-lbl">Hook — 0–25%</div>
+                    <textarea
+                      className="concept-edit-input"
+                      value={editedConcept.hook}
+                      onChange={e=>setEditedConcept(p=>p?{...p,hook:e.target.value}:p)}
+                    />
+                  </div>
+                  <div className="concept-edit-field">
+                    <div className="concept-edit-lbl">Build — 25–50%</div>
+                    <textarea
+                      className="concept-edit-input"
+                      value={editedConcept.build}
+                      onChange={e=>setEditedConcept(p=>p?{...p,build:e.target.value}:p)}
+                    />
+                  </div>
+                  <div className="concept-edit-field">
+                    <div className="concept-edit-lbl">Peak — 50–85%</div>
+                    <textarea
+                      className="concept-edit-input"
+                      value={editedConcept.peak}
+                      onChange={e=>setEditedConcept(p=>p?{...p,peak:e.target.value}:p)}
+                    />
+                  </div>
+                  <div className="concept-edit-field">
+                    <div className="concept-edit-lbl">Closure — 85–100%</div>
+                    <textarea
+                      className="concept-edit-input"
+                      value={editedConcept.closure}
+                      onChange={e=>setEditedConcept(p=>p?{...p,closure:e.target.value}:p)}
+                    />
+                  </div>
+                  <button className="concept-use-btn" onClick={proceedWithConcept}>
+                    Use This Concept →
+                  </button>
+                  <div className="concept-edit-hint">Changes apply only to your build — the original concepts stay as shown above.</div>
+                </div>
+              )}
+
               <div className="concept-cta-row">
-                <button
-                  className="concept-proceed-btn"
-                  disabled={!selectedConceptId}
-                  onClick={proceedWithConcept}
-                >
-                  {selectedConceptId ? "Build with this Concept →" : "Select a concept above"}
-                </button>
-                <button className="concept-skip-btn" onClick={proceedWithConcept}>
-                  Skip concept
-                </button>
+                {!selectedConceptId ? (
+                  <>
+                    <button className="concept-proceed-btn" disabled>Select a concept above</button>
+                    <button className="concept-skip-btn" onClick={()=>{setConceptScreen(false);setStarted(true);}}>Skip →</button>
+                  </>
+                ) : editingConcept ? (
+                  <button className="concept-skip-btn" style={{flex:1}} onClick={()=>setEditingConcept(false)}>← Back to concept selection</button>
+                ) : (
+                  <>
+                    <button className="concept-proceed-btn" onClick={proceedWithConcept}>Build with this Concept →</button>
+                    <button className="concept-skip-btn" onClick={()=>setEditingConcept(true)}>✏ Edit</button>
+                  </>
+                )}
               </div>
             </div>
           )}
@@ -2551,12 +2692,12 @@ export default function App() {
         </div>
         <div className="progress-wrap">
           {visibleStages.map((s,i)=>(
-            <div key={s.id+activeScene} className={`prog-bar${i<stage?" done":i===stage?" active":""}`} onClick={()=>i<=stage&&setStage(i)}/>
+            <div key={s.id+activeScene} className={`prog-bar${i<stage?" done":i===stage?" active":""}`} onClick={()=>setStage(i)}/>
           ))}
         </div>
         <div className="prog-labels">
           {visibleStages.map((s,i)=>(
-            <div key={s.id+activeScene} className={`prog-lbl${i===stage?" active":i<stage?" done":""}`} onClick={()=>i<=stage&&setStage(i)}>{s.short}</div>
+            <div key={s.id+activeScene} className={`prog-lbl${i===stage?" active":i<stage?" done":""}`} onClick={()=>setStage(i)}>{s.short}</div>
           ))}
         </div>
         {isPreview&&(
@@ -2574,7 +2715,7 @@ export default function App() {
           {!isPreview&&(
             <div className="nav-row">
               {stage>0&&<button className="btn-back" onClick={()=>setStage(s=>s-1)}>← Back</button>}
-              <button className="btn-next" disabled={!valid[stage]} onClick={()=>setStage(s=>s+1)}>
+              <button className="btn-next" onClick={()=>setStage(s=>s+1)}>
                 {stage===visibleStages.length-2?(isNewScene?"Build Scene →":"Build Prompt →"):"Continue →"}
               </button>
             </div>
