@@ -2209,6 +2209,38 @@ const css = `
   }
   .dur-pill:hover { border-color: rgba(68,187,255,0.35); color: var(--text); }
   .dur-pill.selected { border-color: var(--blue); color: var(--blue); background: var(--blue-dim); }
+  .upgrade-notice {
+    background: rgba(68,187,255,0.07);
+    border: 1px solid rgba(68,187,255,0.22);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-top: 10px;
+    font-size: 13px;
+    color: rgba(155,210,248,0.80);
+    line-height: 1.5;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .upgrade-notice-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .upgrade-notice-text { flex: 1; }
+  .upgrade-notice-btn {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 7px 16px;
+    background: #44bbff;
+    color: #000;
+    border: none;
+    border-radius: 100px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  .upgrade-notice-btn:hover { background: #74d0ff; }
   .done-platform-badge {
     display: flex;
     align-items: center;
@@ -2822,7 +2854,8 @@ export default function App() {
   const [shared_link, setSharedLink]  = useState(false);
   // Auth state
   const [user, setUser]               = useState<User | null>(null);
-  const [plan, setPlan]               = useState<"free"|"pro">("free");
+  const [plan, setPlan]               = useState<"free"|"starter"|"pro"|"studio">("free");
+  const [upgradeMsg, setUpgradeMsg]   = useState<string|null>(null);
   const [saving, setSaving]           = useState(false);
   const [saved, setSaved]             = useState(false);
   // Hero account dropdown
@@ -2887,8 +2920,13 @@ export default function App() {
   }, [dropdownOpen]);
 
   const fetchPlan = async (userId: string) => {
-    const { data } = await supabase.from("profiles").select("plan").eq("id", userId).single();
-    if (data?.plan) setPlan(data.plan as "free"|"pro");
+    const { data } = await supabase.from("profiles").select("plan, trial_ends_at").eq("id", userId).single();
+    if (!data) return;
+    if (data.trial_ends_at && new Date(data.trial_ends_at) > new Date()) {
+      setPlan("pro");
+    } else {
+      setPlan((data.plan ?? "free") as "free"|"starter"|"pro"|"studio");
+    }
   };
 
   const setS  = (k: string) => (v: string) => setShared(p=>({...p,[k]:v}));
@@ -2939,8 +2977,8 @@ export default function App() {
   };
 
   const withWatermark = (text: string) => {
-    if (plan === "pro") return text;
-    return text + "\n\n━━━━━━━━━━━━━━━━━━━━━━━\nCreated with SceneBloc Free · Upgrade at sceneblocapp.com\n━━━━━━━━━━━━━━━━━━━━━━━";
+    if (plan === "starter" || plan === "pro" || plan === "studio") return text;
+    return text + "\n\n━━━━━━━━━━━━━━━━━━━━━━━\nCreated with SceneBloc Free · Upgrade at scenebloc.com\n━━━━━━━━━━━━━━━━━━━━━━━";
   };
 
   const savePrompt = async () => {
@@ -2982,12 +3020,19 @@ export default function App() {
     if (!conceptProduct.trim()) return;
     setLoadingConcepts(true);
     setConceptOptions([]);
+    setUpgradeMsg(null);
     try {
       const res = await fetch('/api/ai/concepts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ product: conceptProduct, audience: conceptAudience }),
       });
+      if (res.status === 429) {
+        const d = await res.json();
+        setUpgradeMsg(`You've used your ${d.limit} AI Concept${d.limit!==1?"s":""} today. Resets at midnight UTC. Upgrade to Pro for unlimited access.`);
+        return;
+      }
+      if (res.status === 401) { setUpgradeMsg("Sign in to use AI features."); return; }
       const data = await res.json();
       if (data.concepts) setConceptOptions(data.concepts);
     } catch { /* ignore */ } finally {
@@ -3015,6 +3060,7 @@ export default function App() {
   const generateVoiceover = async () => {
     setLoadingVoiceover(true);
     setVoiceoverScript('');
+    setUpgradeMsg(null);
     try {
       const sceneIdx = previewScene === -1 ? 0 : previewScene;
       const currentPrompt = previewScene === -1 ? allPrompts : getPrompt(shared, scenes[sceneIdx], sceneIdx+1, scenes.length);
@@ -3024,6 +3070,12 @@ export default function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt: currentPrompt, duration, product: shared.product }),
       });
+      if (res.status === 429) {
+        const d = await res.json();
+        setUpgradeMsg(`You've used your ${d.limit} Voiceover Script${d.limit!==1?"s":""} today. Resets at midnight UTC. Upgrade to Pro for unlimited access.`);
+        return;
+      }
+      if (res.status === 401) { setUpgradeMsg("Sign in to use AI features."); return; }
       const data = await res.json();
       if (data.script) { setVoiceoverScript(data.script); setVoiceoverVisible(true); }
     } catch { /* ignore */ } finally {
@@ -3034,12 +3086,19 @@ export default function App() {
   const generateVariations = async () => {
     setLoadingVariations(true);
     setAbVariations(null);
+    setUpgradeMsg(null);
     try {
       const res = await fetch('/api/ai/variations', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt: allPrompts, product: shared.product, hookType: shared.hookType, commercialStyle: shared.commercialStyle }),
       });
+      if (res.status === 429) {
+        const d = await res.json();
+        setUpgradeMsg(`You've used your ${d.limit} A/B Variation${d.limit!==1?"s":""} today. Resets at midnight UTC. Upgrade to Pro for unlimited access.`);
+        return;
+      }
+      if (res.status === 401) { setUpgradeMsg("Sign in to use AI features."); return; }
       const data = await res.json();
       if (data.hookVariations) { setAbVariations(data); setVariationsVisible(true); }
     } catch { /* ignore */ } finally {
@@ -3272,6 +3331,18 @@ export default function App() {
                 </span>
               ) : "Generate 3 Concepts →"}
             </button>
+            {upgradeMsg && (
+              <div className="upgrade-notice fade-in" style={{marginTop:12}}>
+                <div className="upgrade-notice-icon">⚡</div>
+                <div className="upgrade-notice-text">
+                  {upgradeMsg}
+                  <br/>
+                  <button className="upgrade-notice-btn" onClick={()=>router.push("/pricing")}>
+                    Upgrade to Pro →
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
           {conceptOptions.length > 0 && (
             <div className="concept-cards">
@@ -3794,7 +3865,9 @@ export default function App() {
           )}
           {plan==="free"&&(
             <div className="watermark-note">
-              ⚠ Free tier — copied prompts include a SceneBloc watermark.{!user&&<> <strong style={{cursor:"pointer",textDecoration:"underline"}} onClick={()=>router.push("/auth")}>Sign in</strong> to save history.</>}
+              ⚠ Free tier — copied prompts include a SceneBloc watermark.{" "}
+              <strong style={{cursor:"pointer",textDecoration:"underline"}} onClick={()=>router.push("/pricing")}>Upgrade to remove it →</strong>
+              {!user&&<> <strong style={{cursor:"pointer",textDecoration:"underline"}} onClick={()=>router.push("/auth")}> Sign in</strong> to save history.</>}
             </div>
           )}
           <button
@@ -3867,6 +3940,19 @@ export default function App() {
                     </div>
                   ))}
                 </div>
+              </div>
+            </div>
+          )}
+
+          {upgradeMsg && (
+            <div className="upgrade-notice fade-in">
+              <div className="upgrade-notice-icon">⚡</div>
+              <div className="upgrade-notice-text">
+                {upgradeMsg}
+                <br/>
+                <button className="upgrade-notice-btn" onClick={()=>router.push("/pricing")}>
+                  Upgrade to Pro →
+                </button>
               </div>
             </div>
           )}

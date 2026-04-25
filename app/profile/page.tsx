@@ -311,6 +311,8 @@ export default function ProfilePage() {
   const [user, setUser]           = useState<User | null>(null);
   const [promptCount, setCount]   = useState<number | null>(null);
   const [loading, setLoading]     = useState(true);
+  const [plan, setPlan]           = useState<string>("free");
+  const [trialEnd, setTrialEnd]   = useState<Date | null>(null);
 
   const fetchCount = useCallback(async () => {
     const res = await fetch("/api/prompts");
@@ -324,9 +326,25 @@ export default function ProfilePage() {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) { router.push("/auth"); return; }
       setUser(user);
+      fetchPlan(user.id);
       fetchCount().finally(() => setLoading(false));
     });
   }, [router, fetchCount]);
+
+  const fetchPlan = async (userId: string) => {
+    const { data } = await supabase
+      .from("profiles")
+      .select("plan, trial_ends_at")
+      .eq("id", userId)
+      .single();
+    if (!data) return;
+    if (data.trial_ends_at && new Date(data.trial_ends_at) > new Date()) {
+      setPlan("pro");
+      setTrialEnd(new Date(data.trial_ends_at));
+    } else {
+      setPlan(data.plan ?? "free");
+    }
+  };
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -371,7 +389,9 @@ export default function ProfilePage() {
                 <div className="prof-badge prof-badge-live">
                   <div className="prof-badge-live-dot" />Active
                 </div>
-                <div className="prof-badge prof-badge-free">Free Tier</div>
+                <div className="prof-badge prof-badge-free">
+                  {plan === "pro" && trialEnd ? "Pro Trial" : plan.charAt(0).toUpperCase() + plan.slice(1)}
+                </div>
               </div>
             </div>
           </div>
@@ -398,14 +418,46 @@ export default function ProfilePage() {
             </div>
           </div>
 
+          {/* Trial countdown */}
+          {trialEnd && (
+            <div style={{background:"rgba(68,187,255,0.07)",border:"1px solid rgba(68,187,255,0.18)",borderRadius:14,padding:"14px 20px",marginBottom:16,display:"flex",alignItems:"center",gap:14}}>
+              <span style={{fontSize:20}}>⏳</span>
+              <div>
+                <span style={{color:"#44bbff",fontWeight:700}}>
+                  {Math.max(0, Math.ceil((trialEnd.getTime() - Date.now()) / 86400000))} day{Math.ceil((trialEnd.getTime() - Date.now()) / 86400000) !== 1 ? "s" : ""} left
+                </span>
+                {" "}on your free Pro trial.{" "}
+                <span
+                  style={{color:"#44bbff",textDecoration:"underline",cursor:"pointer",fontWeight:600}}
+                  onClick={() => router.push("/pricing")}
+                >
+                  Upgrade to keep Pro access →
+                </span>
+              </div>
+            </div>
+          )}
+
           {/* Tier */}
           <div className="prof-tier">
             <div className="prof-tier-info">
               <div className="prof-tier-label">Current Plan</div>
-              <div className="prof-tier-name">FREE TIER</div>
-              <div className="prof-tier-desc">Unlimited prompt building · Prompts saved to account · SceneBloc watermark on copy</div>
+              <div className="prof-tier-name">
+                {plan === "pro" && trialEnd ? "PRO TRIAL" : plan.toUpperCase()}
+              </div>
+              <div className="prof-tier-desc">
+                {plan === "free"    && "Unlimited prompt building · Prompts saved to account · SceneBloc watermark on copy"}
+                {plan === "starter" && "No watermark · 15 concepts/day · 5 voiceovers/day · 5 A/B variations/day"}
+                {plan === "pro"     && "Unlimited AI features · Full pipeline · Priority support"}
+                {plan === "studio"  && "Unlimited AI features · Up to 5 seats · API access · Dedicated support"}
+              </div>
             </div>
-            <div className="prof-tier-badge">Free</div>
+            <button
+              className="prof-tier-badge"
+              style={{cursor:"pointer",background:"rgba(68,187,255,0.15)",color:"#44bbff",border:"1px solid rgba(68,187,255,0.30)"}}
+              onClick={() => router.push("/pricing")}
+            >
+              {plan === "free" ? "Upgrade →" : "Manage Plan →"}
+            </button>
           </div>
 
           {/* Action links */}

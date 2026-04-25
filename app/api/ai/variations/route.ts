@@ -1,9 +1,23 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
+import { checkUsage, incrementUsage } from "@/lib/plan";
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 export async function POST(req: NextRequest) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "Sign in to use AI features" }, { status: 401 });
+
+  const { allowed, used, limit } = await checkUsage(user.id, "variations");
+  if (!allowed) {
+    return NextResponse.json(
+      { error: "limit_exceeded", feature: "variations", used, limit },
+      { status: 429 }
+    );
+  }
+
   const { prompt, product, hookType, commercialStyle } = await req.json();
   if (!product?.trim()) return NextResponse.json({ error: "Product required" }, { status: 400 });
 
@@ -48,8 +62,9 @@ Rules:
   });
 
   try {
-    const text = msg.content[0].type === "text" ? msg.content[0].text : "";
+    const text   = msg.content[0].type === "text" ? msg.content[0].text : "";
     const parsed = JSON.parse(text);
+    await incrementUsage(user.id, "variations");
     return NextResponse.json(parsed);
   } catch {
     return NextResponse.json({ error: "Failed to parse AI response" }, { status: 500 });
