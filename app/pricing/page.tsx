@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase/client";
 import type { User } from "@supabase/supabase-js";
@@ -436,7 +436,7 @@ const css = `
   .px-trial-strong { color: #44bbff; font-weight: 700; }
 `;
 
-export default function PricingPage() {
+function PricingContent() {
   const router       = useRouter();
   const searchParams = useSearchParams();
   const [annual,   setAnnual]   = useState(false);
@@ -692,5 +692,13 @@ export default function PricingPage() {
         </div>
       </div>
     </>
+  );
+}
+
+export default function PricingPage() {
+  return (
+    <Suspense>
+      <PricingContent />
+    </Suspense>
   );
 }
