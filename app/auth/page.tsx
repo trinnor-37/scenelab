@@ -270,6 +270,23 @@ export default function AuthPage() {
             </button>
           </form>
 
+
+        {tab === "signin" && (
+          <button
+            className="auth-back"
+            style={{marginTop:8}}
+            onClick={async () => {
+              if (!email) { setError("Enter your email above first."); return; }
+              const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                redirectTo: `${window.location.origin}/auth/reset`,
+              });
+              if (error) setError(error.message);
+              else setSuccess("Password reset email sent! Check your inbox.");
+            }}
+          >
+            Forgot password?
+          </button>
+        )}
           {success && <div className="auth-success">{success}</div>}
 
           <div className="auth-divider"/>
