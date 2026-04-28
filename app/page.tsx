@@ -3533,7 +3533,7 @@ const imgContinueToVideo = () => { setInImgBuilder(false); setConceptScreen(true
           </div>
         </div>
       </div>
-   <button onClick={()=>router.push("/pricing")} style={{display:"block",margin:"40px auto",padding:"18px 52px",background:"transparent",border:"1px solid rgba(68,187,255,0.35)",borderRadius:20,color:"#74d0ff",fontFamily:"DM Sans, sans-serif",fontSize:15,fontWeight:700,cursor:"pointer",letterSpacing:"0.06em",textTransform:"uppercase"}}>View Pricing &amp; Plans →</button>
+   <button onClick={()=>router.push("/pricing")} style={{display:"block",margin:"40px auto",padding:"18px 52px",background:"rgba(68,187,255,0.15)",border:"2px solid rgba(68,187,255,0.60)",borderRadius:20,color:"#ffffff",fontFamily:"DM Sans, sans-serif",fontSize:16,fontWeight:800,cursor:"pointer",letterSpacing:"0.06em",textTransform:"uppercase",boxShadow:"0 0 30px rgba(68,187,255,0.20)"}}>View Pricing &amp; Plans →</button>
    
     </>
   );
