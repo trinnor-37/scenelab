@@ -3536,6 +3536,67 @@ const imgContinueToVideo = () => { setInImgBuilder(false); setConceptScreen(true
     </>
   );
 
+
+  {/* ── PRICING TEASER ── */}
+<div style={{width:"100%",maxWidth:900,margin:"80px auto 0",padding:"0 7vw"}}>
+  <div style={{textAlign:"center",marginBottom:48}}>
+    <div style={{fontSize:11,fontWeight:700,letterSpacing:6,textTransform:"uppercase",color:"var(--blue)",marginBottom:16,opacity:0.78}}>Simple Pricing</div>
+    <div style={{fontFamily:"'Bebas Neue', sans-serif",fontSize:"clamp(36px, 8vw, 64px)",letterSpacing:3,color:"var(--cream)",lineHeight:0.92,marginBottom:16}}>START FREE.<br/><span style={{color:"var(--blue)"}}>SCALE WHEN READY.</span></div>
+    <div style={{fontSize:15,color:"rgba(155,210,248,0.60)",fontStyle:"italic",fontWeight:300}}>Sign up free — your first 7 days of Pro are on us. No card required.</div>
+  </div>
+  <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:12,marginBottom:32}}>
+    <div style={{background:"rgba(155,210,248,0.08)",border:"1px solid rgba(68,187,255,0.13)",borderRadius:20,padding:"28px 20px",position:"relative",backdropFilter:"blur(14px)"}}>
+      <div style={{position:"absolute",top:-12,left:"50%",transform:"translateX(-50%)",background:"#3ecf6e",color:"#000",fontSize:9,fontWeight:800,letterSpacing:2,textTransform:"uppercase",padding:"4px 14px",borderRadius:100,whiteSpace:"nowrap"}}>7 Days Pro Free</div>
+      <div style={{fontFamily:"'Bebas Neue', sans-serif",fontSize:22,letterSpacing:2,color:"var(--cream)",marginBottom:4}}>Free</div>
+      <div style={{fontSize:32,fontWeight:800,color:"var(--blue)",lineHeight:1}}>£0</div>
+      <div style={{fontSize:11,color:"rgba(155,210,248,0.50)",marginBottom:20}}>7-day Pro trial included</div>
+      {["7-day Pro trial on signup","3 concepts/day after trial","5 prompts/day after trial","Watermark on copy"].map((f)=>(
+        <div key={f} style={{fontSize:12,color:"rgba(155,210,248,0.75)",marginBottom:8,display:"flex",alignItems:"center",gap:8}}>
+          <span style={{color:"#3ecf6e",fontSize:10}}>✓</span>{f}
+        </div>
+      ))}
+    </div>
+    <div style={{background:"rgba(68,187,255,0.08)",border:"1px solid rgba(68,187,255,0.13)",borderRadius:20,padding:"28px 20px",backdropFilter:"blur(14px)"}}>
+      <div style={{fontFamily:"'Bebas Neue', sans-serif",fontSize:22,letterSpacing:2,color:"var(--cream)",marginBottom:4}}>Starter</div>
+      <div style={{fontSize:32,fontWeight:800,color:"var(--blue)",lineHeight:1}}>£19</div>
+      <div style={{fontSize:11,color:"rgba(155,210,248,0.50)",marginBottom:20}}>per month</div>
+      {["20 concepts/day","50 prompts/day","No watermark","Save prompt history"].map((f)=>(
+        <div key={f} style={{fontSize:12,color:"rgba(155,210,248,0.75)",marginBottom:8,display:"flex",alignItems:"center",gap:8}}>
+          <span style={{color:"var(--blue)",fontSize:10}}>✓</span>{f}
+        </div>
+      ))}
+    </div>
+    <div style={{background:"rgba(68,187,255,0.12)",border:"1px solid rgba(68,187,255,0.45)",borderRadius:20,padding:"28px 20px",position:"relative",backdropFilter:"blur(14px)"}}>
+      <div style={{position:"absolute",top:-12,left:"50%",transform:"translateX(-50%)",background:"var(--blue)",color:"#000",fontSize:9,fontWeight:800,letterSpacing:2,textTransform:"uppercase",padding:"4px 14px",borderRadius:100,whiteSpace:"nowrap"}}>Most Popular</div>
+      <div style={{fontFamily:"'Bebas Neue', sans-serif",fontSize:22,letterSpacing:2,color:"var(--cream)",marginBottom:4}}>Pro</div>
+      <div style={{fontSize:32,fontWeight:800,color:"var(--blue)",lineHeight:1}}>£35</div>
+      <div style={{fontSize:11,color:"rgba(155,210,248,0.50)",marginBottom:20}}>per month</div>
+      {["Unlimited concepts","Unlimited prompts","All AI features","No watermark"].map((f)=>(
+        <div key={f} style={{fontSize:12,color:"rgba(155,210,248,0.75)",marginBottom:8,display:"flex",alignItems:"center",gap:8}}>
+          <span style={{color:"var(--blue)",fontSize:10}}>✓</span>{f}
+        </div>
+      ))}
+    </div>
+    <div style={{background:"rgba(120,80,255,0.10)",border:"1px solid rgba(68,187,255,0.13)",borderRadius:20,padding:"28px 20px",backdropFilter:"blur(14px)"}}>
+      <div style={{fontFamily:"'Bebas Neue', sans-serif",fontSize:22,letterSpacing:2,color:"var(--cream)",marginBottom:4}}>Studio</div>
+      <div style={{fontSize:32,fontWeight:800,color:"var(--blue)",lineHeight:1}}>£65</div>
+      <div style={{fontSize:11,color:"rgba(155,210,248,0.50)",marginBottom:20}}>founding rate</div>
+      {["Everything in Pro","Team features","Priority support","Founding member badge"].map((f)=>(
+        <div key={f} style={{fontSize:12,color:"rgba(155,210,248,0.75)",marginBottom:8,display:"flex",alignItems:"center",gap:8}}>
+          <span style={{color:"var(--blue)",fontSize:10}}>✓</span>{f}
+        </div>
+      ))}
+    </div>
+  </div>
+  <div style={{textAlign:"center"}}>
+    <button
+      onClick={()=>router.push("/pricing")}
+      style={{padding:"18px 52px",background:"transparent",border:"1px solid rgba(68,187,255,0.35)",borderRadius:20,color:"var(--blue-bright)",fontFamily:"'DM Sans', sans-serif",fontSize:15,fontWeight:700,cursor:"pointer",letterSpacing:"0.06em",textTransform:"uppercase"}}
+    >
+      Compare All Plans →
+    </button>
+  </div>
+</div>
   // ── WIZARD ──────────────────────────────────────────────────────────
   const renderContent = () => {
     const s = visibleStages[stage];
