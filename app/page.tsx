@@ -3289,6 +3289,7 @@ const imgContinueToVideo = () => { setInImgBuilder(false); setConceptScreen(true
             )}
           </div>
         </div>
+      <div style={{textAlign:"center",padding:"60px 0",background:"rgba(2,8,16,0.5)"}}><p style={{color:"rgba(155,210,248,0.6)",fontSize:14,marginBottom:16,fontFamily:"DM Sans, sans-serif"}}>Start free — 7-day Pro trial included</p><button onClick={()=>router.push("/pricing")} style={{padding:"18px 52px",background:"rgba(68,187,255,0.15)",border:"2px solid rgba(68,187,255,0.60)",borderRadius:20,color:"#ffffff",fontFamily:"DM Sans, sans-serif",fontSize:16,fontWeight:800,cursor:"pointer",letterSpacing:"0.06em",textTransform:"uppercase"}}>View Pricing and Plans</button></div>
       </>
     );
   }
@@ -3533,14 +3534,10 @@ const imgContinueToVideo = () => { setInImgBuilder(false); setConceptScreen(true
           </div>
         </div>
       </div>
+
    
     </>
   );
-<div style={{textAlign:"center",padding:"60px 0",background:"rgba(2,8,16,0.5)"}}>
-  <p style={{color:"rgba(155,210,248,0.6)",fontSize:14,marginBottom:16,fontFamily:"DM Sans, sans-serif"}}>Start free — 7-day Pro trial included</p>
-  <button onClick={()=>router.push("/pricing")} style={{padding:"18px 52px",background:"rgba(68,187,255,0.15)",border:"2px solid rgba(68,187,255,0.60)",borderRadius:20,color:"#ffffff",fontFamily:"DM Sans, sans-serif",fontSize:16,fontWeight:800,cursor:"pointer",letterSpacing:"0.06em",textTransform:"uppercase"}}>View Pricing & Plans →</button>
-</div>
-
   <div style={{textAlign:"center",marginBottom:48}}>
     <div style={{fontSize:11,fontWeight:700,letterSpacing:6,textTransform:"uppercase",color:"var(--blue)",marginBottom:16,opacity:0.78}}>Simple Pricing</div>
     <div style={{fontFamily:"'Bebas Neue', sans-serif",fontSize:"clamp(36px, 8vw, 64px)",letterSpacing:3,color:"var(--cream)",lineHeight:0.92,marginBottom:16}}>START FREE.<br/><span style={{color:"var(--blue)"}}>SCALE WHEN READY.</span></div>
