@@ -3289,7 +3289,6 @@ const imgContinueToVideo = () => { setInImgBuilder(false); setConceptScreen(true
             )}
           </div>
         </div>
-      <div style={{textAlign:"center",padding:"60px 0",background:"rgba(2,8,16,0.5)"}}><p style={{color:"rgba(155,210,248,0.6)",fontSize:14,marginBottom:16,fontFamily:"DM Sans, sans-serif"}}>Start free — 7-day Pro trial included</p><button onClick={()=>router.push("/pricing")} style={{padding:"18px 52px",background:"rgba(68,187,255,0.15)",border:"2px solid rgba(68,187,255,0.60)",borderRadius:20,color:"#ffffff",fontFamily:"DM Sans, sans-serif",fontSize:16,fontWeight:800,cursor:"pointer",letterSpacing:"0.06em",textTransform:"uppercase"}}>View Pricing and Plans</button></div>
       </>
     );
   }
@@ -3534,6 +3533,504 @@ const imgContinueToVideo = () => { setInImgBuilder(false); setConceptScreen(true
           </div>
         </div>
       </div>
+   
+    </>
+  );
+  <div style={{textAlign:"center",padding:"60px 0",background:"rgba(2,8,16,0.5)"}}>
+  <p style={{color:"rgba(155,210,248,0.6)",fontSize:14,marginBottom:16,fontFamily:"DM Sans, sans-serif"}}>Start free — 7-day Pro trial included</p>
+  <button onClick={()=>router.push("/pricing")} style={{padding:"18px 52px",background:"rgba(68,187,255,0.15)",border:"2px solid rgba(68,187,255,0.60)",borderRadius:20,color:"#ffffff",fontFamily:"DM Sans, sans-serif",fontSize:16,fontWeight:800,cursor:"pointer",letterSpacing:"0.06em",textTransform:"uppercase"}}>View Pricing & Plans →</button>
+</div>
+
+
+   <button onClick={()=>router.push("/pricing")} style={{display:"block",margin:"40px auto",padding:"18px 52px",background:"rgba(68,187,255,0.15)",border:"2px solid rgba(68,187,255,0.60)",borderRadius:20,color:"#ffffff",fontFamily:"DM Sans, sans-serif",fontSize:16,fontWeight:800,cursor:"pointer",letterSpacing:"0.06em",textTransform:"uppercase",boxShadow:"0 0 30px rgba(68,187,255,0.20)"}}>View Pricing &amp; Plans →</button>
+  {/* ── PRICING TEASER ── */}
+<div style={{width:"100%",maxWidth:900,margin:"80px auto 0",padding:"0 7vw"}}>
+  <div style={{textAlign:"center",marginBottom:48}}>
+    <div style={{fontSize:11,fontWeight:700,letterSpacing:6,textTransform:"uppercase",color:"var(--blue)",marginBottom:16,opacity:0.78}}>Simple Pricing</div>
+    <div style={{fontFamily:"'Bebas Neue', sans-serif",fontSize:"clamp(36px, 8vw, 64px)",letterSpacing:3,color:"var(--cream)",lineHeight:0.92,marginBottom:16}}>START FREE.<br/><span style={{color:"var(--blue)"}}>SCALE WHEN READY.</span></div>
+    <div style={{fontSize:15,color:"rgba(155,210,248,0.60)",fontStyle:"italic",fontWeight:300}}>Sign up free — your first 7 days of Pro are on us. No card required.</div>
+  </div>
+  <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:12,marginBottom:32}}>
+    <div style={{background:"rgba(155,210,248,0.08)",border:"1px solid rgba(68,187,255,0.13)",borderRadius:20,padding:"28px 20px",position:"relative",backdropFilter:"blur(14px)"}}>
+      <div style={{position:"absolute",top:-12,left:"50%",transform:"translateX(-50%)",background:"#3ecf6e",color:"#000",fontSize:9,fontWeight:800,letterSpacing:2,textTransform:"uppercase",padding:"4px 14px",borderRadius:100,whiteSpace:"nowrap"}}>7 Days Pro Free</div>
+      <div style={{fontFamily:"'Bebas Neue', sans-serif",fontSize:22,letterSpacing:2,color:"var(--cream)",marginBottom:4}}>Free</div>
+      <div style={{fontSize:32,fontWeight:800,color:"var(--blue)",lineHeight:1}}>£0</div>
+      <div style={{fontSize:11,color:"rgba(155,210,248,0.50)",marginBottom:20}}>7-day Pro trial included</div>
+      {["7-day Pro trial on signup","3 concepts/day after trial","5 prompts/day after trial","Watermark on copy"].map((f)=>(
+        <div key={f} style={{fontSize:12,color:"rgba(155,210,248,0.75)",marginBottom:8,display:"flex",alignItems:"center",gap:8}}>
+          <span style={{color:"#3ecf6e",fontSize:10}}>✓</span>{f}
+        </div>
+      ))}
+    </div>
+    <div style={{background:"rgba(68,187,255,0.08)",border:"1px solid rgba(68,187,255,0.13)",borderRadius:20,padding:"28px 20px",backdropFilter:"blur(14px)"}}>
+      <div style={{fontFamily:"'Bebas Neue', sans-serif",fontSize:22,letterSpacing:2,color:"var(--cream)",marginBottom:4}}>Starter</div>
+      <div style={{fontSize:32,fontWeight:800,color:"var(--blue)",lineHeight:1}}>£19</div>
+      <div style={{fontSize:11,color:"rgba(155,210,248,0.50)",marginBottom:20}}>per month</div>
+      {["20 concepts/day","50 prompts/day","No watermark","Save prompt history"].map((f)=>(
+        <div key={f} style={{fontSize:12,color:"rgba(155,210,248,0.75)",marginBottom:8,display:"flex",alignItems:"center",gap:8}}>
+          <span style={{color:"var(--blue)",fontSize:10}}>✓</span>{f}
+        </div>
+      ))}
+    </div>
+    <div style={{background:"rgba(68,187,255,0.12)",border:"1px solid rgba(68,187,255,0.45)",borderRadius:20,padding:"28px 20px",position:"relative",backdropFilter:"blur(14px)"}}>
+      <div style={{position:"absolute",top:-12,left:"50%",transform:"translateX(-50%)",background:"var(--blue)",color:"#000",fontSize:9,fontWeight:800,letterSpacing:2,textTransform:"uppercase",padding:"4px 14px",borderRadius:100,whiteSpace:"nowrap"}}>Most Popular</div>
+      <div style={{fontFamily:"'Bebas Neue', sans-serif",fontSize:22,letterSpacing:2,color:"var(--cream)",marginBottom:4}}>Pro</div>
+      <div style={{fontSize:32,fontWeight:800,color:"var(--blue)",lineHeight:1}}>£35</div>
+      <div style={{fontSize:11,color:"rgba(155,210,248,0.50)",marginBottom:20}}>per month</div>
+      {["Unlimited concepts","Unlimited prompts","All AI features","No watermark"].map((f)=>(
+        <div key={f} style={{fontSize:12,color:"rgba(155,210,248,0.75)",marginBottom:8,display:"flex",alignItems:"center",gap:8}}>
+          <span style={{color:"var(--blue)",fontSize:10}}>✓</span>{f}
+        </div>
+      ))}
+    </div>
+    <div style={{background:"rgba(120,80,255,0.10)",border:"1px solid rgba(68,187,255,0.13)",borderRadius:20,padding:"28px 20px",backdropFilter:"blur(14px)"}}>
+      <div style={{fontFamily:"'Bebas Neue', sans-serif",fontSize:22,letterSpacing:2,color:"var(--cream)",marginBottom:4}}>Studio</div>
+      <div style={{fontSize:32,fontWeight:800,color:"var(--blue)",lineHeight:1}}>£65</div>
+      <div style={{fontSize:11,color:"rgba(155,210,248,0.50)",marginBottom:20}}>founding rate</div>
+      {["Everything in Pro","Team features","Priority support","Founding member badge"].map((f)=>(
+        <div key={f} style={{fontSize:12,color:"rgba(155,210,248,0.75)",marginBottom:8,display:"flex",alignItems:"center",gap:8}}>
+          <span style={{color:"var(--blue)",fontSize:10}}>✓</span>{f}
+        </div>
+      ))}
+    </div>
+  </div>
+  <div style={{textAlign:"center"}}>
+    <button
+      onClick={()=>router.push("/pricing")}
+      style={{padding:"18px 52px",background:"transparent",border:"1px solid rgba(68,187,255,0.35)",borderRadius:20,color:"var(--blue-bright)",fontFamily:"'DM Sans', sans-serif",fontSize:15,fontWeight:700,cursor:"pointer",letterSpacing:"0.06em",textTransform:"uppercase"}}
+    >
+      Compare All Plans →
+    </button>
+  </div>
+</div>
+  // ── WIZARD ──────────────────────────────────────────────────────────
+  const renderContent = () => {
+    const s = visibleStages[stage];
+    if (!s) return null;
+
+    switch(s.id) {
+      case "product": return (
+        <div className="fade-in">
+          <div className="stage-num">Step 01 / 09</div>
+          <div className="stage-title">PRODUCT BRIEF</div>
+          <div className="stage-desc">Tell us exactly what you&apos;re advertising. This shapes every scene.</div>
+          {shared.conceptTitle && (
+            <div className="locked-banner" style={{marginBottom:18}}>
+              <div className="locked-banner-icon">✦</div>
+              <div className="locked-banner-text">Concept: <strong>{shared.conceptTitle}</strong> <span>— selected from Concept Generator</span></div>
+            </div>
+          )}
+          <div className="field">
+            <div className="field-lbl">Product Name &amp; Description</div>
+            <input className="txt-input" placeholder="e.g. A luxurious Swiss automatic watch" value={shared.product} onChange={e=>setS("product")(e.target.value)}/>
+            <div className="hint">Try: "A premium skincare serum" · "A limited-edition sneaker" · "A high-end perfume bottle"</div>
+          </div>
+          <Sel label="Commercial Style / Tone" value={shared.commercialStyle} onChange={setS("commercialStyle")} optKey="commercialStyle" placeholder="How should this feel?"/>
+        </div>
+      );
+
+      case "hook": return (
+        <div className="fade-in">
+          <div className="stage-num">Step 02 / 09</div>
+          <div className="stage-title">HOOK TYPE</div>
+          <div className="stage-desc">Choose your psychological trigger — the opening seconds that stop the scroll and demand attention.</div>
+          <div className="hook-grid">
+            {HOOK_TYPES.map(h=>(
+              <div key={h.id} className={`hook-card${shared.hookType===h.name?" selected":""}`} onClick={()=>setS("hookType")(h.name)}>
+                <div className="hook-card-icon">{h.icon}</div>
+                <div className="hook-card-name">{h.name}</div>
+                <div className="hook-card-desc">{h.desc}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+
+      case "reference": return (
+        <div className="fade-in">
+          <div className="stage-num">{isNewScene?`Scene ${activeScene+1} — Step 1`:"Step 03 / 09"}</div>
+          <div className="stage-title">FRAME SETUP</div>
+          <div className="stage-desc">{isNewScene?`Choose how Scene ${activeScene+1} connects visually to your previous footage.`:"Choose how you want to guide this scene visually."}</div>
+          <div className="field-lbl" style={{marginBottom:13}}>Input Mode</div>
+          <div className="ref-mode-grid">
+            <div className={`ref-mode-card${sc.refMode==="none"?" active":""}`} onClick={()=>setScene(activeScene,"refMode","none")}>
+              <div className="ref-mode-icon">✦</div>
+              <div className="ref-mode-label">No Reference</div>
+              <div className="ref-mode-sub">Pure prompt only</div>
+            </div>
+            <div className={`ref-mode-card${sc.refMode==="reference"?" active":""}`} onClick={()=>setScene(activeScene,"refMode","reference")}>
+              <div className="ref-mode-icon">🖼️</div>
+              <div className="ref-mode-label">Mood Board</div>
+              <div className="ref-mode-sub">Up to 8 references</div>
+            </div>
+            <div className={`ref-mode-card${sc.refMode==="startend"?" active":""}`} onClick={()=>setScene(activeScene,"refMode","startend")}>
+              <div className="ref-mode-icon">🎬</div>
+              <div className="ref-mode-label">Start &amp; End</div>
+              <div className="ref-mode-sub">Define exact boundaries</div>
+            </div>
+          </div>
+          {sc.refMode==="reference"&&(
+            <div className="fade-in"><MoodboardUpload images={sc.refImgs} onChange={v=>setScene(activeScene,"refImgs",v)}/></div>
+          )}
+          {sc.refMode==="startend"&&(
+            <div className="fade-in">
+              <div className="field-lbl">Start &amp; End Frames</div>
+              <div className="upload-row two">
+                <UploadZone label="Start Frame" sub="Where scene begins" value={sc.startImg} onChange={v=>setScene(activeScene,"startImg",v)}/>
+                <UploadZone label="End Frame" sub="Where scene ends" value={sc.endImg} onChange={v=>setScene(activeScene,"endImg",v)}/>
+              </div>
+              {isNewScene&&<div className="hint" style={{marginTop:11}}>💡 Use the last frame of your previous scene as the Start Frame for a seamless continuation.</div>}
+            </div>
+          )}
+        </div>
+      );
+
+      case "visual": return (
+        <div className="fade-in">
+          <div className="stage-num">Step 04 / 09</div>
+          <div className="stage-title">VISUAL DNA</div>
+          <div className="stage-desc">These lock across all scenes to keep your entire video consistent.</div>
+          <Sel label="Aesthetic" value={shared.aesthetic} onChange={setS("aesthetic")} optKey="aesthetic"/>
+          <Sel label="Optics / Lens" value={shared.optics} onChange={setS("optics")} optKey="optics"/>
+          <Sel label="Atmosphere" value={shared.atmosphere} onChange={setS("atmosphere")} optKey="atmosphere"/>
+          <div className="section-label">Color</div>
+          <Sel label="Color Grading" value={shared.colorGrading} onChange={setS("colorGrading")} optKey="colorGrading" placeholder="Choose a grade (optional)"/>
+        </div>
+      );
+
+      case "cine": {
+        const applyMood = (moodName: string) => {
+          const gear = CINE_MOOD_MAP[moodName];
+          setShared(p=>({ ...p, cineMood:moodName, cineCamera:gear.camera, cineLens:gear.lens, cineFocalLength:gear.focalLength, cineAperture:gear.aperture }));
+        };
+        const applyLook = (look: typeof SIGNATURE_LOOKS[number]) => {
+          setShared(p=>({ ...p, cineMood:look.mood, cineCamera:look.camera, cineLens:look.lens, cineFocalLength:look.focalLength, cineAperture:look.aperture }));
+        };
+        const isLookActive = (look: typeof SIGNATURE_LOOKS[number]) =>
+          shared.cineCamera===look.camera && shared.cineLens===look.lens && shared.cineFocalLength===look.focalLength && shared.cineAperture===look.aperture;
+        return (
+          <div className="fade-in">
+            <div className="stage-num">Step 05 / 09</div>
+            <div className="stage-title">CINEMATOGRAPHY</div>
+            <div className="stage-desc">Set the physical camera language — locked across all scenes.</div>
+
+            {/* Signature Looks — shown first so users can one-tap */}
+            <div className="cine-presets-section">
+              <div className="cine-presets-lbl">Signature Looks</div>
+              <div className="cine-presets-row">
+                {SIGNATURE_LOOKS.map(look=>(
+                  <button key={look.name} className={`cine-preset-btn${isLookActive(look)?" active":""}`} onClick={()=>applyLook(look)}>
+                    {look.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Mood selector */}
+            <div className="section-label" style={{marginTop:20}}>Emotional Core</div>
+            <div className="cine-mood-grid">
+              {CINE_MOODS.map(m=>(
+                <div key={m.id} className={`cine-mood-card${shared.cineMood===m.name?" selected":""}`} onClick={()=>applyMood(m.name)}>
+                  <div className="cine-mood-icon">{m.icon}</div>
+                  <div className="cine-mood-name">{m.name}</div>
+                  <div className="cine-mood-subdesc">{m.desc}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* Auto gear stack — always visible after first selection, shows defaults if nothing yet */}
+            <div className="cine-gear-panel">
+              <div className="cine-gear-hd">
+                {shared.cineCamera ? "Gear Stack — tap any field to override" : "Recommended Gear Stack — select a mood or look above"}
+              </div>
+              <div className="cine-gear-grid">
+                <GearDrop label="Camera"       value={shared.cineCamera}      options={CINE_CAMERAS}       onChange={v=>setS("cineCamera")(v)}/>
+                <GearDrop label="Lens"         value={shared.cineLens}        options={CINE_LENSES}        onChange={v=>setS("cineLens")(v)}/>
+                <GearDrop label="Focal Length" value={shared.cineFocalLength} options={CINE_FOCAL_LENGTHS} onChange={v=>setS("cineFocalLength")(v)}/>
+                <GearDrop label="Aperture"     value={shared.cineAperture}    options={CINE_APERTURES}     onChange={v=>setS("cineAperture")(v)}/>
+              </div>
+              {shared.cineCamera && (
+                <div style={{marginTop:14,padding:"10px 12px",background:"var(--surface2)",borderRadius:"var(--radius-sm)",fontSize:12,color:"var(--muted2)",lineHeight:1.55}}>
+                  <span style={{color:"var(--muted)",fontSize:10,fontWeight:700,letterSpacing:"2px",textTransform:"uppercase",display:"block",marginBottom:4}}>Visual Character</span>
+                  {buildCineDescriptor(shared.cineCamera,shared.cineLens,shared.cineFocalLength,shared.cineAperture)}
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      }
+
+      case "platform": return (
+        <div className="fade-in">
+          <div className="stage-num">Step 06 / 09</div>
+          <div className="stage-title">PLATFORM & STYLE</div>
+          <div className="stage-desc">Choose your AI video platform and creative direction — locked across all scenes.</div>
+
+          {/* Platform selector */}
+          <div className="section-label">AI Video Platform</div>
+          <div className="plat-grid">
+            {PLATFORMS.map(p=>(
+              <div key={p.id} className={`plat-card${shared.platform===p.name?" selected":""}`} onClick={()=>setShared(prev=>({...prev,platform:p.name}))}>
+                <div className="plat-card-name">{p.name}</div>
+                {p.sub && <div className="plat-card-sub">{p.sub}</div>}
+                {p.recommended && <div className="plat-badge">Recommended</div>}
+              </div>
+            ))}
+          </div>
+
+          {/* Seedance styles */}
+          {shared.platform==="Seedance 2.0" && (
+            <>
+              {(["Creative","Commercial","Industry"] as const).map(cat=>(
+                <div key={cat}>
+                  <div className="style-section-lbl">{cat} Styles</div>
+                  <div className="style-grid">
+                    {SEEDANCE_STYLES.filter(s=>s.category===cat).map(s=>(
+                      <div key={s.name} className={`style-card${shared.platformStyle===s.name?" selected":""}`} onClick={()=>setShared(prev=>({...prev,platformStyle:s.name}))}>
+                        <div className="style-card-name">{s.name}</div>
+                        <div className="style-card-desc">{s.desc}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </>
+          )}
+
+          {/* 2-second hook */}
+          <div className="section-label" style={{marginTop:24}}>2-Second Hook</div>
+          <div className="hook2-grid">
+            {PLATFORM_HOOKS.map(h=>(
+              <div key={h} className={`hook2-card${shared.platformHook===h?" selected":""}`} onClick={()=>setShared(prev=>({...prev,platformHook:h}))}>
+                {h}
+              </div>
+            ))}
+          </div>
+
+          {/* Duration */}
+          <div className="section-label" style={{marginTop:24}}>Shot Duration</div>
+          <div className="dur-row">
+            {PLATFORM_DURATIONS.map(d=>(
+              <button key={d} className={`dur-pill${shared.platformDuration===d?" selected":""}`} onClick={()=>setShared(prev=>({...prev,platformDuration:d}))}>
+                {d}
+              </button>
+            ))}
+          </div>
+        </div>
+      );
+
+      case "light": return (
+        <div className="fade-in">
+          <div className="stage-num">{isNewScene?`Scene ${activeScene+1} — Step 2`:"Step 07 / 09"}</div>
+          <div className="stage-title">LIGHT & LANDSCAPE</div>
+          <div className="stage-desc">{isNewScene?`Set the environment for Scene ${activeScene+1} — can differ from Scene 1.`:`Set the two environments your ${shared.product||"product"} moves through.`}</div>
+          {isNewScene&&<div className="locked-banner"><div className="locked-banner-icon">🔒</div><div className="locked-banner-text">Visual DNA locked from Scene 1 <span>— Aesthetic, Optics &amp; Atmosphere carry over automatically.</span></div></div>}
+          <Sel label="Starting Environment" value={sc.envA} onChange={v=>setScene(activeScene,"envA",v)} optKey="envA"/>
+          <Sel label="Ending Environment"   value={sc.envB} onChange={v=>setScene(activeScene,"envB",v)} optKey="envB"/>
+          <Sel label="Lighting Transition"  value={sc.lightTrans} onChange={v=>setScene(activeScene,"lightTrans",v)} optKey="lightTrans"/>
+          <div className="section-label">Conditions</div>
+          <Sel label="Time of Day" value={sc.timeOfDay} onChange={v=>setScene(activeScene,"timeOfDay",v)} optKey="timeOfDay" placeholder="Choose time (optional)"/>
+          <Sel label="Weather &amp; Mood" value={sc.weather} onChange={v=>setScene(activeScene,"weather",v)} optKey="weather" placeholder="Choose weather (optional)"/>
+        </div>
+      );
+
+      case "choreo": return (
+        <div className="fade-in">
+          <div className="stage-num">{isNewScene?`Scene ${activeScene+1} — Step 3`:"Step 08 / 09"}</div>
+          <div className="stage-title">CHOREOGRAPHY</div>
+          <div className="stage-desc">{isNewScene?`New motion for Scene ${activeScene+1}. Visual DNA stays locked from Scene 1.`:`Build the 4-stage motion for your ${shared.product||"product"}.`}</div>
+          <div className="section-label">Camera</div>
+          <Sel label="Camera Angle"    value={sc.cameraAngle}    onChange={v=>setScene(activeScene,"cameraAngle",v)}    optKey="cameraAngle"    placeholder="Choose angle (optional)"/>
+          <Sel label="Camera Movement" value={sc.cameraMovement} onChange={v=>setScene(activeScene,"cameraMovement",v)} optKey="cameraMovement" placeholder="Choose movement (optional)"/>
+          <Sel label="Shot Duration"   value={sc.shotDuration}   onChange={v=>setScene(activeScene,"shotDuration",v)}   optKey="shotDuration"   placeholder="How long is this scene?"/>
+          <div className="section-label">Choreography</div>
+          <Sel label="Stage 1 — Opening Detail Focus" value={sc.detail1}   onChange={v=>setScene(activeScene,"detail1",v)}   optKey="detail1"/>
+          <Sel label="Stage 2 — Subject Movement"     value={sc.motion}    onChange={v=>setScene(activeScene,"motion",v)}    optKey="motion"/>
+          <Sel label="Stage 3 — Macro Detail Focus"   value={sc.detail2}   onChange={v=>setScene(activeScene,"detail2",v)}   optKey="detail2"/>
+          <Sel label="Stage 3 — Floating Particles"   value={sc.particles} onChange={v=>setScene(activeScene,"particles",v)} optKey="particles"/>
+          <Sel label="Stage 4 — Final Light Effect"   value={sc.lightFx}   onChange={v=>setScene(activeScene,"lightFx",v)}  optKey="lightFx"/>
+        </div>
+      );
+
+      case "brand": return (
+        <div className="fade-in">
+          <div className="stage-num">Step 09 / 09</div>
+          <div className="stage-title">BRANDING</div>
+          <div className="stage-desc">Final frame — locked across all scenes.</div>
+          <Sel label="Background Color" value={shared.bg} onChange={setS("bg")} optKey="bg"/>
+          <div className="field">
+            <div className="field-lbl">Tagline / Slogan</div>
+            <input className="txt-input" placeholder="e.g. Engineered for the bold." value={shared.tagline} onChange={e=>setS("tagline")(e.target.value)}/>
+          </div>
+        </div>
+      );
+
+      case "preview": return (
+        <div className="fade-in">
+          <div className="done-icon">✦</div>
+          <div className="done-title">{scenes.length>1?`${scenes.length} SCENES READY`:"PROMPT READY"}</div>
+          <div className="done-sub">
+            Built for: <strong style={{color:"var(--blue-bright)"}}>{shared.product}</strong><br/>
+            {scenes.length>1?`${scenes.length} scenes — paste each into your AI video platform in order.`:"Your prompt is ready — paste it into your preferred AI video platform."}
+          </div>
+          {(shared.platform || shared.platformStyle || shared.platformHook) && (
+            <div className="done-platform-badge">
+              {shared.platform && <div className="done-plat-pill">{shared.platform}</div>}
+              {shared.platformStyle && <div className="done-style-pill">{shared.platformStyle}</div>}
+              {shared.platformHook && <div className="done-style-pill">{shared.platformHook}</div>}
+              {shared.platformDuration && <div className="done-style-pill">{shared.platformDuration}</div>}
+            </div>
+          )}
+          {pipelineMode==="both" && imgPromptText && (
+            <>
+              <div className="pipeline-step-badge">Step 1 — Generate this image</div>
+              <div className="preview-card" style={{marginBottom:16}}>
+                <div className="preview-hd">
+                  <div className="preview-title">Image Prompt</div>
+                  <button className={`copy-btn${copiedImg?" copied":""}`} onClick={()=>{navigator.clipboard.writeText(imgPromptText);setCopiedImg(true);setTimeout(()=>setCopiedImg(false),2000);}}>
+                    {copiedImg?"✓ Copied!":"Copy"}
+                  </button>
+                </div>
+                <div className="preview-body">{imgPromptText}</div>
+              </div>
+              <div className="pipeline-step-badge" style={{marginTop:8,marginBottom:16}}>Step 2 — Animate with this prompt</div>
+            </>
+          )}
+          {scenes.length>1&&(
+            <div className="scene-preview-tabs">
+              {scenes.map((_,i)=>(
+                <div key={i} className={`sp-tab${previewScene===i?" active":""}`} onClick={()=>setPreviewScene(i)}>Scene {i+1}{i===0?" (Anchor)":""}</div>
+              ))}
+              <div className={`sp-tab${previewScene===-1?" active":""}`} onClick={()=>setPreviewScene(-1)}>All</div>
+            </div>
+          )}
+          <div className="preview-card">
+            <div className="preview-hd">
+              <div className="preview-title">{previewScene===-1?"All Scenes":`Scene ${previewScene+1}`}</div>
+              <button
+                className={`copy-btn${copied===(previewScene===-1?"all":previewScene)?" copied":""}`}
+                onClick={()=>copy(previewScene===-1?"all":previewScene as number)}
+              >
+                {copied===(previewScene===-1?"all":previewScene)?"✓ Copied!":"Copy"}
+              </button>
+            </div>
+            <div className="preview-body">
+              {previewScene===-1?allPrompts:getPrompt(shared,scenes[previewScene],previewScene+1,scenes.length)}
+            </div>
+          </div>
+          {scenes.length>1&&(
+            <button className={`copy-all-btn${copied==="all"?" copied":""}`} onClick={()=>copy("all")}>
+              {copied==="all"?"✓ All Scenes Copied!":"⬆ Copy All Scenes"}
+            </button>
+          )}
+          {scenes.length===1&&(
+            <button className={`copy-all-btn${copied===0?" copied":""}`} onClick={()=>copy(0)}>
+              {copied===0?"✓ Prompt Copied!":"⬆ Copy Prompt"}
+            </button>
+          )}
+          {plan==="free"&&(
+            <div className="watermark-note">
+              ⚠ Free tier — copied prompts include a SceneBloc watermark.{" "}
+              <strong style={{cursor:"pointer",textDecoration:"underline"}} onClick={()=>router.push("/pricing")}>Upgrade to remove it →</strong>
+              {!user&&<> <strong style={{cursor:"pointer",textDecoration:"underline"}} onClick={()=>router.push("/auth")}> Sign in</strong> to save history.</>}
+            </div>
+          )}
+          <button
+            className={`save-btn${saved?" saved":""}`}
+            onClick={savePrompt}
+            disabled={saving}
+          >
+            {saved?"✓ Saved to Account":saving?"Saving…":(user?"⬆ Save to Account":"⬆ Save to Account (Sign In Required)")}
+          </button>
+          <button className={`share-btn${shared_link?" shared":""}`} onClick={shareLink}>
+            {shared_link ? "✓ Link Copied to Clipboard!" : "↗ Share Prompt via Link"}
+          </button>
+
+          {/* ── VOICEOVER SCRIPT ── */}
+          <button className="ai-generate-btn" onClick={generateVoiceover} disabled={loadingVoiceover}>
+            {loadingVoiceover
+              ? <><span className="ai-dot"/><span className="ai-dot"/><span className="ai-dot"/> Generating script…</>
+              : "🎙 Generate Voiceover Script"}
+          </button>
+          {voiceoverVisible && voiceoverScript && (
+            <div className="ai-panel fade-in">
+              <div className="ai-panel-hd">
+                <div className="ai-panel-title">Voiceover Script</div>
+                <button className="ai-panel-copy" onClick={()=>{navigator.clipboard.writeText(voiceoverScript);setCopiedVoiceover(true);setTimeout(()=>setCopiedVoiceover(false),2000);}}>
+                  {copiedVoiceover?"✓ Copied":"Copy"}
+                </button>
+              </div>
+              <div className="ai-panel-body">
+                <div className="voiceover-text">{voiceoverScript}</div>
+              </div>
+            </div>
+          )}
+
+          {/* ── A/B VARIATIONS ── */}
+          <button className="ai-generate-btn" onClick={generateVariations} disabled={loadingVariations} style={{marginTop:8}}>
+            {loadingVariations
+              ? <><span className="ai-dot"/><span className="ai-dot"/><span className="ai-dot"/> Generating variations…</>
+              : "⚡ Generate A/B Variations"}
+          </button>
+          {variationsVisible && abVariations && (
+            <div className="ai-panel fade-in">
+              <div className="ai-panel-hd">
+                <div className="ai-panel-title">A/B Variations</div>
+              </div>
+              <div className="ai-panel-body">
+                <div className="variation-group">
+                  <div className="variation-group-title">Hook Variations — opening 3 seconds</div>
+                  {abVariations.hookVariations.map((v,i)=>(
+                    <div key={i} className="variation-item">
+                      <div className="variation-letter">HOOK {String.fromCharCode(65+i)}</div>
+                      {v}
+                    </div>
+                  ))}
+                </div>
+                <div className="variation-group">
+                  <div className="variation-group-title">Emotional Angle Variations</div>
+                  {abVariations.emotionalAngles.map((v,i)=>(
+                    <div key={i} className="variation-item">
+                      <div className="variation-letter">ANGLE {String.fromCharCode(65+i)}</div>
+                      {v}
+                    </div>
+                  ))}
+                </div>
+                <div className="variation-group">
+                  <div className="variation-group-title">CTA Variations</div>
+                  {abVariations.ctaVariations.map((v,i)=>(
+                    <div key={i} className="variation-item">
+                      <div className="variation-letter">CTA {String.fromCharCode(65+i)}</div>
+                      {v}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {upgradeMsg && (
+            <div className="upgrade-notice fade-in">
+              <div className="upgrade-notice-icon">⚡</div>
+              <div className="upgrade-notice-text">
+                {upgradeMsg}
+                <br/>
+                <button className="upgrade-notice-btn" onClick={()=>router.push("/pricing")}>
+                  Upgrade to Pro →
+                </button>
+              </div>
+            </div>
+          )}
+
+          <button className="btn-outline" onClick={addScene} style={{marginTop:8}}>+ Add Scene {scenes.length+1} — Continue This Video</button>
+          <button className="btn-outline" onClick={reset} style={{marginTop:4}}>↺ Build a New Commercial</button>
+        </div>
+      );
+      default: return null;
+    }
+  };
+
+  const isPreview = visibleStages[stage]?.id==="preview";
 
   return (
     <>
