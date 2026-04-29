@@ -3532,6 +3532,7 @@ export default function App() {
           <div className="hero-scroll">
             <div className="hero-scroll-line"/>
             <div className="hero-scroll-text">Tap to start</div>
+<div style={{textAlign:"center",padding:"40px 0 0"}}><p style={{color:"rgba(155,210,248,0.6)",fontSize:14,marginBottom:16,fontFamily:"DM Sans, sans-serif"}}>Start free — 7-day Pro trial included</p><button onClick={()=>router.push("/pricing")} style={{padding:"18px 52px",background:"rgba(68,187,255,0.15)",border:"2px solid rgba(68,187,255,0.60)",borderRadius:20,color:"#ffffff",fontFamily:"DM Sans, sans-serif",fontSize:16,fontWeight:800,cursor:"pointer",letterSpacing:"0.06em",textTransform:"uppercase"}}>View Pricing and Plans</button></div>
           </div>
         </div>
       </div>
