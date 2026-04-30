@@ -68,7 +68,7 @@ const TIERS: {
       { text: "Full Pipeline (Image + Video)",     included: false },
       { text: "Priority support",                  included: false },
     ],
-  tag: "7-day free trial",
+  tag: "7-day Pro trial included",
     cta: "Start Starter",
   },
   {
