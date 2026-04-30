@@ -30,16 +30,4 @@ export default function ResetPage() {
   }, []);
 
   const handleReset = async () => {
-    if (password !== confirm) { setError("Passwords don't
-
-cd ~/scenelab && git add app/auth/reset/page.tsx && git commit -m "fix: reset page handles expired OTP with proper message" && git push
-
-
-
-
-
-
-
-
-
-
+    if (password !== confirm) { setError("Passwords do not match."); return; }
