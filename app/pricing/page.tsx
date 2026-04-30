@@ -670,7 +670,7 @@ function PricingContent() {
                 >
                   {isCurrent
                     ? "Current Plan"
-                    : loading === (annual ? tier.priceKey.annual : tier.priceKey.monthly)
+                    : (loading !== null && loading === (annual ? tier.priceKey.annual : tier.priceKey.monthly))
                     ? "Loading…"
                     : tier.cta}
                 </button>
