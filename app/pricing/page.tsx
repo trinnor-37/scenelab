@@ -67,6 +67,7 @@ const TIERS: {
       { text: "Full Pipeline (Image + Video)",     included: false },
       { text: "Priority support",                  included: false },
     ],
+  tag: "7-day free trial",
     cta: "Start Starter",
   },
   {
@@ -77,7 +78,6 @@ const TIERS: {
     annualMonthly: 26.25,
     priceKey: { monthly: "pro_monthly", annual: "pro_annual" },
     popular: true,
-    tag: "7-day free trial",
     features: [
       { text: "Everything in Starter",             included: true },
       { text: "Unlimited AI Concepts",             included: true },
