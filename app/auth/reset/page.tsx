@@ -15,14 +15,16 @@ export default function ResetPage() {
   const [expired, setExpired] = useState(false);
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const errorCode = params.get("error_code");
-    if (errorCode === "otp_expired" || params.get("error") === "access_denied") {
+    const search = new URLSearchParams(window.location.search);
+    const hash = new URLSearchParams(window.location.hash.replace("#", "?").slice(1));
+    const errorCode = search.get("error_code") || hash.get("error_code");
+    const errorType = search.get("error") || hash.get("error");
+    if (errorCode === "otp_expired" || errorType === "access_denied") {
       setExpired(true);
       return;
     }
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      if (event === "PASSWORD_RECOVERY") setReady(true);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "PASSWORD_RECOVERY" || (event === "SIGNED_IN" && session)) setReady(true);
     });
     return () => subscription.unsubscribe();
   }, []);
