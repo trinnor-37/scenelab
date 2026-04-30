@@ -2855,6 +2855,7 @@ export default function App() {
   // Auth state
   const [user, setUser]               = useState<User | null>(null);
   const [plan, setPlan]               = useState<"free"|"starter"|"pro"|"studio">("free");
+  const [trialDaysLeft, setTrialDaysLeft] = useState<number|null>(null);
   const [upgradeMsg, setUpgradeMsg]   = useState<string|null>(null);
   const [saving, setSaving]           = useState(false);
   const [saved, setSaved]             = useState(false);
@@ -2924,6 +2925,8 @@ export default function App() {
     if (!data) return;
     if (data.trial_ends_at && new Date(data.trial_ends_at) > new Date()) {
       setPlan("pro");
+      const diff = Math.ceil((new Date(data.trial_ends_at).getTime() - Date.now()) / 86400000);
+      setTrialDaysLeft(diff);
     } else {
       setPlan((data.plan ?? "free") as "free"|"starter"|"pro"|"studio");
     }
@@ -3464,6 +3467,7 @@ export default function App() {
     <>
       <style>{css}</style>
       <div className="app">
+      {trialDaysLeft !== null && trialDaysLeft <= 7 && (<div style={{background:"rgba(68,187,255,0.12)",borderBottom:"1px solid rgba(68,187,255,0.25)",padding:"10px 20px",textAlign:"center",fontSize:13,color:"var(--cream)",fontFamily:"DM Sans, sans-serif",position:"relative",zIndex:100}}><span style={{color:"var(--blue)",fontWeight:700}}>{trialDaysLeft} day{trialDaysLeft !== 1 ? "s" : ""} left</span> on your free Pro trial — <button onClick={()=>router.push("/pricing")} style={{background:"none",border:"none",color:"var(--blue)",fontWeight:700,cursor:"pointer",textDecoration:"underline",fontSize:13}}>Upgrade now</button></div>)}
         {/* Account button — fixed top-right */}
         <div className="hero-account" ref={dropdownRef}>
           {user ? (
