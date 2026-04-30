@@ -110,7 +110,7 @@ const TIERS: {
       { text: "Custom onboarding session",         included: true },
       { text: "SLA support",                       included: true },
     ],
-    cta: "Start Studio",
+    cta: "Coming Soon",
   },
 ];
 
@@ -513,6 +513,7 @@ function PricingContent() {
 
   const ctaAction = (tier: typeof TIERS[number]) => {
     if (tier.id === plan) return;
+    if (tier.id === "studio") return;
     if (tier.id === "free") { router.push("/"); return; }
     const key = annual ? tier.priceKey.annual : tier.priceKey.monthly;
     handleUpgrade(key);
