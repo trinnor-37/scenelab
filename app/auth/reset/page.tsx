@@ -12,28 +12,15 @@ export default function ResetPage() {
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
   const [ready, setReady] = useState(false);
-  const [expired, setExpired] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
-    const errorCode = params.get("error_code");
-    const errorType = params.get("error");
-    if (errorCode === "otp_expired" || errorType === "access_denied") {
-      setExpired(true);
-      return;
-    }
     if (code) {
       supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
-        if (error) { setExpired(true); return; }
-        setReady(true);
+        if (!error) setReady(true);
       });
-      return;
     }
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "PASSWORD_RECOVERY" || (event === "SIGNED_IN" && session)) setReady(true);
-    });
-    return () => subscription.unsubscribe();
   }, []);
 
   const handleReset = async () => {
@@ -56,17 +43,7 @@ export default function ResetPage() {
             <span style={{color:"#44bbff"}}>SCENE</span><span style={{color:"#ede3c8"}}>BLOC</span>
           </div>
           <div style={{fontSize:20,fontWeight:700,color:"#eef5ff",marginBottom:8}}>Set new password</div>
-          {expired ? (
-            <>
-              <div style={{background:"rgba(255,80,80,0.10)",border:"1px solid rgba(255,80,80,0.22)",borderRadius:10,padding:"12px 16px",fontSize:13,color:"#ff9999",marginBottom:18}}>
-                This reset link has expired. Please request a new one.
-              </div>
-              <button onClick={() => router.push("/auth/forgot")}
-                style={{width:"100%",padding:"16px",background:"#44bbff",border:"none",borderRadius:16,color:"#000",fontFamily:"DM Sans, sans-serif",fontSize:15,fontWeight:800,cursor:"pointer",textTransform:"uppercase"}}>
-                Request new link
-              </button>
-            </>
-          ) : !ready ? (
+          {!ready ? (
             <div style={{color:"rgba(155,210,248,0.5)",fontSize:14}}>Verifying reset link...</div>
           ) : (
             <>
