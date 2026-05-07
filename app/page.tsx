@@ -2726,25 +2726,20 @@ Lighting Transition: ${scene.lightTrans||"—"}${optLine("Time of Day",scene.tim
 Camera Angle: ${scene.cameraAngle||"Three-quarter perspective"}
 Camera Movement: ${scene.cameraMovement||"Dynamic — see stages below"}
 
-STAGE 1 — THE FULL-VIEW WRAP (0–25% of ${dur})
-Start Point: Close-up on ${scene.detail1||"—"} of the ${shared.product||"subject"}
-Movement: A rapid 360° radial orbit around the ${shared.product||"subject"}.
-Goal: Establish full geometry — front, sides, and back in one motion.
+SHOT 1 — ESTABLISH (0–25% of ${dur})
+${scene.cameraAngle||"Three-quarter"} angle, tight close-up on ${scene.detail1||"—"} of the ${shared.product||"subject"}. Slow orbital push around the subject, revealing full geometry — front, sides, and back in one continuous arc.
+${scene.particles||"Particles"} visible in light. Motion blur on background, subject stays sharp.
 
-STAGE 2 — THE ENVIRONMENT MORPH (25–50% of ${dur})
-Action: ${shared.product||"Subject"} moves ${scene.motion||"—"}.
-Transition: ${scene.envA||"Environment A"} dissolves into ${scene.envB||"Environment B"}.
-Goal: Seamless "portal" effect using the product's movement as anchor.
+SHOT 2 — ENVIRONMENT SHIFT (25–50% of ${dur})
+Camera holds a medium shot as ${shared.product||"subject"} moves ${scene.motion||"through frame"}. ${scene.envA||"Environment A"} dissolves into ${scene.envB||"Environment B"} behind the subject — seamless portal transition, product anchors the cut. Strong parallax with background elements.
 
-STAGE 3 — THE MACRO-DETAIL SPIRAL (50–85% of ${dur})
-Focus: ${scene.detail2||"—"} of the ${shared.product||"subject"}
-Movement: Slow, tight helical spiral around the product.
-Atmosphere: ${scene.particles||"—"} drift through the shot.
+SHOT 3 — MACRO DETAIL (50–85% of ${dur})
+Extreme close-up on ${scene.detail2||"—"} of the ${shared.product||"subject"}. Slow tight helical spiral, shallow depth of field. ${scene.particles||"Particles"} drifting through ${scene.lightFx||"light"}, realistic surface texture visible. Heat shimmer or dust in light source.
 
-STAGE 4 — THE STRATEGIC HERO HOLD (85–100% of ${dur})
-Camera: Pulls back and stabilizes.
-Angle: ${scene.cameraAngle||"Three-quarter perspective (front + side/back simultaneously)"}.
-Highlight: ${scene.lightFx||"—"} passes over the brand logo.
+SHOT 4 — HERO HOLD (85–100% of ${dur})
+Camera pulls back and locks off at ${scene.cameraAngle||"three-quarter perspective"}. ${scene.lightFx||"Light sweep"} passes across the subject and brand mark. Stable, weighted, cinematic.
+
+maintain face and clothing consistency, character face stable without deformation, physically accurate subject dynamics, intact geometry, grounded weight and momentum, realistic surface reflections, stable background, pure visual narrative without subtitles, ${shared.aesthetic||"cinematic"} realism, professional cinema quality, 24fps.
 
 [4. BRANDING]${isCont?" (LOCKED — inherited from Scene 1)":""}
 Background: ${shared.bg||"—"}
