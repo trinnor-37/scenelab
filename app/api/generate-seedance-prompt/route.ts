@@ -4,7 +4,9 @@
 //   1. Loading the SKILL.md rules (output format, hook principle)
 //   2. Loading ONLY the selected style's reference file (per SKILL.md's own
 //      instruction: "Read ONLY the relevant reference file")
-//   3. Calling Claude with the brief + reference framework as context
+//   3. Optionally splicing in upstream context (e.g. Cinema Gear 2.0's
+//      camera/lens/aperture pairing) as a mandatory constraint
+//   4. Calling Claude with the brief + reference framework as context
 //
 // Requires ANTHROPIC_API_KEY to already be set in your Netlify env vars
 // (it should be, per your existing Anthropic API integration).
@@ -14,6 +16,7 @@ import { readFile } from "fs/promises";
 import path from "path";
 import Anthropic from "@anthropic-ai/sdk";
 import { getStyleById } from "@/lib/prompt-skills/seedance2/styles";
+import { buildUpstreamContextBlock } from "@/lib/prompt-skills/shared/pipeline-context";
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -58,12 +61,14 @@ interface RequestBody {
   duration?: string;          // e.g. "8s", "15s" — optional, model will infer a sensible default
   materialRefs?: string[];    // e.g. ["@image1 = product hero shot", "@audio1 = brand jingle"]
   additionalNotes?: string;   // tone, brand voice, anything else
+  gearContext?: string;       // NEW — raw `result` string from generate-cinema-gear,
+                               // if the user ran Cinema Gear 2.0 as a prior step
 }
 
 export async function POST(req: NextRequest) {
   try {
     const body: RequestBody = await req.json();
-    const { styleId, brief, duration, materialRefs, additionalNotes } = body;
+    const { styleId, brief, duration, materialRefs, additionalNotes, gearContext } = body;
 
     if (!styleId || !brief?.trim()) {
       return NextResponse.json(
@@ -85,12 +90,19 @@ export async function POST(req: NextRequest) {
     const referencePath = path.join(REFERENCES_DIR, style.referenceFile);
     const referenceContent = await readFile(referencePath, "utf-8");
 
+    // NEW — if Cinema Gear 2.0 already ran, fold its output in as a hard
+    // constraint rather than letting this route re-decide camera/lens/etc.
+    const upstreamBlock = buildUpstreamContextBlock(
+      gearContext ? { source: "cinema-gear-20", content: gearContext } : undefined
+    );
+
     const systemPrompt = `
 You are a Seedance 2.0 prompt engineer generating large, detailed, paste-ready
 video prompts optimized for Seedance 2.0 on Higgsfield.
 
 ${OUTPUT_FORMAT_INSTRUCTIONS}
 
+${upstreamBlock ? `\n---\n\n${upstreamBlock}\n` : ""}
 ---
 
 STYLE REFERENCE FRAMEWORK (${style.name}):
@@ -106,8 +118,9 @@ ${duration ? `TARGET DURATION: ${duration}` : ""}
 ${materialRefs?.length ? `MATERIAL REFERENCES AVAILABLE: ${materialRefs.join(", ")}` : ""}
 ${additionalNotes ? `ADDITIONAL NOTES: ${additionalNotes}` : ""}
 
-Follow the ${style.name} reference framework above exactly. Output only the
-final paste-ready prompt block — no preamble, no explanation.
+Follow the ${style.name} reference framework above exactly.${
+  gearContext ? " Honor the mandatory upstream gear context exactly — do not substitute a different camera/lens/aperture." : ""
+} Output only the final paste-ready prompt block — no preamble, no explanation.
 `.trim();
 
     const response = await anthropic.messages.create({

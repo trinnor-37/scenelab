@@ -11,11 +11,18 @@
 // reference docs (CAMERA-TECHNIQUES, AUDIO-KEYWORDS, EXAMPLES) depending on
 // what the brief needs — kept lean by default to avoid bloating every call
 // with all three references when they're not needed.
+//
+// Gear context now follows the shared hand-off pattern via
+// lib/prompt-skills/shared/pipeline-context.ts — if Cinema Gear 2.0 already
+// ran for this generation, its output is passed through as gearContext and
+// spliced in as a mandatory constraint (same treatment as
+// generate-seedance-prompt and generate-one-take-prompt).
 
 import { NextRequest, NextResponse } from "next/server";
 import { readFile } from "fs/promises";
 import path from "path";
 import Anthropic from "@anthropic-ai/sdk";
+import { buildUpstreamContextBlock } from "@/lib/prompt-skills/shared/pipeline-context";
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -36,6 +43,8 @@ interface RequestBody {
   includeAudioReference?: boolean;   // load AUDIO-KEYWORDS.md for richer sound design
   category?: "people" | "vehicles" | "action" | "general"; // picks the right constraints-block variant
   additionalNotes?: string;
+  gearContext?: string;          // NEW — raw `result` string from generate-cinema-gear,
+                                   // if the user ran that step first
 }
 
 async function loadSkillContext(body: RequestBody): Promise<string> {
@@ -65,7 +74,7 @@ async function loadSkillContext(body: RequestBody): Promise<string> {
 export async function POST(req: NextRequest) {
   try {
     const body: RequestBody = await req.json();
-    const { mode, brief, duration, category, additionalNotes } = body;
+    const { mode, brief, duration, category, additionalNotes, gearContext } = body;
 
     if (!mode || !brief?.trim()) {
       return NextResponse.json(
@@ -82,6 +91,12 @@ export async function POST(req: NextRequest) {
 
     const skillContext = await loadSkillContext(body);
 
+    // NEW — if Cinema Gear 2.0 already ran, fold its output in as a hard
+    // constraint rather than letting this route re-decide camera/lens/etc.
+    const upstreamBlock = buildUpstreamContextBlock(
+      gearContext ? { source: "cinema-gear-20", content: gearContext } : undefined
+    );
+
     const systemPrompt = `
 You are a director-level video prompt engineer using the video-prompt-generator
 craft below. Follow its Mandatory Prompt Structure exactly: Scene Header ->
@@ -97,6 +112,7 @@ ${
 
 ${category ? `Use the "${category}" category-specific constraints-block variant from the skill.` : "Use the standard universal constraints block unless the brief clearly fits a specific category."}
 
+${upstreamBlock ? `\n---\n\n${upstreamBlock}\n` : ""}
 ---
 
 SKILL REFERENCE:
@@ -112,7 +128,9 @@ ${duration ? `DURATION: ${duration}` : ""}
 ${additionalNotes ? `ADDITIONAL NOTES: ${additionalNotes}` : ""}
 
 Output only the final prompt, formatted per the skill's Mandatory Prompt
-Structure. No preamble, no explanation, no scaffold notes shown.
+Structure.${
+  gearContext ? " Honor the mandatory upstream gear context exactly — camera, lens, and framing are already decided, do not substitute different choices." : ""
+} No preamble, no explanation, no scaffold notes shown.
 `.trim();
 
     const response = await anthropic.messages.create({
