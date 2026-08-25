@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase/client";
 import type { User } from "@supabase/supabase-js";
+import CineGearAIPanel, { type ParsedCineGear } from "@/app/Components/CineGearAIPanel";
 
 const css = `
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,100;0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,300;1,9..40,400&display=swap');
@@ -2535,7 +2536,7 @@ const STAGES = [
 ];
 
 const EMPTY_SCENE  = { envA:"", envB:"", lightTrans:"", detail1:"", motion:"", detail2:"", particles:"", lightFx:"", refMode:"none", refImgs:[] as string[], startImg:null as string|null, endImg:null as string|null, cameraAngle:"", cameraMovement:"", timeOfDay:"", weather:"", shotDuration:"" };
-const EMPTY_SHARED = { product:"", commercialStyle:"", aesthetic:"", optics:"", atmosphere:"", bg:"", tagline:"", colorGrading:"", hookType:"", conceptTitle:"", conceptHook:"", conceptBuild:"", conceptPeak:"", conceptClosure:"", cineMood:"", cineCamera:"", cineLens:"", cineFocalLength:"", cineAperture:"", platform:"", platformStyle:"", platformHook:"", platformDuration:"8s" };
+const EMPTY_SHARED = { product:"", commercialStyle:"", aesthetic:"", optics:"", atmosphere:"", bg:"", tagline:"", colorGrading:"", hookType:"", conceptTitle:"", conceptHook:"", conceptBuild:"", conceptPeak:"", conceptClosure:"", cineMood:"", cineCamera:"", cineLens:"", cineFocalLength:"", cineAperture:"", cineAIParagraph:"", platform:"", platformStyle:"", platformHook:"", platformDuration:"8s" };
 
 // ── SELECT WITH CUSTOM ────────────────────────────────────────────────
 function Sel({ label, value, onChange, optKey, placeholder="Choose an option...", locked=false }: {
@@ -2701,7 +2702,7 @@ function buildScenePrompt(shared: typeof EMPTY_SHARED, scene: typeof EMPTY_SCENE
   const optLine = (label: string, val: string) => val ? `\n${label}: ${val}` : "";
   const conceptBlock = shared.conceptTitle ? `\n[0. CREATIVE CONCEPT]${isCont?" (LOCKED — inherited from Scene 1)":""}\nConcept: "${shared.conceptTitle}"\nHook: ${shared.conceptHook}\nBuild: ${shared.conceptBuild}\nPeak: ${shared.conceptPeak}\nClosure: ${shared.conceptClosure}\n` : "";
   const hookLine = shared.hookType && !isCont ? `\nHOOK TYPE: ${shared.hookType}` : "";
-  const cineBlock = shared.cineCamera ? `\n\n[CINEMATOGRAPHY]${isCont?" (LOCKED — inherited from Scene 1)":""}\nEmotional Core: ${shared.cineMood||"—"}\nCamera: ${shared.cineCamera}\nLens: ${shared.cineLens||"—"}\nFocal Length: ${shared.cineFocalLength||"—"}\nAperture: ${shared.cineAperture||"—"}\nVisual Character: ${buildCineDescriptor(shared.cineCamera,shared.cineLens,shared.cineFocalLength,shared.cineAperture)}` : "";
+  const cineBlock = shared.cineCamera ? `\n\n[CINEMATOGRAPHY]${isCont?" (LOCKED — inherited from Scene 1)":""}\nEmotional Core: ${shared.cineMood||"—"}\nCamera: ${shared.cineCamera}\nLens: ${shared.cineLens||"—"}\nFocal Length: ${shared.cineFocalLength||"—"}\nAperture: ${shared.cineAperture||"—"}\nVisual Character: ${shared.cineAIParagraph||buildCineDescriptor(shared.cineCamera,shared.cineLens,shared.cineFocalLength,shared.cineAperture)}` : "";
   const music = !isCont ? getMusicDirection(shared.commercialStyle) : null;
   const musicBlock = music ? `\n\n[5. MUSIC DIRECTION]\nEmotion Target: ${music.emotion}\nMusic Style: ${music.musicStyle}\nBPM Range: ${music.bpm} BPM\nKey Instruments: ${music.instruments}` : "";
   return `═══════════════════════════════
@@ -3159,7 +3160,7 @@ export default function App() {
       setImgStep('done');
     };
     const imgCopy = () => { navigator.clipboard.writeText(imgPromptText); setCopiedImg(true); setTimeout(()=>setCopiedImg(false),2000); };
-    const imgContinueToVideo = () => { setInImgBuilder(false); };
+    const imgContinueToVideo = () => { setInImgBuilder(false); setStarted(true); };
     const imgRestartImage = () => { setImgStep('mode'); setImgMode(''); setImgSubject(''); setImgEnv(''); setImgMood(''); setImgLighting(''); setImgPlatform(''); setImgAspect('16:9 (Widescreen)'); setImgPromptText(''); };
 
     return (
@@ -3636,10 +3637,13 @@ export default function App() {
       case "cine": {
         const applyMood = (moodName: string) => {
           const gear = CINE_MOOD_MAP[moodName];
-          setShared(p=>({ ...p, cineMood:moodName, cineCamera:gear.camera, cineLens:gear.lens, cineFocalLength:gear.focalLength, cineAperture:gear.aperture }));
+          setShared(p=>({ ...p, cineMood:moodName, cineCamera:gear.camera, cineLens:gear.lens, cineFocalLength:gear.focalLength, cineAperture:gear.aperture, cineAIParagraph:"" }));
         };
         const applyLook = (look: typeof SIGNATURE_LOOKS[number]) => {
-          setShared(p=>({ ...p, cineMood:look.mood, cineCamera:look.camera, cineLens:look.lens, cineFocalLength:look.focalLength, cineAperture:look.aperture }));
+          setShared(p=>({ ...p, cineMood:look.mood, cineCamera:look.camera, cineLens:look.lens, cineFocalLength:look.focalLength, cineAperture:look.aperture, cineAIParagraph:"" }));
+        };
+        const applyAIGear = (gear: ParsedCineGear, paragraph: string) => {
+          setShared(p=>({ ...p, cineMood:"Custom", cineCamera:gear.camera, cineLens:gear.lens, cineFocalLength:gear.focalLength, cineAperture:gear.aperture, cineAIParagraph:paragraph }));
         };
         const isLookActive = (look: typeof SIGNATURE_LOOKS[number]) =>
           shared.cineCamera===look.camera && shared.cineLens===look.lens && shared.cineFocalLength===look.focalLength && shared.cineAperture===look.aperture;
@@ -3687,9 +3691,10 @@ export default function App() {
               {shared.cineCamera && (
                 <div style={{marginTop:14,padding:"10px 12px",background:"var(--surface2)",borderRadius:"var(--radius-sm)",fontSize:12,color:"var(--muted2)",lineHeight:1.55}}>
                   <span style={{color:"var(--muted)",fontSize:10,fontWeight:700,letterSpacing:"2px",textTransform:"uppercase",display:"block",marginBottom:4}}>Visual Character</span>
-                  {buildCineDescriptor(shared.cineCamera,shared.cineLens,shared.cineFocalLength,shared.cineAperture)}
+                  {shared.cineAIParagraph||buildCineDescriptor(shared.cineCamera,shared.cineLens,shared.cineFocalLength,shared.cineAperture)}
                 </div>
               )}
+              <CineGearAIPanel onApply={applyAIGear}/>
             </div>
           </div>
         );
