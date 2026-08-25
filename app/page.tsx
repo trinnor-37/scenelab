@@ -3160,7 +3160,7 @@ export default function App() {
       setImgStep('done');
     };
     const imgCopy = () => { navigator.clipboard.writeText(imgPromptText); setCopiedImg(true); setTimeout(()=>setCopiedImg(false),2000); };
-    const imgContinueToVideo = () => { setInImgBuilder(false); };
+    const imgContinueToVideo = () => { setInImgBuilder(false); setStarted(true); };
     const imgRestartImage = () => { setImgStep('mode'); setImgMode(''); setImgSubject(''); setImgEnv(''); setImgMood(''); setImgLighting(''); setImgPlatform(''); setImgAspect('16:9 (Widescreen)'); setImgPromptText(''); };
 
     return (
