@@ -2530,7 +2530,7 @@ const CUSTOM_PLACEHOLDERS: Record<string,string> = {
 const IMG_MOOD_TO_CINE_MOOD: Record<string,string> = {
   "Aspirational":    "Clean / Premium",
   "Dramatic":        "Cinematic / Narrative",
-  "Intimate":        "Raw / Human",
+  "Intimate":        "Dreamlike / Nostalgic",
   "Raw & Authentic": "Raw / Human",
   "Dreamlike":       "Dreamlike / Nostalgic",
   "Tense":           "Tense / Psychological",
