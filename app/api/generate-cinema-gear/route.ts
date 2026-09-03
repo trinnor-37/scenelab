@@ -81,7 +81,7 @@ Return the gear pairing and cinematography paragraph per the format above.
 `.trim();
 
     const response = await anthropic.messages.create({
-      model: "claude-sonnet-5",
+      model: "claude-sonnet-4-6",
       max_tokens: 800,
       system: systemPrompt,
       messages: [{ role: "user", content: userMessage }],

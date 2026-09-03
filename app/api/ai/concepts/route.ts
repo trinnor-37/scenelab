@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
   if (!product?.trim()) return NextResponse.json({ error: "Product required" }, { status: 400 });
 
   const msg = await client.messages.create({
-    model: "claude-sonnet-5",
+    model: "claude-sonnet-4-6",
     max_tokens: 1200,
     messages: [{
       role: "user",

@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
   const s3End  = Math.round(durSec * 0.85);
 
   const msg = await client.messages.create({
-    model: "claude-sonnet-5",
+    model: "claude-sonnet-4-6",
     max_tokens: 900,
     messages: [{
       role: "user",
