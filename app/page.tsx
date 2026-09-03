@@ -2522,6 +2522,96 @@ const CUSTOM_PLACEHOLDERS: Record<string,string> = {
   shotDuration:    "e.g. 20 seconds",
 };
 
+// ── IMAGE → VIDEO CONSISTENCY MAPPING ──────────────────────────────────
+// Full Pipeline (Image + Video) mode: carries the Image Prompt Builder's
+// mood/lighting/platform choices forward as pre-filled defaults into the
+// video wizard, so the two halves start from one consistent look. Closest-
+// match, not exhaustive — every field stays user-editable afterward.
+const IMG_MOOD_TO_CINE_MOOD: Record<string,string> = {
+  "Aspirational":    "Clean / Premium",
+  "Dramatic":        "Cinematic / Narrative",
+  "Intimate":        "Dreamlike / Nostalgic",
+  "Raw & Authentic": "Raw / Human",
+  "Dreamlike":       "Dreamlike / Nostalgic",
+  "Tense":           "Tense / Psychological",
+  "Epic":            "Epic / Monumental",
+  "Playful":         "Hyperreal / Sharp",
+  "Moody":           "Tense / Psychological",
+  "Clean & Minimal": "Clean / Premium",
+};
+const IMG_MOOD_TO_AESTHETIC: Record<string,string> = {
+  "Aspirational":    "Luxury",
+  "Dramatic":        "Cinematic",
+  "Intimate":        "Editorial",
+  "Raw & Authentic": "Raw Documentary",
+  "Dreamlike":       "Vintage",
+  "Tense":           "Dark & Moody",
+  "Epic":            "Cinematic",
+  "Playful":         "Hyper-real",
+  "Moody":           "Dark & Moody",
+  "Clean & Minimal": "Minimalist",
+};
+const IMG_MOOD_TO_ATMOSPHERE: Record<string,string> = {
+  "Aspirational":    "Crystal clear 4K",
+  "Dramatic":        "Deep shadows",
+  "Intimate":        "Hazy glow",
+  "Raw & Authentic": "High grain",
+  "Dreamlike":       "Dreamy soft focus",
+  "Tense":           "Deep shadows",
+  "Epic":            "Lens flare",
+  "Playful":         "Crystal clear 4K",
+  "Moody":           "Deep shadows",
+  "Clean & Minimal": "Sharp clinical",
+};
+const IMG_LIGHTING_TO_OPTICS: Record<string,string> = {
+  "Golden Hour":        "50mm standard prime",
+  "Studio Soft Box":    "85mm portrait prime",
+  "Harsh Midday":       "Ultra-wide 16mm",
+  "Blue Hour":          "Anamorphic widescreen",
+  "Neon Cinematic":     "Anamorphic widescreen",
+  "Backlit Silhouette": "135mm telephoto prime",
+  "Practical Only":     "35mm street prime",
+  "Overcast Natural":   "24mm wide prime",
+  "Candlelit":          "Vintage anamorphic",
+  "High-Key Studio":    "50mm standard prime",
+};
+// imgPlatform is a social destination (Instagram, TikTok…), not an AI video
+// engine — there's no real signal to map it onto shared.platform, so that
+// always defaults to "Seedance 2.0" (the app's own recommended engine).
+// What imgPlatform actually informs is which Seedance style category fits.
+const IMG_PLATFORM_TO_SEEDANCE_STYLE: Record<string,string> = {
+  "Instagram":          "Social Hook",
+  "TikTok":             "Social Hook",
+  "YouTube Shorts":     "Social Hook",
+  "YouTube / Long-form":"Brand Story",
+  "Pinterest":          "Fashion Lookbook",
+  "LinkedIn":           "Brand Story",
+  "Ad Creative":        "E-Commerce Ad",
+};
+
+type VideoDefaultsFromImage = {
+  cineMood:string; cineCamera:string; cineLens:string; cineFocalLength:string; cineAperture:string;
+  aesthetic:string; optics:string; atmosphere:string;
+  platform:string; platformStyle:string;
+};
+
+function mapImageChoicesToVideoDefaults(mood:string, lighting:string, platform:string): VideoDefaultsFromImage {
+  const cineMood = IMG_MOOD_TO_CINE_MOOD[mood] || "Cinematic / Narrative";
+  const gear = CINE_MOOD_MAP[cineMood];
+  return {
+    cineMood,
+    cineCamera:      gear.camera,
+    cineLens:        gear.lens,
+    cineFocalLength: gear.focalLength,
+    cineAperture:    gear.aperture,
+    aesthetic:       IMG_MOOD_TO_AESTHETIC[mood] || "Cinematic",
+    optics:          IMG_LIGHTING_TO_OPTICS[lighting] || "50mm standard prime",
+    atmosphere:      IMG_MOOD_TO_ATMOSPHERE[mood] || "Crystal clear 4K",
+    platform:        "Seedance 2.0",
+    platformStyle:   IMG_PLATFORM_TO_SEEDANCE_STYLE[platform] || "Cinematic",
+  };
+}
+
 const STAGES = [
   { id:"product",   short:"Brief",    label:"Product Brief" },
   { id:"hook",      short:"Hook",     label:"Hook Type" },
@@ -2839,6 +2929,7 @@ export default function App() {
   const [imgAspect, setImgAspect]       = useState('16:9 (Widescreen)');
   const [imgPromptText, setImgPromptText] = useState('');
   const [copiedImg, setCopiedImg]         = useState(false);
+  const [imgMappedDefaults, setImgMappedDefaults] = useState<VideoDefaultsFromImage | null>(null);
 
   const [started, setStarted]         = useState(false);
   const [stage, setStage]             = useState(0);
@@ -3012,6 +3103,7 @@ export default function App() {
     setInImgBuilder(false); setImgStep('mode'); setImgMode(''); setImgSubject('');
     setImgEnv(''); setImgMood(''); setImgLighting(''); setImgPlatform('');
     setImgAspect('16:9 (Widescreen)'); setImgPromptText(''); setCopiedImg(false);
+    setImgMappedDefaults(null);
   };
 
   // ── CONCEPT GENERATOR HANDLERS ───────────────────────────────────────
@@ -3160,7 +3252,13 @@ export default function App() {
       setImgStep('done');
     };
     const imgCopy = () => { navigator.clipboard.writeText(imgPromptText); setCopiedImg(true); setTimeout(()=>setCopiedImg(false),2000); };
-    const imgContinueToVideo = () => { setInImgBuilder(false); setStarted(true); };
+    const imgContinueToVideo = () => {
+      const defaults = mapImageChoicesToVideoDefaults(imgMood, imgLighting, imgPlatform);
+      setImgMappedDefaults(defaults);
+      setShared(p=>({ ...p, ...defaults, cineAIParagraph:"" }));
+      setInImgBuilder(false);
+      setStarted(true);
+    };
     const imgRestartImage = () => { setImgStep('mode'); setImgMode(''); setImgSubject(''); setImgEnv(''); setImgMood(''); setImgLighting(''); setImgPlatform(''); setImgAspect('16:9 (Widescreen)'); setImgPromptText(''); };
 
     return (
@@ -3696,6 +3794,13 @@ export default function App() {
               )}
               <CineGearAIPanel onApply={applyAIGear}/>
             </div>
+
+            {pipelineMode==='both' && imgMappedDefaults && shared.cineMood && shared.cineMood!==imgMappedDefaults.cineMood && (
+              <div style={{marginTop:12,padding:"8px 12px",background:"rgba(230,170,60,0.08)",border:"1px solid rgba(230,170,60,0.25)",borderRadius:"var(--radius-sm)",fontSize:11,color:"#e0b04a",display:"flex",justifyContent:"space-between",alignItems:"center",gap:10}}>
+                <span>↺ Differs from your reference image's mood ({imgMappedDefaults.cineMood})</span>
+                <button onClick={()=>applyMood(imgMappedDefaults.cineMood)} style={{background:"none",border:"none",color:"#e0b04a",textDecoration:"underline",cursor:"pointer",fontSize:11,fontWeight:600,whiteSpace:"nowrap"}}>Match image</button>
+              </div>
+            )}
           </div>
         );
       }
@@ -3735,6 +3840,13 @@ export default function App() {
                 </div>
               ))}
             </>
+          )}
+
+          {pipelineMode==='both' && imgMappedDefaults && shared.platform==="Seedance 2.0" && shared.platformStyle && shared.platformStyle!==imgMappedDefaults.platformStyle && (
+            <div style={{marginTop:10,marginBottom:10,padding:"8px 12px",background:"rgba(230,170,60,0.08)",border:"1px solid rgba(230,170,60,0.25)",borderRadius:"var(--radius-sm)",fontSize:11,color:"#e0b04a",display:"flex",justifyContent:"space-between",alignItems:"center",gap:10}}>
+              <span>↺ Differs from your reference image's style ({imgMappedDefaults.platformStyle})</span>
+              <button onClick={()=>setShared(prev=>({...prev,platformStyle:imgMappedDefaults.platformStyle}))} style={{background:"none",border:"none",color:"#e0b04a",textDecoration:"underline",cursor:"pointer",fontSize:11,fontWeight:600,whiteSpace:"nowrap"}}>Match image</button>
+            </div>
           )}
 
           {/* 2-second hook */}
