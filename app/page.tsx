@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase/client";
 import type { User } from "@supabase/supabase-js";
 import CineGearAIPanel, { type ParsedCineGear } from "@/app/Components/CineGearAIPanel";
+import ImagePromptAIPanel from "@/app/Components/ImagePromptAIPanel";
 
 const css = `
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,100;0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,300;1,9..40,400&display=swap');
@@ -3252,6 +3253,7 @@ export default function App() {
       setImgStep('done');
     };
     const imgCopy = () => { navigator.clipboard.writeText(imgPromptText); setCopiedImg(true); setTimeout(()=>setCopiedImg(false),2000); };
+    const imgApplyAIResult = (prompt: string) => { setImgPromptText(prompt); setImgStep('done'); };
     const imgContinueToVideo = () => {
       const defaults = mapImageChoicesToVideoDefaults(imgMood, imgLighting, imgPlatform);
       setImgMappedDefaults(defaults);
@@ -3343,6 +3345,16 @@ export default function App() {
                   <button className="img-generate-btn" disabled={!imgSubject.trim()} onClick={imgGenerate}>
                     Generate Image Prompt →
                   </button>
+                  <ImagePromptAIPanel
+                    mode={imgMode}
+                    subject={imgSubject}
+                    environment={imgEnv}
+                    mood={imgMood}
+                    lighting={imgLighting}
+                    platform={imgPlatform}
+                    aspect={imgAspect}
+                    onResult={imgApplyAIResult}
+                  />
                 </div>
               </>
             )}
