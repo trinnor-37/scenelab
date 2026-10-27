@@ -66,7 +66,7 @@ A full render takes roughly 6–8 minutes per format on 4 cores.
 - the arp drops out for a lub-dub heartbeat on the five waveform beats
 - a pad and noise riser into one wide sub-and-bell hit on the N, with a long tail through the end card
 
-It's mixed with convolution reverb and soft clipping, then muxed as AAC at -14 LUFS. `render.py` adds it automatically; `--no-music` skips it.
+It's voiced for phone speakers: the drone carries overtones, the arp and pad sit in the D4–D5 range, a glass note marks each handover, and a low shelf tames the sub. With everything under 300 Hz removed, it still plays only about 2 LU quieter. It's mixed with convolution reverb and soft clipping, then muxed as AAC at about -14 LUFS. `render.py` adds it automatically; `--no-music` skips it.
 It is not based on, and doesn't imitate, Netflix's "ta-dum" sonic logo.
 
 ```bash

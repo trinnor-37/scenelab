@@ -71,6 +71,15 @@ def hp_fast(x, cutoff, order=2):
     return np.fft.irfft(X, len(x))
 
 
+def low_shelf(x, f0=120.0, gain_db=-7.0):
+    """Gentle FFT low shelf: tames the sub so phone-speaker frequencies carry the mix."""
+    X = np.fft.rfft(x)
+    f = np.fft.rfftfreq(len(x), 1 / SR)
+    g = 10 ** (gain_db / 20)
+    X *= g + (1 - g) / (1 + (f0 / np.maximum(f, 1e-3)) ** 2)
+    return np.fft.irfft(X, len(x))
+
+
 def place(buf, sig, t0, gain=1.0):
     i = int(t0 * SR)
     if i >= len(buf) or i + len(sig) <= 0:
@@ -109,10 +118,11 @@ def drone():
     level = np.interp(T, [0, 1.5, 2.4, 12.2, 15.0, 17.6, 18.4, 18.45, 21.0],
                       [0.0, 0.5, 0.55, 0.65, 0.8, 0.95, 1.0, 0.7, 0.0])
     sig = np.zeros(N)
-    for m, g in ((26, 1.0), (38, 0.45), (45, 0.18)):
+    for m, g in ((26, 1.0), (38, 0.6), (45, 0.3), (50, 0.28), (57, 0.16), (62, 0.12)):
         f = hz(m) * (1 + 0.0015 * np.sin(2 * np.pi * 0.11 * T + m))
         sig += g * np.sin(2 * np.pi * np.cumsum(f) / SR)
     sig *= 1 + 0.12 * np.sin(2 * np.pi * 0.25 * T)
+    sig = np.tanh(sig * 1.3) / np.tanh(1.3)
     return np.stack([sig, sig], 1) * level[:, None] * 0.24
 
 
@@ -146,7 +156,7 @@ def pluck(f, length=0.32, bright=1800.0):
 def arp():
     """Muted pluck arpeggio. Density and brightness build per scene; out for the heartbeat."""
     out = np.zeros((N, 2))
-    notes = [50, 53, 57, 62, 57, 53, 60, 57]      # D3 F3 A3 D4 A3 F3 C4 A3 (Dm7 colour)
+    notes = [62, 65, 69, 74, 69, 65, 72, 69]      # D4 F4 A4 D5 A4 F4 C5 A4 (Dm7 colour)
     cache = {}
     t = 2.4
     i = 0
@@ -155,7 +165,7 @@ def arp():
         step = BEAT / 4 if t >= 15.2 else BEAT / 2
         if not in_beat:
             m = notes[i % len(notes)] + (12 if t >= 15.2 and i % 4 == 3 else 0)
-            bright = 900 + 2600 * np.interp(t, [2.4, 18.4], [0, 1])
+            bright = 2200 + 4500 * np.interp(t, [2.4, 18.4], [0, 1])
             key = (m, int(bright / 200))
             if key not in cache:
                 cache[key] = pluck(hz(m), bright=bright)
@@ -171,14 +181,14 @@ def arp():
 
 def pad():
     """Dm(add9) string-ish pad from the Screens scene into the hit."""
-    chord = [50, 57, 62, 64, 65]
+    chord = [62, 69, 74, 76, 77]
     e = np.interp(T, [0, 15.0, 16.4, 18.3, 18.45, 21.0], [0, 0, 0.6, 1.0, 0.0, 0.0])
     out = np.zeros((N, 2))
     for k, m in enumerate(chord):
         for c, det in enumerate((-0.004, 0.004)):
             out[:, c] += saw(hz(m) * (1 + det + 0.001 * k), N, k * 0.17)
-    out[:, 0] = lp_fast(out[:, 0], 1400)
-    out[:, 1] = lp_fast(out[:, 1], 1400)
+    out[:, 0] = lp_fast(out[:, 0], 3200)
+    out[:, 1] = lp_fast(out[:, 1], 3200)
     return out * e[:, None] * 0.09
 
 
@@ -251,7 +261,9 @@ def heartbeat():
         g = 0.32 + 0.05 * k
         for dt, gg, f0 in ((0.0, 1.0, 95.0), (0.17, 0.7, 80.0)):     # lub-dub
             out += sub_drop(t0 + dt, f0=f0, f1=42.0, length=0.45, gain=g * gg)
-        out += tick(t0, f=180.0, gain=0.25 * g)
+        for dt, gg in ((0.0, 1.0), (0.17, 0.7)):
+            out += tick(t0 + dt, f=160.0, gain=0.9 * g * gg)
+            out += tick(t0 + dt, f=320.0, gain=0.45 * g * gg)
     return out
 
 
@@ -289,6 +301,8 @@ def score():
         fx += whoosh(tb, gain=0.12 + 0.02 * k)
         if tb != 12.2:   # the heartbeat carries that handover
             fx += sub_drop(tb, gain=0.45)
+    for tb, m in zip(HANDOVERS, (74, 77, 81, 84, 86, 89)):
+        fx += bell(tb, [m, m - 12], length=1.8, gain=0.32)
     fx += tick(0.08, f=1800, gain=0.25)          # the spark
     for t0 in HOPS:
         fx += tick(t0, gain=0.4)
@@ -296,7 +310,7 @@ def score():
     fx += bell(DL_CHECK, [86, 93], length=1.6, gain=0.3)
     fx += heartbeat() + riser() + hit()
     mix = reverb(music, 3.0, 0.32, seed=1) + reverb(fx, 2.2, 0.18, seed=2)
-    mix = hp_fast(mix[:, 0], 22)[:, None] * [1, 0] + hp_fast(mix[:, 1], 22)[:, None] * [0, 1]
+    mix = np.stack([low_shelf(hp_fast(mix[:, c], 22)) for c in range(2)], 1)
     fade = np.interp(T, [0, 0.02, 20.2, 21.0], [0, 1, 1, 0])
     mix *= fade[:, None]
     mix = np.tanh(mix * 1.4) / 1.4
