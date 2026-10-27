@@ -71,6 +71,7 @@ It is not based on, and doesn't imitate, Netflix's "ta-dum" sonic logo.
 
 ```bash
 python score.py              # rebuild out/score.wav and mux it into every out/*.mp4
+python score.py --track song.mp3 --offset 12   # use your own music from 0:12 instead
 ```
 
 ## Output

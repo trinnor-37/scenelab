@@ -346,14 +346,26 @@ def mux(video, wav, out):
     os.replace(tmp, out)
 
 
+def prepare_track(src, wav, offset=0.0):
+    """Cut a supplied track to the film length: start at offset, short fade in, 1.5 s fade out, 48 kHz stereo."""
+    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-ss", str(offset), "-i", src, "-t", str(DUR),
+                    "-af", f"apad=whole_dur={DUR},afade=t=in:d=0.03,afade=t=out:st={DUR - 1.5}:d=1.5",
+                    "-ar", str(SR), "-ac", "2", "-c:a", "pcm_s16le", wav], check=True)
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--out", default=os.path.join(HERE, "out"))
     ap.add_argument("--wav-only", action="store_true")
+    ap.add_argument("--track", help="use your own music file instead of the synthesized score")
+    ap.add_argument("--offset", type=float, default=0.0, help="seconds into --track to start from")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     wav = os.path.join(a.out, "score.wav")
-    write_wav(wav, score())
+    if a.track:
+        prepare_track(a.track, wav, a.offset)
+    else:
+        write_wav(wav, score())
     print(wav)
     if a.wav_only:
         return
