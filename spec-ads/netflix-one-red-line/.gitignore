@@ -3,3 +3,4 @@ fonts/*.otf
 fonts/*.ttf
 out/netflix_one_red_line_*.mp4
 out/*.png
+out/score.wav

@@ -54,9 +54,28 @@ python render.py --stills 4,7.5,19.8     # review frames
 
 A full render takes roughly 6–8 minutes per format on 4 cores.
 
+## Score
+
+`score.py` synthesises an original 21 s score in numpy. It's in D minor at 120 BPM, and every cue comes from the film's own timeline:
+
+- sub drone and a rising glass shimmer as the spark draws the line
+- a muted pluck arpeggio that gets brighter and denser scene by scene, doubling to 16ths for Screens
+- a whoosh plus sub drop on each handover
+- ticks when the focus ring lands on a tile
+- a tone that follows the download progress, then a chime and a check
+- the arp drops out for a lub-dub heartbeat on the five waveform beats
+- a pad and noise riser into one wide sub-and-bell hit on the N, with a long tail through the end card
+
+It's mixed with convolution reverb and soft clipping, then muxed as AAC at -14 LUFS. `render.py` adds it automatically; `--no-music` skips it.
+It is not based on, and doesn't imitate, Netflix's "ta-dum" sonic logo.
+
+```bash
+python score.py              # rebuild out/score.wav and mux it into every out/*.mp4
+```
+
 ## Output
 
-`out/web_16x9.mp4` and `out/web_9x16.mp4` are committed delivery encodes: H.264, 60 fps, 21 s, about 14 Mbps, about 37 MB each.
+`out/web_16x9.mp4` and `out/web_9x16.mp4` are committed delivery encodes: H.264, 60 fps, 21 s, about 14 Mbps, about 37 MB each, with the score as 256 kbps AAC.
 Full-quality masters (`out/netflix_one_red_line_*.mp4`) are written by `render.py` and are gitignored because of their size.
 
 ## Files

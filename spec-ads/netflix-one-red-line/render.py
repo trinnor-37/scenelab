@@ -23,6 +23,7 @@ sys.path.insert(0, HERE)
 
 from engine import font_family  # noqa: E402
 from film import DURATION, FPS, Film  # noqa: E402
+import score  # noqa: E402
 
 FORMATS = {"land": (1920, 1080), "port": (1080, 1920)}
 _FILM = None
@@ -104,6 +105,7 @@ def main():
     ap.add_argument("--end", type=float, default=DURATION)
     ap.add_argument("--stills", help="comma-separated times in seconds")
     ap.add_argument("--contact", action="store_true")
+    ap.add_argument("--no-music", action="store_true", help="skip muxing the score")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     print(f"typeface: {font_family()}")
@@ -117,7 +119,14 @@ def main():
         else:
             W, H = FORMATS[f]
             name = "netflix_one_red_line_16x9.mp4" if W > H else "netflix_one_red_line_9x16.mp4"
-            render_video(f, os.path.join(a.out, name), a.workers, a.crf, a.start, a.end)
+            path = os.path.join(a.out, name)
+            render_video(f, path, a.workers, a.crf, a.start, a.end)
+            if not a.no_music and a.start == 0.0 and a.end == DURATION:
+                wav = os.path.join(a.out, "score.wav")
+                if not os.path.exists(wav):
+                    score.write_wav(wav, score.score())
+                score.mux(path, wav, path)
+                print(f"  [{f}] score muxed")
 
 
 if __name__ == "__main__":
