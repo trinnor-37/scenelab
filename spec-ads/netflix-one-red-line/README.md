@@ -54,6 +54,11 @@ python render.py --stills 4,7.5,19.8     # review frames
 
 A full render takes roughly 6–8 minutes per format on 4 cores.
 
+## Output
+
+`out/web_16x9.mp4` and `out/web_9x16.mp4` are committed delivery encodes: H.264, 60 fps, 21 s, about 14 Mbps, about 37 MB each.
+Full-quality masters (`out/netflix_one_red_line_*.mp4`) are written by `render.py` and are gitignored because of their size.
+
 ## Files
 
 - `engine.py`: easing, fonts, camera and projection, sprite compositing with depth of field, strand rasteriser, background, bloom and grain.
