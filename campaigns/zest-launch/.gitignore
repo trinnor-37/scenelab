@@ -1,6 +1,4 @@
 out/
 .cache/
-assets/**/*.png
-assets/**/*.mp4
-assets/**/*.wav
-assets/*.png
+assets/plates/*.mp4
+assets/sfx/*.wav

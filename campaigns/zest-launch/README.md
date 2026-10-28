@@ -15,22 +15,26 @@ Video models redraw every pixel in frame. If a model gets your can as a referenc
 1. Generators only make **plates**: fruit, fizz, mist, ice and the set. Every plate prompt asks for an empty, can-shaped space with no can, packaging or text in it.
 2. Your real photo is cut out (transparent PNG) and **composited** on top in `build.py`.
 3. The only operations on it are **move** and **uniform scale** (Lanczos). There is no rotation, warp, relight, recolour, added condensation or label overlay. The drop shadow and bubbles sit *behind* it.
-4. The one exception is the spray burst on the pop (0.75 s, screen-blended). It passes briefly across the top rim; the can pixels underneath are untouched. Delete `"spray"` from S2 in `timeline.json` if you don't want anything over the can.
+4. Two brief exceptions sit over the can, and the can pixels underneath are never changed. The first is the 2-frame white flash on the pop (0.07 s). The second is the spray burst on the pop (0.75 s, screen-blended). It passes briefly across the top rim. Delete `"spray"` from S2 in `timeline.json` to remove it.
 5. If a photo is smaller than its largest on-screen size (about 1,040 px tall in S2), the script prints a warning rather than quietly upscaling.
 
-## What I need from you
+## Assets: status
 
-| File | What | Why |
-|---|---|---|
-| `assets/can_closed.png` | Your real can, closed, cut out on transparency, at least 1,100 px tall | 0.0–2.4 s |
-| `assets/can_open.png` | **The same can, same angle and lighting, ring-pull opened**, cut out | The pop is a cut on frame 72, from the closed photo to the open one, hidden by the flash, shake, spray and tab-crack. Without it, the closed can is held throughout and the pop is only sound and spray. |
-| `assets/plates/*.mp4` | Generated plates (prompts below) | Optional now; gradients stand in |
-| `assets/sfx/*.wav` | The 17 SFX files named in `timeline.json` | Silent track until supplied |
+| File | Status |
+|---|---|
+| `assets/source/zest_can_front.png` | ✅ Your front can photo (1024×1536, white background) |
+| `assets/source/zest_reference_sheet.png` | ✅ Your reference sheet (palette, back panel, top view) |
+| `assets/can_closed.png` | ✅ Cut out with `python3 prepare_can.py assets/source/zest_can_front.png assets/can_closed.png`. Alpha only: checked to have **0 changed RGB pixels** against the photo. 584×1500, so it is only ever scaled *down* (largest on-screen size is about 1,040 px). |
+| `assets/can_open.png` | ❌ **Missing.** The same can, same angle and light, with the tab opened. Until it exists, the closed can is held and the pop on "fizz" is carried by the flash, shake, spray and ring-pull crack. Drop the file in and re-run; the cut on frame 72 then happens with no other change. |
+| `assets/plates/*.mp4` | ❌ Not generated yet (prompts below); gradients stand in |
+| `assets/sfx/*.wav` | ❌ The 17 SFX files named in `timeline.json`; the track is silent until supplied |
 
-**Facts to confirm before this runs as an ad:**
-- "Low sugar": the on-screen sub-line is a placeholder `[ Xg sugar per can ]`. Fill it in from the nutrition panel. In the UK and EU, a drink can only claim "low sugar" at **≤2.5 g sugar per 100 ml**. If Zest is above that, change the wording.
-- "Made with real pink grapefruit": this needs real grapefruit (juice or extract) in the ingredients list.
-- "Naturally flavoured": this needs natural flavourings only.
+The brand palette is sampled from the reference sheet: magenta `#A80836`, pink `#FE7B8E`, coral `#FE4B54`, blush `#FEC4CA`. Supers and the button use the magenta.
+
+**Claims, checked against the back panel on the reference sheet:**
+- "Low sugar": ✅ the panel shows **0.4 g sugars per 100 ml**, inside the UK/EU limit of ≤2.5 g/100 ml. The super reads "Only 0.4g sugar per 100ml". Confirm this against your production panel, because the sheet looks like a mock-up.
+- "Naturally flavoured": ✅ the ingredients list natural flavourings only.
+- "Real fruit": ⚠️ **the ingredients list doesn't support this.** They read "Carbonated water, natural grapefruit flavouring, citric acid, natural flavours". That is flavouring, with no grapefruit juice or fruit. The sheet's own icon says "Real fruit *flavour*". The hook and the can both say "Real fruit". If the drink contains no actual grapefruit, change the hook (for example "Real flavour. Real fizz.") and the can copy before this runs. For that reason I replaced my earlier "Made with real pink grapefruit" super with "Pink grapefruit / sparkling water", which only repeats what the can says.
 
 ## Beat sheet (30 fps, 600 frames)
 
@@ -39,9 +43,9 @@ Video models redraw every pixel in frame. If a model gets your can as a referenc
 | 0.0–2.4 | S1 | Halved pink grapefruit drops into frame; the **closed** real can rises in from below (1.0–1.6) | "Real fruit." at 0.3, then "Real" at 1.9 | wet fruit thud, droplets, soft whoosh, settle tick |
 | **2.4** (f72) | S2 | **POP**: cut to the open can, 2-frame white flash, 5-frame shake, spray burst | **"fizz."** pops in at 145% → 100% | **ring-pull crack + hiss** on f72 |
 | 2.4–6.0 | S2 | Bubbles rise behind the can; slow push-in 50 → 54% of frame height | hook holds to 5.6 | fizz crackle bed |
-| 6.0–9.5 | S3 | Grapefruit macro, juice beads; can slides in on the right | "Made with real pink grapefruit" | swish, two drips |
+| 6.0–9.5 | S3 | Grapefruit macro, juice beads; can slides in on the right | "Pink grapefruit / sparkling water" | swish, two drips |
 | 9.5–12.5 | S4 | Zest peel twist, backlit citrus-oil mist; can on the left | "Naturally flavoured" | peel snap, mist spritz |
-| 12.5–15.5 | S5 | Ice drops into a glass of pink sparkling water; can on the right | "Low sugar" + `[ Xg sugar per can ]` | ice clink, pour |
+| 12.5–15.5 | S5 | Ice drops into a glass of pink sparkling water; can on the right | "Low sugar" + "Only 0.4g sugar per 100ml" | ice clink, pour |
 | 15.5–17.5 | S6 | Hero: can centred and largest, grapefruit halves flanking | "Real fruit · Naturally flavoured · Low sugar" | airy whoosh |
 | 17.6–18.0 | S6 | Can lifts up; the **Tap to shop →** button springs up from below | | UI slide-up |
 | 18.25 | | Button pulses once (invites the tap) | | |
