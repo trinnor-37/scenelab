@@ -1,0 +1,6 @@
+out/
+.cache/
+assets/**/*.png
+assets/**/*.mp4
+assets/**/*.wav
+assets/*.png

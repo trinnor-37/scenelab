@@ -1,0 +1,92 @@
+{
+  "title": "Zest — Pink Grapefruit Sparkling Water — 20s launch",
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "duration": 20.0,
+  "font": "/usr/share/fonts/opentype/inter/InterDisplay-Black.otf",
+  "font_body": "/usr/share/fonts/opentype/inter/Inter-SemiBold.otf",
+  "colors": {
+    "ink": "#3B0D1E",
+    "cream": "#FFF6F1",
+    "button": "#E2456F",
+    "button_pressed": "#B92E55"
+  },
+
+  "pop_time": 2.4,
+
+  "shots": [
+    {
+      "id": "S1", "start": 0.0, "end": 2.4, "plate": "p1_fruit_drop", "bg": ["#FFE3E7", "#F59AAE"],
+      "can": { "state": "closed", "t0": 1.0, "t1": 1.6, "from": { "x": 0.5, "y": 1.45, "h": 0.5 }, "to": { "x": 0.5, "y": 0.57, "h": 0.5 } },
+      "fx": ["fruit_placeholder"]
+    },
+    {
+      "id": "S2", "start": 2.4, "end": 6.0, "plate": "p2_fizz_rise", "bg": ["#FFD6DE", "#EE7F99"],
+      "can": { "state": "open", "t0": 2.4, "t1": 6.0, "from": { "x": 0.5, "y": 0.57, "h": 0.5 }, "to": { "x": 0.5, "y": 0.56, "h": 0.54 } },
+      "fx": ["spray", "bubbles", "shake"]
+    },
+    {
+      "id": "S3", "start": 6.0, "end": 9.5, "plate": "p3_grapefruit_macro", "bg": ["#FFE9E4", "#F28C8C"],
+      "can": { "state": "open", "t0": 6.0, "t1": 6.45, "from": { "x": 1.35, "y": 0.6, "h": 0.46 }, "to": { "x": 0.68, "y": 0.6, "h": 0.46 } }
+    },
+    {
+      "id": "S4", "start": 9.5, "end": 12.5, "plate": "p4_zest_mist", "bg": ["#FFF0E6", "#F6A38E"],
+      "can": { "state": "open", "t0": 9.5, "t1": 9.95, "from": { "x": -0.35, "y": 0.6, "h": 0.46 }, "to": { "x": 0.32, "y": 0.6, "h": 0.46 } }
+    },
+    {
+      "id": "S5", "start": 12.5, "end": 15.5, "plate": "p5_ice_glass", "bg": ["#FFE6EC", "#E9799A"],
+      "can": { "state": "open", "t0": 12.5, "t1": 12.95, "from": { "x": 1.35, "y": 0.6, "h": 0.46 }, "to": { "x": 0.68, "y": 0.6, "h": 0.46 } },
+      "fx": ["bubbles"]
+    },
+    {
+      "id": "S6", "start": 15.5, "end": 20.0, "plate": "p6_hero_set", "bg": ["#FFDCE3", "#E9688B"],
+      "can": { "state": "open", "t0": 15.5, "t1": 16.0, "from": { "x": 0.5, "y": 0.62, "h": 0.4 }, "to": { "x": 0.5, "y": 0.5, "h": 0.52 } },
+      "can2": { "t0": 17.5, "t1": 18.0, "to": { "x": 0.5, "y": 0.43, "h": 0.46 } },
+      "fx": ["bubbles"]
+    }
+  ],
+
+  "supers": [
+    { "y": 0.105, "size": 118, "end": 5.6, "parts": [{ "text": "Real fruit.", "t": 0.3 }] },
+    { "y": 0.175, "size": 118, "end": 5.6, "parts": [{ "text": "Real ", "t": 1.9 }, { "text": "fizz.", "t": 2.4, "pop": true }] },
+    { "y": 0.14, "size": 84, "end": 9.3, "parts": [{ "text": "Made with real", "t": 6.3 }] },
+    { "y": 0.19, "size": 84, "end": 9.3, "parts": [{ "text": "pink grapefruit", "t": 6.45 }] },
+    { "y": 0.165, "size": 96, "end": 12.3, "parts": [{ "text": "Naturally flavoured", "t": 9.8 }] },
+    { "y": 0.14, "size": 120, "end": 15.3, "parts": [{ "text": "Low sugar", "t": 12.8 }] },
+    { "y": 0.205, "size": 52, "end": 15.3, "body": true, "parts": [{ "text": "[ Xg sugar per can ]", "t": 13.0 }] },
+    { "y": 0.115, "size": 50, "end": 17.4, "body": true, "parts": [{ "text": "Real fruit  ·  Naturally flavoured  ·  Low sugar", "t": 15.8 }] }
+  ],
+
+  "button": {
+    "label": "Tap to shop",
+    "y": 0.815, "w": 700, "h": 156,
+    "enter_t0": 17.6, "enter_t1": 18.0,
+    "pulse_t": 18.25,
+    "press_t": 18.7,
+    "comment": "Ends on the pressed state, held to the last frame. No logo card."
+  },
+
+  "sfx": [
+    { "t": 0.12, "file": "grapefruit_half_thud.wav", "gain_db": -4, "note": "wet thud as the halved grapefruit lands in frame" },
+    { "t": 0.55, "file": "juice_droplets.wav", "gain_db": -8, "note": "droplet splats" },
+    { "t": 1.0, "file": "can_whoosh_soft.wav", "gain_db": -10, "note": "can rises into frame" },
+    { "t": 1.58, "file": "can_settle_tap.wav", "gain_db": -9, "note": "tiny aluminium tick as it settles" },
+    { "t": 2.4, "file": "can_tab_crack.wav", "gain_db": 0, "note": "HERO CUE: ring-pull crack, transient lands on frame 72 with the word 'fizz.'" },
+    { "t": 2.42, "file": "carbonation_hiss_burst.wav", "gain_db": -3, "note": "pressurised hiss right behind the crack" },
+    { "t": 2.7, "file": "fizz_crackle_bed.wav", "gain_db": -12, "note": "bubble crackle bed, fade out by 5.9" },
+    { "t": 6.0, "file": "air_swish.wav", "gain_db": -12, "note": "can slides in" },
+    { "t": 6.8, "file": "juice_drip_plink.wav", "gain_db": -10, "note": "drip 1" },
+    { "t": 7.9, "file": "juice_drip_plink.wav", "gain_db": -12, "note": "drip 2" },
+    { "t": 9.5, "file": "air_swish.wav", "gain_db": -12, "note": "can slides in" },
+    { "t": 9.75, "file": "peel_snap.wav", "gain_db": -6, "note": "zest peel twist" },
+    { "t": 10.3, "file": "zest_mist_spritz.wav", "gain_db": -9, "note": "citrus-oil mist" },
+    { "t": 12.5, "file": "air_swish.wav", "gain_db": -12, "note": "can slides in" },
+    { "t": 12.8, "file": "ice_drop_clink.wav", "gain_db": -5, "note": "ice into glass" },
+    { "t": 13.4, "file": "sparkling_pour.wav", "gain_db": -9, "note": "pour + fizz" },
+    { "t": 15.5, "file": "airy_whoosh.wav", "gain_db": -10, "note": "into hero" },
+    { "t": 17.6, "file": "ui_slide_up.wav", "gain_db": -12, "note": "button slides up" },
+    { "t": 18.7, "file": "ui_tap_click.wav", "gain_db": -2, "note": "crisp tap on the press frame (561)" },
+    { "t": 18.72, "file": "mini_fizz_pop.wav", "gain_db": -8, "note": "small fizz sparkle tail on the press, rings out to 20.0" }
+  ]
+}
