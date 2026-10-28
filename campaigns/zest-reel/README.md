@@ -7,7 +7,7 @@ python3 -I scripts/prepare_assets.py   # can cut-out (alpha repair, RGB verified
 python3 -I scripts/vo_edit.py          # tighten the voice take, write word timings
 bash scripts/make_sfx.sh               # placeholder SFX
 npx hyperframes@0.8.211 check          # lint + runtime + layout + contrast
-npx hyperframes@0.8.211 render -o renders/zest-reel-review-raw.mp4 -f 30
+bash scripts/finish.sh                  # render + level to -14 LUFS / -1 dBTP, trim to 30.0 s
 ```
 
 In this cloud session, renders need `HYPERFRAMES_BROWSER_PATH` set to the pre-installed headless shell. GSAP and the fonts are stored in the project because the jsDelivr CDN is blocked here.
