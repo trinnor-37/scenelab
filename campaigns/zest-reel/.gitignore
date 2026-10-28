@@ -1,4 +1,4 @@
 .hyperframes/
 node_modules/
 .review/
-renders/*-raw.mp4
+renders/
