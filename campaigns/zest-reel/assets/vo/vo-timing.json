@@ -1,0 +1,472 @@
+{
+ "source": "ollie-B.mp3",
+ "lead_in": 0.15,
+ "duration": 27.397,
+ "sections": {
+  "hook": 0.15,
+  "meet": 2.451,
+  "fizz": 7.407,
+  "proofs": 13.237,
+  "pour": 16.988,
+  "why": 20.127,
+  "cta": 24.471
+ },
+ "chunks": [
+  {
+   "text": "Crack open real grapefruit.",
+   "start": 0.15,
+   "end": 2.031
+  },
+  {
+   "text": "Meet Zest.",
+   "start": 2.451,
+   "end": 3.217
+  },
+  {
+   "text": "Pink grapefruit sparkling water,",
+   "start": 3.517,
+   "end": 5.371
+  },
+  {
+   "text": "made with real fruit.",
+   "start": 5.591,
+   "end": 6.987
+  },
+  {
+   "text": "Pop the tab",
+   "start": 7.407,
+   "end": 8.187
+  },
+  {
+   "text": "and hear that fizz.",
+   "start": 8.337,
+   "end": 9.476
+  },
+  {
+   "text": "Cold,",
+   "start": 9.776,
+   "end": 10.234
+  },
+  {
+   "text": "bright,",
+   "start": 10.454,
+   "end": 10.869
+  },
+  {
+   "text": "and",
+   "start": 11.089,
+   "end": 11.298
+  },
+  {
+   "text": "bursting with grapefruit.",
+   "start": 11.458,
+   "end": 12.817
+  },
+  {
+   "text": "Real fruit.",
+   "start": 13.237,
+   "end": 14.068
+  },
+  {
+   "text": "Naturally flavoured.",
+   "start": 14.288,
+   "end": 15.294
+  },
+  {
+   "text": "And low sugar.",
+   "start": 15.612,
+   "end": 16.568
+  },
+  {
+   "text": "Pour it over ice",
+   "start": 16.988,
+   "end": 18.084
+  },
+  {
+   "text": "and watch it sparkle.",
+   "start": 18.284,
+   "end": 19.707
+  },
+  {
+   "text": "Why the name?",
+   "start": 20.127,
+   "end": 20.804
+  },
+  {
+   "text": "Zest is the fruit's bright, citrusy peel.",
+   "start": 21.204,
+   "end": 24.051
+  },
+  {
+   "text": "Crack one open.",
+   "start": 24.471,
+   "end": 25.328
+  },
+  {
+   "text": "Follow for more",
+   "start": 25.678,
+   "end": 26.511
+  },
+  {
+   "text": "Zest.",
+   "start": 26.811,
+   "end": 27.397
+  }
+ ],
+ "words": [
+  {
+   "text": "Crack",
+   "start": 0.15,
+   "end": 0.463,
+   "chunk": 0
+  },
+  {
+   "text": "open",
+   "start": 0.463,
+   "end": 1.09,
+   "chunk": 0
+  },
+  {
+   "text": "real",
+   "start": 1.09,
+   "end": 1.404,
+   "chunk": 0
+  },
+  {
+   "text": "grapefruit.",
+   "start": 1.404,
+   "end": 2.031,
+   "chunk": 0
+  },
+  {
+   "text": "Meet",
+   "start": 2.451,
+   "end": 2.834,
+   "chunk": 1
+  },
+  {
+   "text": "Zest.",
+   "start": 2.834,
+   "end": 3.217,
+   "chunk": 1
+  },
+  {
+   "text": "Pink",
+   "start": 3.517,
+   "end": 3.782,
+   "chunk": 2
+  },
+  {
+   "text": "grapefruit",
+   "start": 3.782,
+   "end": 4.312,
+   "chunk": 2
+  },
+  {
+   "text": "sparkling",
+   "start": 4.312,
+   "end": 4.842,
+   "chunk": 2
+  },
+  {
+   "text": "water,",
+   "start": 4.842,
+   "end": 5.371,
+   "chunk": 2
+  },
+  {
+   "text": "made",
+   "start": 5.591,
+   "end": 5.94,
+   "chunk": 3
+  },
+  {
+   "text": "with",
+   "start": 5.94,
+   "end": 6.289,
+   "chunk": 3
+  },
+  {
+   "text": "real",
+   "start": 6.289,
+   "end": 6.638,
+   "chunk": 3
+  },
+  {
+   "text": "fruit.",
+   "start": 6.638,
+   "end": 6.987,
+   "chunk": 3
+  },
+  {
+   "text": "Pop",
+   "start": 7.407,
+   "end": 7.667,
+   "chunk": 4
+  },
+  {
+   "text": "the",
+   "start": 7.667,
+   "end": 7.927,
+   "chunk": 4
+  },
+  {
+   "text": "tab",
+   "start": 7.927,
+   "end": 8.187,
+   "chunk": 4
+  },
+  {
+   "text": "and",
+   "start": 8.337,
+   "end": 8.622,
+   "chunk": 5
+  },
+  {
+   "text": "hear",
+   "start": 8.622,
+   "end": 8.906,
+   "chunk": 5
+  },
+  {
+   "text": "that",
+   "start": 8.906,
+   "end": 9.191,
+   "chunk": 5
+  },
+  {
+   "text": "fizz.",
+   "start": 9.191,
+   "end": 9.476,
+   "chunk": 5
+  },
+  {
+   "text": "Cold,",
+   "start": 9.776,
+   "end": 10.234,
+   "chunk": 6
+  },
+  {
+   "text": "bright,",
+   "start": 10.454,
+   "end": 10.869,
+   "chunk": 7
+  },
+  {
+   "text": "and",
+   "start": 11.089,
+   "end": 11.298,
+   "chunk": 8
+  },
+  {
+   "text": "bursting",
+   "start": 11.458,
+   "end": 12.002,
+   "chunk": 9
+  },
+  {
+   "text": "with",
+   "start": 12.002,
+   "end": 12.274,
+   "chunk": 9
+  },
+  {
+   "text": "grapefruit.",
+   "start": 12.274,
+   "end": 12.817,
+   "chunk": 9
+  },
+  {
+   "text": "Real",
+   "start": 13.237,
+   "end": 13.653,
+   "chunk": 10
+  },
+  {
+   "text": "fruit.",
+   "start": 13.653,
+   "end": 14.068,
+   "chunk": 10
+  },
+  {
+   "text": "Naturally",
+   "start": 14.288,
+   "end": 14.959,
+   "chunk": 11
+  },
+  {
+   "text": "flavoured.",
+   "start": 14.959,
+   "end": 15.294,
+   "chunk": 11
+  },
+  {
+   "text": "And",
+   "start": 15.612,
+   "end": 15.851,
+   "chunk": 12
+  },
+  {
+   "text": "low",
+   "start": 15.851,
+   "end": 16.09,
+   "chunk": 12
+  },
+  {
+   "text": "sugar.",
+   "start": 16.09,
+   "end": 16.568,
+   "chunk": 12
+  },
+  {
+   "text": "Pour",
+   "start": 16.988,
+   "end": 17.207,
+   "chunk": 13
+  },
+  {
+   "text": "it",
+   "start": 17.207,
+   "end": 17.427,
+   "chunk": 13
+  },
+  {
+   "text": "over",
+   "start": 17.427,
+   "end": 17.865,
+   "chunk": 13
+  },
+  {
+   "text": "ice",
+   "start": 17.865,
+   "end": 18.084,
+   "chunk": 13
+  },
+  {
+   "text": "and",
+   "start": 18.284,
+   "end": 18.569,
+   "chunk": 14
+  },
+  {
+   "text": "watch",
+   "start": 18.569,
+   "end": 18.854,
+   "chunk": 14
+  },
+  {
+   "text": "it",
+   "start": 18.854,
+   "end": 19.138,
+   "chunk": 14
+  },
+  {
+   "text": "sparkle.",
+   "start": 19.138,
+   "end": 19.707,
+   "chunk": 14
+  },
+  {
+   "text": "Why",
+   "start": 20.127,
+   "end": 20.353,
+   "chunk": 15
+  },
+  {
+   "text": "the",
+   "start": 20.353,
+   "end": 20.578,
+   "chunk": 15
+  },
+  {
+   "text": "name?",
+   "start": 20.578,
+   "end": 20.804,
+   "chunk": 15
+  },
+  {
+   "text": "Zest",
+   "start": 21.204,
+   "end": 21.52,
+   "chunk": 16
+  },
+  {
+   "text": "is",
+   "start": 21.52,
+   "end": 21.837,
+   "chunk": 16
+  },
+  {
+   "text": "the",
+   "start": 21.837,
+   "end": 22.153,
+   "chunk": 16
+  },
+  {
+   "text": "fruit's",
+   "start": 22.153,
+   "end": 22.469,
+   "chunk": 16
+  },
+  {
+   "text": "bright,",
+   "start": 22.469,
+   "end": 22.785,
+   "chunk": 16
+  },
+  {
+   "text": "citrusy",
+   "start": 22.785,
+   "end": 23.734,
+   "chunk": 16
+  },
+  {
+   "text": "peel.",
+   "start": 23.734,
+   "end": 24.051,
+   "chunk": 16
+  },
+  {
+   "text": "Crack",
+   "start": 24.471,
+   "end": 24.685,
+   "chunk": 17
+  },
+  {
+   "text": "one",
+   "start": 24.685,
+   "end": 24.899,
+   "chunk": 17
+  },
+  {
+   "text": "open.",
+   "start": 24.899,
+   "end": 25.328,
+   "chunk": 17
+  },
+  {
+   "text": "Follow",
+   "start": 25.678,
+   "end": 26.095,
+   "chunk": 18
+  },
+  {
+   "text": "for",
+   "start": 26.095,
+   "end": 26.303,
+   "chunk": 18
+  },
+  {
+   "text": "more",
+   "start": 26.303,
+   "end": 26.511,
+   "chunk": 18
+  },
+  {
+   "text": "Zest.",
+   "start": 26.811,
+   "end": 27.397,
+   "chunk": 19
+  }
+ ]
+}

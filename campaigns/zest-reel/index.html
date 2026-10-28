@@ -4,156 +4,414 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=1080, height=1920" />
     <script src="assets/vendor/gsap.min.js"></script>
+    <script src="assets/vo/vo-timing.js"></script>
     <style>
-      /* Style frames for approval: four held 1 s frames, one per key beat of SCRIPT.md.
-         Hot Sauce look as read here (flat hot colour fields, stacked condensed caps, hard offset
-         shadows, sticker outlines, halftone), Zest palette swapped in. */
+      /* Zest launch reel, 30 s 9:16. Kinetic, Hot Sauce look (as approved in the style frames), Zest palette.
+         The can is always the real photo cut-out: moved, scaled and rotated only. */
       @font-face { font-family: "Anton"; src: url("assets/fonts/anton-latin.woff2") format("woff2"); }
       @font-face { font-family: "Bricolage"; font-weight: 800; src: url("assets/fonts/bricolage-800-latin.woff2") format("woff2"); }
       :root {
-        --blush: #fec4ca;
-        --pink: #fe7b8e;
-        --berry: #a80836;
-        --berry-deep: #6e0322;
-        --coral: #fe4b54;
-        --leaf: #3c8a2e;
-        --cream: #fff4f1;
-        --font-display: "Anton", sans-serif;
-        --font-caption: "Bricolage", sans-serif;
+        --blush: #fec4ca; --pink: #fe7b8e; --berry: #a80836; --berry-deep: #6e0322;
+        --coral: #fe4b54; --leaf: #3c8a2e; --cream: #fff4f1; --rind: #ffad4a; --rind-deep: #e8742a;
+        --font-display: "Anton", sans-serif; --font-caption: "Bricolage", sans-serif;
       }
       * { margin: 0; padding: 0; box-sizing: border-box; }
       html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--blush); }
-      #root { position: relative; width: 100%; height: 100%; }
+      #root { position: relative; width: 100%; height: 100%; overflow: hidden; }
       .clip { position: absolute; inset: 0; overflow: hidden; }
-
+      .abs { position: absolute; }
+      .full { position: absolute; inset: 0; }
       .halftone::before {
         content: ""; position: absolute; inset: 0; pointer-events: none;
-        background-image: radial-gradient(rgba(168, 8, 54, 0.16) 3.2px, transparent 3.6px);
-        background-size: 22px 22px;
-        -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 100%);
-        mask-image: linear-gradient(180deg, transparent 0%, #000 100%);
+        background-image: radial-gradient(rgba(168, 8, 54, 0.16) 3.2px, transparent 3.6px); background-size: 22px 22px;
+        -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 100%); mask-image: linear-gradient(180deg, transparent 0%, #000 100%);
       }
-      .slam {
-        position: absolute; font-family: var(--font-display); text-transform: uppercase;
-        line-height: 0.86; letter-spacing: -0.01em;
-      }
-      /* The real can: positioned, scaled and rotated only. Never filtered or recoloured. */
-      .can { position: absolute; width: auto; }
-      .can-shadow { position: absolute; border-radius: 50%; background: rgba(110, 3, 34, 0.32); filter: blur(18px); }
+      .slam { position: absolute; font-family: var(--font-display); text-transform: uppercase; line-height: 0.86; letter-spacing: -0.01em; white-space: nowrap; }
+      .slam span { display: inline-block; }
+      .can { position: absolute; width: auto; will-change: transform; }
+      .sticker { position: absolute; font-family: var(--font-display); text-transform: uppercase; padding: 14px 30px 18px; border: 6px solid var(--berry); border-radius: 999px; box-shadow: 8px 8px 0 var(--berry); white-space: nowrap; }
+      .disc { position: absolute; border-radius: 50%; overflow: hidden; }
+      .disc img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-      /* captions: one line, active word in coral */
+      /* captions */
+      #captions { z-index: 50; pointer-events: none; }
       .cap {
-        position: absolute; left: 50%; bottom: 210px; transform: translateX(-50%);
-        max-width: 920px; padding: 18px 34px 22px; border-radius: 26px;
-        background: var(--berry-deep); color: var(--cream);
-        font-family: var(--font-caption); font-weight: 800; font-size: 54px; line-height: 1.12;
-        text-align: center; white-space: nowrap; box-shadow: 0 10px 0 rgba(110, 3, 34, 0.35);
+        position: absolute; left: 50%; bottom: 200px; transform: translateX(-50%); width: max-content; max-width: 940px;
+        padding: 16px 30px 20px; border-radius: 26px; background: var(--berry-deep); color: var(--cream);
+        font-family: var(--font-caption); font-weight: 800; font-size: 54px; line-height: 1.18; text-align: center;
+        box-shadow: 0 10px 0 rgba(110, 3, 34, 0.35); opacity: 0;
       }
-      .cap b { color: var(--coral); background: var(--cream); padding: 0 12px; border-radius: 12px; font-weight: 800; }
-      .safe-label {
-        position: absolute; left: 36px; top: 36px; font: 600 26px/1 var(--font-caption);
-        color: rgba(110, 3, 34, 0.55); letter-spacing: 0.06em;
-      }
-      .sticker {
-        position: absolute; font-family: var(--font-display); text-transform: uppercase;
-        padding: 14px 30px 18px; border: 6px solid var(--berry); border-radius: 999px;
-        box-shadow: 8px 8px 0 var(--berry);
-      }
+      .cap .w { display: inline-block; padding: 0 8px; border-radius: 12px; }
     </style>
   </head>
   <body>
-    <div id="root" data-composition-id="main" data-start="0" data-duration="4" data-width="1080" data-height="1920">
+    <div id="root" data-composition-id="main" data-start="0" data-duration="30" data-width="1080" data-height="1920">
 
-      <!-- SF1 · Hook 0:01.6, on "open": can slams in tilted, ring-pull hit, juice spray, shockwave -->
-      <section id="sf1" class="clip halftone" data-start="0" data-duration="1" style="background: var(--blush)">
-        <div class="slam" style="left: 54px; top: 110px; font-size: 270px; color: var(--berry); text-shadow: 12px 12px 0 var(--coral)">CRACK<br />OPEN</div>
-        <!-- shockwave: behind the can -->
-        <svg width="1080" height="1920" style="position:absolute;inset:0" viewBox="0 0 1080 1920">
+      <!-- 1 · HOOK 0.00–2.45 "Crack open real grapefruit." -->
+      <section id="s-hook" class="clip halftone" data-start="0" data-duration="2.45" style="background: var(--blush)">
+        <div id="h-title" class="slam" style="left: 54px; top: 110px; font-size: 270px; color: var(--berry); text-shadow: 12px 12px 0 var(--coral)">
+          <div id="h-crack"><span>C</span><span>R</span><span>A</span><span>C</span><span>K</span></div>
+          <div id="h-open"><span>O</span><span>P</span><span>E</span><span>N</span></div>
+        </div>
+        <svg id="h-rings" class="full" viewBox="0 0 1080 1920">
           <g transform="translate(524 797)" fill="none" stroke="var(--coral)">
-            <circle r="250" stroke-width="22" opacity="0.8" /><circle r="360" stroke-width="8" opacity="0.35" />
+            <circle id="h-ring1" r="250" stroke-width="22" /><circle id="h-ring2" r="360" stroke-width="8" />
           </g>
         </svg>
-        <div class="can-shadow" style="left: 430px; top: 1555px; width: 340px; height: 56px"></div>
-        <img class="can" src="assets/zest-can.png" style="left: 439px; top: 760px; height: 820px; transform: rotate(-11deg)" alt="" />
-        <!-- spray: rises from the tab into the gap above the can -->
-        <svg width="1080" height="1920" style="position:absolute;inset:0" viewBox="0 0 1080 1920">
-          <g transform="translate(524 790) rotate(18) scale(0.62)" fill="var(--coral)">
+        <img id="h-can" class="can" src="assets/zest-can.png" style="left: 439px; top: 760px; height: 820px" alt="" />
+        <svg class="full" viewBox="0 0 1080 1920">
+          <g transform="translate(524 790) rotate(18) scale(0.62)"><g id="h-spray" fill="var(--coral)">
             <path d="M-10 -10 C -60 -150, -170 -250, -300 -300 C -180 -240, -90 -160, 20 -30 Z" />
             <path d="M10 -10 C 50 -170, 140 -280, 300 -340 C 180 -250, 100 -160, 40 -20 Z" />
             <path d="M0 -10 C -10 -170, 10 -280, 50 -400 C 60 -270, 50 -150, 30 -10 Z" />
             <circle cx="-320" cy="-330" r="26" /><circle cx="330" cy="-370" r="24" /><circle cx="410" cy="-270" r="16" />
             <circle cx="80" cy="-440" r="20" /><circle cx="-200" cy="-420" r="14" /><circle cx="220" cy="-470" r="12" />
-          </g>
+          </g></g>
         </svg>
-        <div class="cap">Crack <b>open</b> real grapefruit.</div>
-        <div class="safe-label">SF1 · HOOK · 0:01.6</div>
+        <div id="h-flood" class="full" style="background: var(--coral); clip-path: circle(0px at 524px 797px)"></div>
       </section>
 
-      <!-- SF2 · Meet Zest 0:05: coral flood is the ground, per-glyph slam, two-way subtitle -->
-      <section id="sf2" class="clip" data-start="1" data-duration="1" style="background: var(--coral)">
-        <div class="slam" style="left: 60px; top: 170px; font-size: 120px; color: var(--cream)">MEET</div>
-        <div class="slam" style="left: 40px; top: 270px; font-size: 470px; color: var(--berry-deep); text-shadow: 14px 14px 0 var(--blush); word-spacing: 0">
-          <span style="display:inline-block; margin-right: 14px; transform: rotate(-6deg) translateY(10px)">Z</span><span style="display:inline-block; margin-right: 14px; transform: rotate(3deg)">E</span><span style="display:inline-block; margin-right: 14px; transform: rotate(-3deg) translateY(-14px)">S</span><span style="display:inline-block; transform: rotate(5deg)">T</span>
+      <!-- 2 · MEET ZEST 2.45–7.41 -->
+      <section id="s-meet" class="clip" data-start="2.45" data-duration="4.96" style="background: var(--coral)">
+        <div id="m-meet" class="slam" style="left: 60px; top: 170px; font-size: 120px; color: var(--cream)">MEET</div>
+        <div id="m-zest" class="slam" style="left: 40px; top: 270px; font-size: 470px; color: var(--berry-deep); text-shadow: 14px 14px 0 var(--blush)">
+          <span style="margin-right: 14px">Z</span><span style="margin-right: 14px">E</span><span style="margin-right: 14px">S</span><span>T</span>
         </div>
-        <div class="sticker" style="left: 70px; top: 790px; font-size: 76px; background: var(--blush); color: var(--berry); transform: rotate(-4deg)">PINK GRAPEFRUIT</div>
-        <div style="position:absolute; left:-20px; top: 960px; width: 640px; padding: 16px 0 16px 92px; background: var(--leaf); color: var(--cream); font: 64px/1 var(--font-display); transform: rotate(3deg); box-shadow: 0 8px 0 rgba(0,0,0,0.18)">SPARKLING WATER</div>
-        <div class="can-shadow" style="left: 640px; top: 1520px; width: 340px; height: 52px"></div>
-        <img class="can" src="assets/zest-can.png" style="left: 610px; top: 690px; height: 860px" alt="" />
-        <div class="cap">made with <b>real</b> fruit.</div>
-        <div class="safe-label" style="color: rgba(255,244,241,0.7)">SF2 · MEET ZEST · 0:05</div>
+        <div id="m-pink" class="sticker" style="left: 70px; top: 790px; font-size: 76px; background: var(--blush); color: var(--berry)">PINK GRAPEFRUIT</div>
+        <div id="m-water" class="abs" style="left: -20px; top: 960px; width: 640px; padding: 16px 0 16px 92px; background: var(--leaf); color: var(--cream); font: 64px/1 var(--font-display); box-shadow: 0 8px 0 rgba(0,0,0,0.18); clip-path: inset(0 100% 0 0)">SPARKLING WATER</div>
+        <img id="m-can" class="can" src="assets/zest-can.png" style="left: 640px; top: 640px; height: 790px; transform-origin: 50% 25%" alt="" />
       </section>
 
-      <!-- SF3 · Proof 1 0:14: "Real fruit" bitten out of the frame by a juice blob that shows the slice macro -->
-      <section id="sf3" class="clip" data-start="2" data-duration="1" style="background: var(--berry)">
-        <svg width="1080" height="1920" style="position:absolute;inset:0" viewBox="0 0 1080 1920">
-          <defs>
-            <clipPath id="bite">
-              <path d="M150 560 C 150 380, 330 300, 520 330 C 700 355, 760 250, 900 330 C 1030 410, 980 600, 940 700 C 900 820, 990 930, 900 1050 C 800 1180, 600 1120, 470 1150 C 300 1190, 150 1100, 140 930 C 132 800, 150 700, 150 560 Z" />
-            </clipPath>
-          </defs>
+      <!-- 3 · THE FIZZ 7.41–13.24 -->
+      <section id="s-fizz" class="clip" data-start="7.41" data-duration="5.83" style="background: var(--berry)">
+        <div id="f-tab" class="disc" style="left: 300px; top: 420px; width: 480px; height: 480px; border: 10px solid var(--blush); box-shadow: 12px 12px 0 var(--berry-deep)"><img src="assets/crops/top-detail.png" alt="" /></div>
+        <svg id="f-bubbles" class="full" viewBox="0 0 1080 1920"></svg>
+        <div id="f-fizzword" class="slam" style="left: 0; width: 1080px; text-align: center; top: 980px; font-size: 330px; color: var(--cream); text-shadow: 12px 12px 0 var(--coral)">FIZZ</div>
+        <div id="f-card" class="abs" style="left: 540px; top: 760px; width: 860px; height: 760px; margin: -380px 0 0 -430px; background: var(--coral); border-radius: 64px; border: 8px solid var(--berry-deep); box-shadow: 16px 16px 0 var(--berry-deep)">
+          <div id="f-cold" class="slam" style="left: 60px; top: 70px; font-size: 230px; color: var(--cream); text-shadow: 10px 10px 0 var(--berry-deep)">COLD,</div>
+          <div id="f-bright" class="slam" style="left: 60px; top: 290px; font-size: 230px; color: var(--berry-deep)">BRIGHT,</div>
+        </div>
+        <div id="f-slice" class="disc" style="left: 560px; top: 980px; width: 440px; height: 440px; border: 10px solid var(--cream); box-shadow: 10px 10px 0 var(--berry-deep)"><img src="assets/crops/print-detail.png" alt="" /></div>
+        <svg id="f-drops" class="full" viewBox="0 0 1080 1920"><g fill="var(--cream)"></g></svg>
+      </section>
+
+      <!-- 4 · PROOFS 13.24–16.99 -->
+      <section id="s-proofs" class="clip" data-start="13.24" data-duration="3.75" style="background: var(--berry)">
+        <svg id="p-bite" class="full" viewBox="0 0 1080 1920" style="transform-origin: 560px 720px">
+          <defs><clipPath id="bite"><path d="M150 560 C 150 380, 330 300, 520 330 C 700 355, 760 250, 900 330 C 1030 410, 980 600, 940 700 C 900 820, 990 930, 900 1050 C 800 1180, 600 1120, 470 1150 C 300 1190, 150 1100, 140 930 C 132 800, 150 700, 150 560 Z" /></clipPath></defs>
           <path d="M150 560 C 150 380, 330 300, 520 330 C 700 355, 760 250, 900 330 C 1030 410, 980 600, 940 700 C 900 820, 990 930, 900 1050 C 800 1180, 600 1120, 470 1150 C 300 1190, 150 1100, 140 930 C 132 800, 150 700, 150 560 Z" transform="translate(16 18)" fill="var(--berry-deep)" />
           <image href="assets/crops/fruit-inspiration.png" x="120" y="290" width="900" height="994" preserveAspectRatio="xMidYMid slice" clip-path="url(#bite)" />
-          <g fill="var(--coral)"><circle cx="980" cy="1130" r="22" /><circle cx="110" cy="420" r="16" /><circle cx="1010" cy="290" r="12" /></g>
         </svg>
-        <div class="slam" style="left: 60px; top: 1190px; font-size: 230px; color: var(--blush); text-shadow: 10px 10px 0 var(--berry-deep)">REAL<br />FRUIT.</div>
-        <div style="position:absolute; right: 60px; top: 1210px; font: 44px/1.5 var(--font-caption); font-weight: 800; color: rgba(254,196,202,0.72); text-align: right">
-          <div style="color: var(--cream)">✓ REAL FRUIT</div><div>NATURALLY FLAVOURED</div><div>LOW SUGAR</div>
+        <div id="p-real" class="slam" style="left: 60px; top: 1190px; font-size: 230px; color: var(--blush); text-shadow: 10px 10px 0 var(--berry-deep)"><div>REAL</div><div>FRUIT.</div></div>
+        <div id="p-band" class="abs" style="left: 0; top: 560px; width: 1080px; height: 330px; background: var(--coral); clip-path: inset(0 100% 0 0)"></div>
+        <div id="p-nat" class="slam" style="left: 50px; top: 600px; font-size: 128px; color: var(--cream); text-shadow: 7px 7px 0 var(--berry-deep)"><div id="p-nat1"></div><div id="p-nat2"></div></div>
+        <svg id="p-leaf" class="abs" style="left: 0; top: 470px" width="900" height="520" viewBox="0 0 900 520">
+          <path d="M20 260 C 180 40, 560 0, 880 250 C 560 510, 180 480, 20 260 Z" fill="var(--leaf)" />
+          <path d="M60 260 C 320 230, 600 240, 860 250" stroke="#2a6420" stroke-width="12" fill="none" stroke-linecap="round" />
+          <path d="M260 250 L 340 120 M 420 248 L 500 100 M 580 248 L 640 130 M 300 252 L 380 380 M 470 252 L 540 400 M 630 250 L 690 370" stroke="#2a6420" stroke-width="7" fill="none" stroke-linecap="round" />
+        </svg>
+        <div id="p-low" class="slam" style="left: 60px; top: 560px; font-size: 215px; color: var(--blush); text-shadow: 10px 10px 0 var(--berry-deep)">LOW SUGAR</div>
+        <div id="p-bar" class="abs" style="left: 60px; top: 840px; width: 960px; height: 100px; border-radius: 50px; border: 8px solid var(--blush); overflow: hidden">
+          <div id="p-barfill" style="width: 100%; height: 100%; background: var(--blush); transform-origin: 0 50%"></div>
         </div>
-        <img class="can" src="assets/zest-can.png" style="left: 830px; top: 1400px; height: 420px; transform: rotate(9deg)" alt="" />
-        <div class="cap" style="background: var(--cream); color: var(--berry-deep)"><b style="background: var(--coral); color: var(--cream)">Real</b> fruit.</div>
-        <div class="safe-label" style="color: rgba(254,196,202,0.7)">SF3 · PROOF 1 · 0:14</div>
+        <div id="p-list" class="abs" style="left: 0; width: 1080px; top: 150px; display: flex; justify-content: center; gap: 34px; font: 800 34px/1 var(--font-caption); color: rgba(254,196,202,0.72); white-space: nowrap">
+          <div id="p-i1"><span class="tick">✓ </span>REAL FRUIT</div><div id="p-i2"><span class="tick">✓ </span>NATURALLY FLAVOURED</div><div id="p-i3"><span class="tick">✓ </span>LOW SUGAR</div>
+        </div>
+        <img id="p-can" class="can" src="assets/zest-can.png" style="left: 875px; top: 1400px; height: 400px" alt="" />
       </section>
 
-      <!-- SF4 · CTA 0:28.5: can becomes the avatar, Follow pressed → Following ✓, coral flood callback -->
-      <section id="sf4" class="clip halftone" data-start="3" data-duration="1" style="background: var(--blush)">
-        <svg width="1080" height="1920" style="position:absolute;inset:0" viewBox="0 0 1080 1920">
-          <path d="M0 1240 C 200 1180, 340 1290, 540 1240 C 740 1190, 880 1290, 1080 1230 L1080 1920 L0 1920 Z" fill="var(--coral)" />
+      <!-- 5 · POUR 16.99–20.13 -->
+      <section id="s-pour" class="clip halftone" data-start="16.99" data-duration="3.14" style="background: var(--blush)">
+        <div id="pour-world" class="full" style="transform-origin: 500px 870px">
+          <div id="pour-stream" class="abs" style="left: 480px; top: 630px; width: 26px; height: 790px; border-radius: 13px; background: linear-gradient(90deg, rgba(255,255,255,0.75), rgba(254,123,142,0.65)); transform-origin: 50% 0"></div>
+          <svg class="full" viewBox="0 0 1080 1920" style="transform: translateY(-130px)">
+            <defs><clipPath id="glass-in"><path d="M300 990 L 700 990 L 665 1550 L 335 1550 Z" /></clipPath></defs>
+            <g clip-path="url(#glass-in)">
+              <rect id="pour-liquid" x="280" y="1120" width="440" height="460" fill="var(--pink)" opacity="0.62" style="transform-box: fill-box; transform-origin: 50% 100%" />
+              <g id="pour-bubbles" fill="none" stroke="var(--cream)" stroke-width="4"></g>
+              <g id="pour-ice" fill="rgba(255,255,255,0.55)" stroke="var(--cream)" stroke-width="5">
+                <rect x="350" y="1330" width="120" height="110" rx="18" transform="rotate(-12 410 1385)" />
+                <rect x="500" y="1380" width="115" height="110" rx="18" transform="rotate(9 557 1435)" />
+                <rect x="420" y="1440" width="120" height="100" rx="18" transform="rotate(4 480 1490)" />
+              </g>
+            </g>
+            <path d="M300 990 L 700 990 L 665 1550 L 335 1550 Z" fill="none" stroke="var(--berry)" stroke-width="12" stroke-linejoin="round" />
+            <path d="M330 1030 L 312 1300" stroke="rgba(255,255,255,0.8)" stroke-width="12" stroke-linecap="round" />
+            <g id="pour-sparkle" fill="var(--cream)">
+              <path d="M260 930 l14 -40 l14 40 l40 14 l-40 14 l-14 40 l-14 -40 l-40 -14 Z" />
+              <path d="M760 880 l10 -28 l10 28 l28 10 l-28 10 l-10 28 l-10 -28 l-28 -10 Z" />
+              <path d="M820 1180 l12 -32 l12 32 l32 12 l-32 12 l-12 32 l-12 -32 l-32 -12 Z" />
+            </g>
+          </svg>
+          <img id="pour-can" class="can" src="assets/zest-can.png" style="left: 640px; top: 180px; height: 640px" alt="" />
+          <div id="pour-word" class="slam" style="left: 60px; top: 150px; font-size: 200px; color: var(--berry); text-shadow: 10px 10px 0 var(--coral)"><div>OVER</div><div>ICE</div></div>
+        </div>
+      </section>
+
+      <!-- 6 · WHY THE NAME 20.13–24.47 -->
+      <section id="s-why" class="clip" data-start="20.13" data-duration="4.34" style="background: var(--coral)">
+        <div id="w-q" class="slam" style="left: 60px; top: 230px; font-size: 230px; color: var(--cream); text-shadow: 12px 12px 0 var(--berry-deep)"><div id="w-q1">WHY THE</div><div id="w-q2">NAME?</div></div>
+        <svg class="full" viewBox="0 0 1080 1920">
+          <g id="w-z" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path id="w-z1" d="M110 520 L 400 520 L 120 860 L 410 860" stroke="var(--rind-deep)" stroke-width="96" />
+            <path id="w-z2" d="M110 520 L 400 520 L 120 860 L 410 860" stroke="var(--rind)" stroke-width="70" />
+          </g>
         </svg>
-        <div style="position:absolute; left: 110px; top: 560px; width: 860px; padding: 56px 56px 60px; background: var(--cream); border-radius: 48px; border: 6px solid var(--berry); box-shadow: 14px 14px 0 var(--berry)">
+        <div id="w-est" class="slam" style="left: 470px; top: 470px; font-size: 470px; color: var(--berry-deep); text-shadow: 12px 12px 0 var(--blush)"><span>E</span><span>S</span><span>T</span></div>
+                <img id="w-can" class="can" src="assets/zest-can.png" style="left: 400px; top: 820px; height: 760px" alt="" />
+      </section>
+
+      <!-- 7 · CTA 24.47–30.00 -->
+      <section id="s-cta" class="clip halftone" data-start="24.47" data-duration="5.53" style="background: var(--blush)">
+        <svg class="full" viewBox="0 0 1080 1920">
+          <path id="c-wave" d="M0 1240 C 200 1180, 340 1290, 540 1240 C 740 1190, 880 1290, 1080 1230 L1080 2200 L0 2200 Z" fill="var(--coral)" />
+        </svg>
+        <div id="c-card" class="abs" style="left: 110px; top: 560px; width: 860px; padding: 56px 56px 60px; background: var(--cream); border-radius: 48px; border: 6px solid var(--berry); box-shadow: 14px 14px 0 var(--berry)">
           <div style="display:flex; align-items:center; gap: 36px">
-            <div style="width: 210px; height: 210px; border-radius: 50%; overflow: hidden; background: var(--blush); border: 6px solid var(--berry); position: relative; flex: none">
+            <div id="c-avatar" style="width: 210px; height: 210px; border-radius: 50%; overflow: hidden; background: var(--blush); border: 6px solid var(--berry); position: relative; flex: none">
               <img src="assets/zest-can.png" style="position:absolute; left: 50%; top: 14px; height: 440px; transform: translateX(-50%)" alt="" />
             </div>
             <div>
               <div style="font: 104px/0.9 var(--font-display); color: var(--berry)">ZEST</div>
-              <div style="margin-top: 12px; font: 800 36px/1.2 var(--font-caption); color: var(--berry-deep); opacity: 0.75">Pink grapefruit<br />sparkling water</div>
+              <div style="margin-top: 12px; font: 800 36px/1.2 var(--font-caption); color: var(--berry-deep); opacity: 0.8">Pink grapefruit<br />sparkling water</div>
             </div>
           </div>
-          <div style="position: relative; margin-top: 46px; height: 140px; border-radius: 999px; background: var(--coral); display:flex; align-items:center; justify-content:center; gap: 22px; transform: scale(0.96); box-shadow: 0 3px 0 var(--berry-deep)">
-            <svg width="62" height="62" viewBox="0 0 62 62"><circle cx="31" cy="31" r="29" fill="var(--cream)" /><path d="M17 32 L27 42 L46 21" stroke="var(--coral)" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round" /></svg>
-            <span style="font: 76px/1 var(--font-display); color: var(--cream); letter-spacing: 0.01em">FOLLOWING</span>
-            <div style="position:absolute; left: 640px; top: 40px; width: 96px; height: 96px; border-radius: 50%; border: 8px solid rgba(255,244,241,0.8)"></div>
-            <div style="position:absolute; left: 662px; top: 62px; width: 52px; height: 52px; border-radius: 50%; background: rgba(255,244,241,0.55)"></div>
+          <div id="c-btn" style="position: relative; margin-top: 46px; height: 140px; border-radius: 999px; background: var(--cream); border: 6px solid var(--berry); overflow: hidden; box-shadow: 0 10px 0 var(--berry-deep)">
+            <div id="c-fill" class="full" style="background: var(--coral); clip-path: circle(0px at 560px 64px)"></div>
+            <div id="c-follow" class="full" style="display:flex; align-items:center; justify-content:center; font: 76px/1 var(--font-display); color: var(--berry)">FOLLOW</div>
+            <div id="c-following" class="full" style="display:flex; align-items:center; justify-content:center; gap: 22px; opacity: 0">
+              <svg width="62" height="62" viewBox="0 0 62 62"><circle cx="31" cy="31" r="29" fill="var(--cream)" /><path d="M17 32 L27 42 L46 21" stroke="var(--coral)" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round" /></svg>
+              <span style="font: 76px/1 var(--font-display); color: var(--cream)">FOLLOWING</span>
+            </div>
           </div>
         </div>
-        <div class="cap">Follow for more <b>Zest</b>.</div>
-        <div class="safe-label">SF4 · CTA · 0:28.5</div>
+        <div id="c-touch" class="abs" style="left: 632px; top: 1070px; width: 96px; height: 96px; border-radius: 50%; border: 8px solid rgba(255,244,241,0.95); box-shadow: 0 0 0 4px rgba(110,3,34,0.25)"></div>
+        <div id="c-dot" class="abs" style="left: 654px; top: 1092px; width: 52px; height: 52px; border-radius: 50%; background: rgba(255,244,241,0.7)"></div>
+        <img id="c-can" class="can" src="assets/zest-can.png" style="left: 390px; top: 520px; height: 900px" alt="" />
       </section>
+
+      <!-- whole-frame hits -->
+      <div id="flash" class="clip" data-start="0" data-duration="30" style="background: #fff; opacity: 0; z-index: 40; pointer-events: none"></div>
+      <div id="captions" class="clip" data-start="0" data-duration="30"></div>
+
+      <!-- sound: voice (Ollie B, pauses tightened) + placeholder SFX -->
+      <audio id="vo" src="assets/vo/vo.wav" data-start="0" data-duration="27.4" data-volume="1"></audio>
+      <audio id="sfx-01-slam" src="assets/sfx/slam.wav" data-start="0.30" data-duration="0.5" data-volume="0.8"></audio>
+      <audio id="sfx-02-crack" src="assets/sfx/crack.wav" data-start="0.60" data-duration="0.45" data-volume="1"></audio>
+      <audio id="sfx-03-hiss" src="assets/sfx/hiss.wav" data-start="0.64" data-duration="0.9" data-volume="0.55"></audio>
+      <audio id="sfx-04-swell" src="assets/sfx/swell.wav" data-start="1.75" data-duration="0.8" data-volume="0.6"></audio>
+      <audio id="sfx-05-slam" src="assets/sfx/slam.wav" data-start="2.05" data-duration="0.5" data-volume="0.9"></audio>
+      <audio id="sfx-06-slam" src="assets/sfx/slam.wav" data-start="2.83" data-duration="0.5" data-volume="0.7"></audio>
+      <audio id="sfx-07-pop" src="assets/sfx/pop.wav" data-start="3.52" data-duration="0.09" data-volume="0.8"></audio>
+      <audio id="sfx-08-whoosh" src="assets/sfx/whoosh.wav" data-start="4.25" data-duration="0.45" data-volume="0.6"></audio>
+      <audio id="sfx-09-whoosh" src="assets/sfx/whoosh.wav" data-start="7.30" data-duration="0.45" data-volume="0.6"></audio>
+      <audio id="sfx-10-crack" src="assets/sfx/crack.wav" data-start="7.93" data-duration="0.45" data-volume="0.9"></audio>
+      <audio id="sfx-11-fizz" src="assets/sfx/fizz.wav" data-start="8.20" data-duration="2.4" data-volume="0.7"></audio>
+      <audio id="sfx-12-pop" src="assets/sfx/pop.wav" data-start="8.45" data-duration="0.09" data-volume="0.6"></audio>
+      <audio id="sfx-13-pop" src="assets/sfx/pop.wav" data-start="8.80" data-duration="0.09" data-volume="0.6"></audio>
+      <audio id="sfx-14-pop" src="assets/sfx/pop.wav" data-start="9.20" data-duration="0.09" data-volume="0.8"></audio>
+      <audio id="sfx-15-swell" src="assets/sfx/swell.wav" data-start="9.45" data-duration="0.8" data-volume="0.5"></audio>
+      <audio id="sfx-16-slam" src="assets/sfx/slam.wav" data-start="11.46" data-duration="0.5" data-volume="0.7"></audio>
+      <audio id="sfx-17-pop" src="assets/sfx/pop.wav" data-start="11.50" data-duration="0.09" data-volume="0.8"></audio>
+      <audio id="sfx-18-whoosh" src="assets/sfx/whoosh.wav" data-start="13.15" data-duration="0.45" data-volume="0.6"></audio>
+      <audio id="sfx-19-slam" src="assets/sfx/slam.wav" data-start="13.24" data-duration="0.5" data-volume="0.7"></audio>
+      <audio id="sfx-20-whoosh" src="assets/sfx/whoosh.wav" data-start="14.92" data-duration="0.45" data-volume="0.6"></audio>
+      <audio id="sfx-21-slam" src="assets/sfx/slam.wav" data-start="15.61" data-duration="0.5" data-volume="0.6"></audio>
+      <audio id="sfx-22-pour" src="assets/sfx/pour.wav" data-start="17.35" data-duration="2.2" data-volume="0.6"></audio>
+      <audio id="sfx-23-clink" src="assets/sfx/clink.wav" data-start="17.86" data-duration="0.5" data-volume="0.7"></audio>
+      <audio id="sfx-24-sparkle" src="assets/sfx/sparkle.wav" data-start="19.14" data-duration="0.7" data-volume="0.6"></audio>
+      <audio id="sfx-25-whoosh" src="assets/sfx/whoosh.wav" data-start="19.62" data-duration="0.45" data-volume="0.7"></audio>
+      <audio id="sfx-26-slam" src="assets/sfx/slam.wav" data-start="20.13" data-duration="0.5" data-volume="0.6"></audio>
+      <audio id="sfx-27-whoosh" src="assets/sfx/whoosh.wav" data-start="21.15" data-duration="0.45" data-volume="0.5"></audio>
+      <audio id="sfx-28-slam" src="assets/sfx/slam.wav" data-start="22.15" data-duration="0.5" data-volume="0.6"></audio>
+      <audio id="sfx-29-whoosh" src="assets/sfx/whoosh.wav" data-start="22.80" data-duration="0.45" data-volume="0.5"></audio>
+      <audio id="sfx-30-whoosh" src="assets/sfx/whoosh.wav" data-start="24.47" data-duration="0.45" data-volume="0.5"></audio>
+      <audio id="sfx-31-tap" src="assets/sfx/tap.wav" data-start="25.68" data-duration="0.06" data-volume="1"></audio>
+      <audio id="sfx-32-crack" src="assets/sfx/crack.wav" data-start="25.69" data-duration="0.45" data-volume="0.85"></audio>
+      <audio id="sfx-33-swell" src="assets/sfx/swell.wav" data-start="25.72" data-duration="0.8" data-volume="0.5"></audio>
+      <audio id="sfx-34-sparkle" src="assets/sfx/sparkle.wav" data-start="26.81" data-duration="0.7" data-volume="0.5"></audio>
     </div>
+
     <script>
       window.__timelines = window.__timelines || {};
       const tl = gsap.timeline({ paused: true });
-      tl.set({}, {}, 4);
+      const q = (s) => document.querySelector(s);
+      const qa = (s) => Array.from(document.querySelectorAll(s));
+      const words = window.VO.words;
+      const wt = (text, nth = 0) => words.filter((w) => w.text.replace(/[^a-z']/gi, "").toLowerCase() === text)[nth].start;
+      let seed = 7; // deterministic pseudo-random for particle layouts
+      const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+
+      // ---------- 1 · HOOK ----------
+      tl.fromTo("#h-can", { x: 300, y: -620, rotation: 38, scale: 1.18 }, { x: 0, y: 0, rotation: -15, scale: 1, duration: 0.34, ease: "power3.out" }, 0);
+      tl.to("#h-can", { rotation: -11, duration: 0.3, ease: "back.out(3)" }, 0.34);
+      tl.fromTo("#h-crack span", { scale: 2.4, opacity: 0, y: -60 }, { scale: 1, opacity: 1, y: 0, duration: 0.16, ease: "power4.out", stagger: 0.04 }, wt("crack"));
+      tl.fromTo("#h-open span", { scale: 2.4, opacity: 0, y: -60 }, { scale: 1, opacity: 1, y: 0, duration: 0.16, ease: "power4.out", stagger: 0.04 }, wt("open"));
+      tl.fromTo("#h-spray", { scale: 0.15, opacity: 0, transformOrigin: "0px 0px" }, { scale: 1, opacity: 1, duration: 0.22, ease: "power3.out" }, 0.6);
+      tl.to("#h-spray", { y: -60, opacity: 0, duration: 0.6, ease: "power1.in" }, 1.25);
+      tl.set(["#h-ring1", "#h-ring2"], { opacity: 0, transformOrigin: "50% 50%" }, 0);
+      tl.fromTo("#h-ring1", { scale: 0.3, opacity: 0.95 }, { scale: 1.15, opacity: 0, duration: 0.65, ease: "power2.out", immediateRender: false }, 0.6);
+      tl.fromTo("#h-ring2", { scale: 0.3, opacity: 0.6 }, { scale: 1.25, opacity: 0, duration: 0.75, ease: "power2.out", immediateRender: false }, 0.68);
+      tl.fromTo("#h-can", { x: 0 }, { keyframes: [{ x: 10, duration: 0.03 }, { x: -8, duration: 0.03 }, { x: 5, duration: 0.03 }, { x: 0, duration: 0.03 }], immediateRender: false }, 0.6);
+      // end of "grapefruit": flash, shockwave, coral flood becomes the next ground
+      const hookEnd = window.VO.chunks[0].end;
+      tl.fromTo("#flash", { opacity: 0.55 }, { opacity: 0, duration: 0.1, ease: "none", immediateRender: false }, hookEnd);
+      tl.set("#flash", { opacity: 0 }, 0);
+      tl.fromTo("#h-ring1", { scale: 0.2, opacity: 1 }, { scale: 2.2, opacity: 0, duration: 0.4, ease: "power2.out", immediateRender: false }, hookEnd);
+      tl.fromTo("#h-flood", { clipPath: "circle(0px at 524px 797px)" }, { clipPath: "circle(1500px at 524px 797px)", duration: 0.4, ease: "power2.in" }, hookEnd + 0.02);
+
+      // ---------- 2 · MEET ZEST ----------
+      const M = 2.45;
+      tl.fromTo("#m-meet", { x: -420 }, { x: 0, duration: 0.3, ease: "power4.out" }, M);
+      tl.fromTo("#m-zest span", { scale: 3, opacity: 0, rotation: (i) => [-18, 12, -10, 16][i] },
+        { scale: 1, opacity: 1, rotation: (i) => [-6, 3, -3, 5][i], duration: 0.2, ease: "power4.out", stagger: 0.07 }, wt("zest", 0));
+      tl.fromTo("#m-can", { y: 1300, scale: 1 }, { y: 0, duration: 0.42, ease: "back.out(1.4)" }, M + 0.15);
+      tl.to("#m-can", { scale: 1.07, duration: 3.2, ease: "none" }, M + 0.6);
+      tl.to("#m-can", { scale: 1.17, duration: 0.25, ease: "back.out(2)" }, wt("real", 1));
+      tl.fromTo("#m-pink", { scale: 0, rotation: -18 }, { scale: 1, rotation: -4, duration: 0.3, ease: "back.out(2.2)" }, wt("pink"));
+      tl.fromTo("#m-water", { clipPath: "inset(0 100% 0 0)", rotation: 3 }, { clipPath: "inset(0 0% 0 0)", duration: 0.3, ease: "power3.out" }, wt("sparkling"));
+      tl.to(["#m-meet", "#m-zest", "#m-pink", "#m-water"], { y: -40, duration: 1.5, ease: "none" }, 5.6);
+
+      // ---------- 3 · THE FIZZ ----------
+      const F = 7.41;
+      tl.fromTo("#f-tab", { scale: 0.4, rotation: -20 }, { scale: 1, rotation: 0, duration: 0.35, ease: "back.out(1.6)" }, F);
+      tl.fromTo("#f-tab", { y: 0 }, { keyframes: [{ y: 8, duration: 0.03 }, { y: -6, duration: 0.03 }, { y: 0, duration: 0.03 }], immediateRender: false }, wt("tab"));
+      const bub = q("#f-bubbles");
+      for (let i = 0; i < 26; i++) {
+        const c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        const x = 360 + rnd() * 360, r = 8 + rnd() * 26, t0 = 8.0 + rnd() * 1.4;
+        c.setAttribute("cx", x); c.setAttribute("cy", 780); c.setAttribute("r", r);
+        c.setAttribute("fill", "none"); c.setAttribute("stroke", "#fff4f1"); c.setAttribute("stroke-width", 5);
+        bub.appendChild(c);
+        tl.fromTo(c, { y: 0, opacity: 0, scale: 0.3, transformOrigin: "50% 50%" }, { y: -520 - rnd() * 260, x: (540 - x) * 0.35, opacity: 0.95, scale: 1, duration: Math.min(1.0, 9.45 - t0), ease: "power1.out" }, t0);
+        tl.to(c, { opacity: 0, duration: 0.15 }, 9.5);
+      }
+      tl.fromTo("#f-fizzword", { scale: 2.6, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.18, ease: "power4.out" }, wt("fizz"));
+      tl.to("#f-fizzword", { opacity: 0, scale: 0.8, duration: 0.18 }, 9.62);
+      tl.to("#f-tab", { scale: 0.2, opacity: 0, y: -120, duration: 0.25, ease: "power2.in" }, 9.45);
+      // the drop inflates into the card
+      tl.fromTo("#f-card", { scale: 0.08, borderRadius: "50%", opacity: 0 }, { scale: 1, borderRadius: "64px", opacity: 1, duration: 0.35, ease: "back.out(1.3)" }, 9.5);
+      tl.fromTo("#f-cold", { scale: 2, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.16, ease: "power4.out" }, wt("cold"));
+      tl.fromTo("#f-bright", { scale: 2, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.16, ease: "power4.out" }, wt("bright"));
+      tl.fromTo("#f-slice", { scale: 0, rotation: -40 }, { scale: 1, rotation: 0, duration: 0.32, ease: "back.out(2)" }, wt("bursting"));
+      const drops = q("#f-drops g");
+      for (let i = 0; i < 14; i++) {
+        const c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        const a = rnd() * Math.PI * 2, d = 260 + rnd() * 260;
+        c.setAttribute("cx", 780); c.setAttribute("cy", 1200); c.setAttribute("r", 8 + rnd() * 16);
+        drops.appendChild(c);
+        tl.fromTo(c, { x: 0, y: 0, opacity: 0 }, { x: Math.cos(a) * d, y: Math.sin(a) * d, opacity: 1, duration: 0.45, ease: "power3.out" }, wt("bursting") + 0.05);
+        tl.to(c, { opacity: 0, duration: 0.3 }, wt("bursting") + 0.7);
+      }
+
+      // ---------- 4 · PROOFS ----------
+      const P = 13.24;
+      tl.fromTo("#p-bite", { scale: 0.2, rotation: -12, opacity: 0 }, { scale: 1, rotation: 0, opacity: 1, duration: 0.32, ease: "back.out(1.6)" }, P);
+      tl.fromTo("#p-real div", { scale: 2.2, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.16, ease: "power4.out", stagger: 0.4 }, P);
+      tl.fromTo("#p-can", { y: 600 }, { y: 0, duration: 0.4, ease: "back.out(1.4)" }, P + 0.1);
+      tl.set(".tick", { opacity: 0 }, 0);
+      [["#p-i1", wt("fruit", 1)], ["#p-i2", wt("flavoured")], ["#p-i3", wt("sugar")]].forEach(([el, t]) => {
+        tl.to(el, { color: "#fff4f1", duration: 0.12 }, t);
+        tl.to(el + " .tick", { opacity: 1, duration: 0.12 }, t);
+      });
+      tl.to(["#p-bite", "#p-real"], { y: -1800, duration: 0.3, ease: "power3.in" }, wt("naturally") - 0.18);
+      tl.fromTo("#p-band", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.25, ease: "power3.out" }, wt("naturally") - 0.05);
+      // "Naturally flavoured" prints itself letter by letter
+      const nat = [["#p-nat1", "NATURALLY"], ["#p-nat2", "FLAVOURED"]];
+      nat.forEach(([sel, txt], row) => {
+        const el = q(sel);
+        txt.split("").forEach((ch, i) => {
+          const s = document.createElement("span"); s.textContent = ch; el.appendChild(s);
+          tl.fromTo(s, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.08 }, wt("naturally") + row * 0.36 + i * 0.035);
+        });
+      });
+      // the leaf slides across and swallows the line
+      tl.fromTo("#p-leaf", { x: 1150, rotation: 8 }, { x: 90, rotation: -4, duration: 0.42, ease: "power2.inOut" }, wt("flavoured") + 0.2);
+      tl.set(["#p-nat", "#p-band"], { opacity: 0 }, wt("flavoured") + 0.55);
+      tl.to("#p-leaf", { x: -1100, duration: 0.35, ease: "power2.in" }, wt("and", 2) - 0.1);
+      tl.set(["#p-low", "#p-bar"], { opacity: 0 }, 0);
+      tl.fromTo("#p-low", { scale: 2.2, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.16, ease: "power4.out", immediateRender: false }, wt("low"));
+      tl.fromTo("#p-bar", { opacity: 0 }, { opacity: 1, duration: 0.1, immediateRender: false }, wt("low"));
+      tl.fromTo("#p-barfill", { scaleX: 1 }, { scaleX: 0.05, duration: 0.85, ease: "power2.in" }, wt("low") + 0.15);
+      tl.to("#p-can", { y: -200, duration: 0.85, ease: "power2.out" }, wt("low") + 0.15);
+
+      // ---------- 5 · POUR ----------
+      const PO = 16.99;
+      tl.fromTo("#pour-can", { y: -900, rotation: 0 }, { y: 0, duration: 0.3, ease: "power3.out" }, PO);
+      tl.to("#pour-can", { rotation: -115, duration: 0.4, ease: "power2.inOut" }, PO + 0.25);
+      tl.fromTo("#pour-word div", { scale: 2.2, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.16, ease: "power4.out", stagger: 0.3 }, wt("over"));
+      tl.fromTo("#pour-stream", { scaleY: 0 }, { scaleY: 1, duration: 0.25, ease: "power2.in" }, PO + 0.55);
+      tl.fromTo("#pour-liquid", { scaleY: 0 }, { scaleY: 1, duration: 2.0, ease: "power1.out" }, PO + 0.7);
+      tl.fromTo("#pour-ice", { y: -500 }, { y: 0, duration: 0.3, ease: "bounce.out" }, wt("ice") - 0.05);
+      const pb = q("#pour-bubbles");
+      for (let i = 0; i < 18; i++) {
+        const c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        c.setAttribute("cx", 340 + rnd() * 320); c.setAttribute("cy", 1540); c.setAttribute("r", 5 + rnd() * 10);
+        pb.appendChild(c);
+        tl.fromTo(c, { y: 0, opacity: 0 }, { y: -(260 + rnd() * 160), opacity: 1, duration: 0.9, ease: "power1.out" }, 18.0 + rnd() * 1.4);
+      }
+      tl.fromTo("#pour-sparkle path", { scale: 0, transformOrigin: "50% 50%" }, { scale: 1, duration: 0.2, ease: "back.out(3)", stagger: 0.08 }, wt("sparkle"));
+      tl.to("#pour-stream", { scaleY: 0, transformOrigin: "50% 100%", duration: 0.2 }, 19.35);
+      tl.to("#pour-world", { scale: 7, opacity: 0.0, duration: 0.5, ease: "power3.in" }, 19.63);
+
+      // ---------- 6 · WHY THE NAME ----------
+      tl.fromTo("#w-q1", { scale: 2.2, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.16, ease: "power4.out" }, wt("why"));
+      tl.fromTo("#w-q2", { scale: 2.2, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.16, ease: "power4.out" }, wt("name"));
+      tl.to("#w-q", { y: -900, duration: 0.3, ease: "power3.in" }, wt("zest", 1) - 0.1);
+      const zLen = 290 + Math.hypot(280, 340) + 290 + 20;
+      tl.set(["#w-z1", "#w-z2"], { strokeDasharray: zLen, strokeDashoffset: zLen, opacity: 0 }, 0);
+      tl.set(["#w-z1", "#w-z2"], { opacity: 1 }, wt("zest", 1));
+      tl.to(["#w-z1", "#w-z2"], { strokeDashoffset: 0, duration: 0.9, ease: "power2.inOut" }, wt("zest", 1));
+      tl.fromTo("#w-est span", { scale: 2.6, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.16, ease: "power4.out", stagger: 0.07 }, wt("fruit's"));
+      // the can turns so its wordmark reads upright
+      tl.fromTo("#w-can", { y: 1400, rotation: 0 }, { y: 0, duration: 0.4, ease: "power3.out" }, 22.8);
+      tl.to("#w-can", { rotation: 90, duration: 0.5, ease: "back.out(1.4)" }, 23.15);
+
+      // ---------- 7 · CTA ----------
+      const C = 24.47;
+      tl.fromTo("#c-can", { scale: 1, x: 0, y: 0, opacity: 1 }, { scale: 0.24, x: -263, y: -243, opacity: 0, duration: 0.45, ease: "power3.inOut" }, C + 0.15);
+      tl.fromTo("#c-card", { y: 900 }, { y: 0, duration: 0.4, ease: "back.out(1.2)" }, C + 0.2);
+      tl.fromTo("#c-avatar", { scale: 0.2 }, { scale: 1, duration: 0.3, ease: "back.out(2)" }, C + 0.48);
+      tl.fromTo("#c-wave", { y: 700 }, { y: 0, duration: 0.6, ease: "power2.out" }, C + 0.1);
+      const press = wt("follow");
+      tl.fromTo(["#c-touch", "#c-dot"], { scale: 1.6, opacity: 0, transformOrigin: "50% 50%" }, { scale: 1, opacity: 1, duration: 0.2, ease: "power2.out" }, press - 0.25);
+      tl.to("#c-dot", { scale: 0.75, duration: 0.06 }, press);
+      tl.to("#c-btn", { scale: 0.93, duration: 0.07, ease: "power2.out" }, press);
+      tl.to("#c-btn", { scale: 0.97, duration: 0.25, ease: "back.out(2)" }, press + 0.08);
+      tl.fromTo("#c-fill", { clipPath: "circle(0px at 560px 64px)" }, { clipPath: "circle(800px at 560px 64px)", duration: 0.35, ease: "power2.out" }, press + 0.02);
+      tl.to("#c-btn", { borderColor: "#6e0322", duration: 0.1 }, press + 0.02);
+      tl.to("#c-follow", { opacity: 0, duration: 0.08 }, press + 0.12);
+      tl.fromTo("#c-following", { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.2, ease: "back.out(2)" }, press + 0.16);
+      tl.fromTo("#c-touch", { scale: 1, opacity: 1 }, { scale: 2.6, opacity: 0, duration: 0.45, ease: "power2.out", immediateRender: false }, press + 0.02);
+      tl.to("#c-dot", { opacity: 0, duration: 0.2 }, press + 0.3);
+      tl.to("#c-wave", { y: -60, duration: 0.5, ease: "power2.out" }, press + 0.05);
+      tl.to("#c-wave", { y: 0, duration: 1.2, ease: "sine.inOut" }, press + 0.6);
+      tl.fromTo("#c-avatar", { scale: 1 }, { keyframes: [{ scale: 1.08, duration: 0.12 }, { scale: 1, duration: 0.2 }], immediateRender: false }, wt("zest", 2));
+
+      // ---------- captions: one sentence at a time, the spoken word lit ----------
+      const groups = [[0], [1], [2, 3], [4, 5], [6, 7, 8, 9], [10], [11], [12], [13, 14], [15], [16], [17], [18, 19]];
+      const capRoot = q("#captions");
+      const onBerry = (t) => (t >= 7.41 && t < 16.99);
+      groups.forEach((g, gi) => {
+        const ws = words.filter((w) => g.includes(w.chunk));
+        const cap = document.createElement("div"); cap.className = "cap";
+        const start = ws[0].start - 0.05;
+        const next = gi + 1 < groups.length ? words.find((w) => w.chunk === groups[gi + 1][0]).start - 0.05 : 30;
+        const end = Math.min(next, ws[ws.length - 1].end + 0.6);
+        if (onBerry(start)) { cap.style.background = "#fff4f1"; cap.style.color = "#6e0322"; }
+        ws.forEach((w, i) => {
+          const s = document.createElement("span"); s.className = "w"; s.textContent = w.text;
+          cap.appendChild(s); if (i < ws.length - 1) cap.appendChild(document.createTextNode(" "));
+          const lit = onBerry(start) ? { backgroundColor: "#fe4b54", color: "#fff4f1" } : { backgroundColor: "#fff4f1", color: "#fe4b54" };
+          tl.set(s, lit, w.start);
+          tl.set(s, { backgroundColor: "rgba(0,0,0,0)", color: "inherit" }, Math.min(w.end + 0.02, end));
+        });
+        capRoot.appendChild(cap);
+        tl.fromTo(cap, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.12, ease: "power2.out" }, start);
+        tl.set(cap, { opacity: 0 }, end);
+      });
+
+      tl.set({}, {}, 30);
       window.__timelines["main"] = tl;
       tl.seek(0);
     </script>
