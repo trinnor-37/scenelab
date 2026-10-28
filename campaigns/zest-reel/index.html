@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en-GB" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      /* Style frames for approval: four held 1 s frames, one per key beat of SCRIPT.md.
+         Hot Sauce look as read here (flat hot colour fields, stacked condensed caps, hard offset
+         shadows, sticker outlines, halftone), Zest palette swapped in. */
+      @font-face { font-family: "Anton"; src: url("assets/fonts/anton-latin.woff2") format("woff2"); }
+      @font-face { font-family: "Bricolage"; font-weight: 800; src: url("assets/fonts/bricolage-800-latin.woff2") format("woff2"); }
+      :root {
+        --blush: #fec4ca;
+        --pink: #fe7b8e;
+        --berry: #a80836;
+        --berry-deep: #6e0322;
+        --coral: #fe4b54;
+        --leaf: #3c8a2e;
+        --cream: #fff4f1;
+        --font-display: "Anton", sans-serif;
+        --font-caption: "Bricolage", sans-serif;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--blush); }
+      #root { position: relative; width: 100%; height: 100%; }
+      .clip { position: absolute; inset: 0; overflow: hidden; }
+
+      .halftone::before {
+        content: ""; position: absolute; inset: 0; pointer-events: none;
+        background-image: radial-gradient(rgba(168, 8, 54, 0.16) 3.2px, transparent 3.6px);
+        background-size: 22px 22px;
+        -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 100%);
+        mask-image: linear-gradient(180deg, transparent 0%, #000 100%);
+      }
+      .slam {
+        position: absolute; font-family: var(--font-display); text-transform: uppercase;
+        line-height: 0.86; letter-spacing: -0.01em;
+      }
+      /* The real can: positioned, scaled and rotated only. Never filtered or recoloured. */
+      .can { position: absolute; width: auto; }
+      .can-shadow { position: absolute; border-radius: 50%; background: rgba(110, 3, 34, 0.32); filter: blur(18px); }
+
+      /* captions: one line, active word in coral */
+      .cap {
+        position: absolute; left: 50%; bottom: 210px; transform: translateX(-50%);
+        max-width: 920px; padding: 18px 34px 22px; border-radius: 26px;
+        background: var(--berry-deep); color: var(--cream);
+        font-family: var(--font-caption); font-weight: 800; font-size: 54px; line-height: 1.12;
+        text-align: center; white-space: nowrap; box-shadow: 0 10px 0 rgba(110, 3, 34, 0.35);
+      }
+      .cap b { color: var(--coral); background: var(--cream); padding: 0 12px; border-radius: 12px; font-weight: 800; }
+      .safe-label {
+        position: absolute; left: 36px; top: 36px; font: 600 26px/1 var(--font-caption);
+        color: rgba(110, 3, 34, 0.55); letter-spacing: 0.06em;
+      }
+      .sticker {
+        position: absolute; font-family: var(--font-display); text-transform: uppercase;
+        padding: 14px 30px 18px; border: 6px solid var(--berry); border-radius: 999px;
+        box-shadow: 8px 8px 0 var(--berry);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="4" data-width="1080" data-height="1920">
+
+      <!-- SF1 · Hook 0:01.6, on "open": can slams in tilted, ring-pull hit, juice spray, shockwave -->
+      <section id="sf1" class="clip halftone" data-start="0" data-duration="1" style="background: var(--blush)">
+        <div class="slam" style="left: 54px; top: 110px; font-size: 270px; color: var(--berry); text-shadow: 12px 12px 0 var(--coral)">CRACK<br />OPEN</div>
+        <!-- shockwave: behind the can -->
+        <svg width="1080" height="1920" style="position:absolute;inset:0" viewBox="0 0 1080 1920">
+          <g transform="translate(524 797)" fill="none" stroke="var(--coral)">
+            <circle r="250" stroke-width="22" opacity="0.8" /><circle r="360" stroke-width="8" opacity="0.35" />
+          </g>
+        </svg>
+        <div class="can-shadow" style="left: 430px; top: 1555px; width: 340px; height: 56px"></div>
+        <img class="can" src="assets/zest-can.png" style="left: 439px; top: 760px; height: 820px; transform: rotate(-11deg)" alt="" />
+        <!-- spray: rises from the tab into the gap above the can -->
+        <svg width="1080" height="1920" style="position:absolute;inset:0" viewBox="0 0 1080 1920">
+          <g transform="translate(524 790) rotate(18) scale(0.62)" fill="var(--coral)">
+            <path d="M-10 -10 C -60 -150, -170 -250, -300 -300 C -180 -240, -90 -160, 20 -30 Z" />
+            <path d="M10 -10 C 50 -170, 140 -280, 300 -340 C 180 -250, 100 -160, 40 -20 Z" />
+            <path d="M0 -10 C -10 -170, 10 -280, 50 -400 C 60 -270, 50 -150, 30 -10 Z" />
+            <circle cx="-320" cy="-330" r="26" /><circle cx="330" cy="-370" r="24" /><circle cx="410" cy="-270" r="16" />
+            <circle cx="80" cy="-440" r="20" /><circle cx="-200" cy="-420" r="14" /><circle cx="220" cy="-470" r="12" />
+          </g>
+        </svg>
+        <div class="cap">Crack <b>open</b> real grapefruit.</div>
+        <div class="safe-label">SF1 · HOOK · 0:01.6</div>
+      </section>
+
+      <!-- SF2 · Meet Zest 0:05: coral flood is the ground, per-glyph slam, two-way subtitle -->
+      <section id="sf2" class="clip" data-start="1" data-duration="1" style="background: var(--coral)">
+        <div class="slam" style="left: 60px; top: 170px; font-size: 120px; color: var(--cream)">MEET</div>
+        <div class="slam" style="left: 40px; top: 270px; font-size: 470px; color: var(--berry-deep); text-shadow: 14px 14px 0 var(--blush); word-spacing: 0">
+          <span style="display:inline-block; margin-right: 14px; transform: rotate(-6deg) translateY(10px)">Z</span><span style="display:inline-block; margin-right: 14px; transform: rotate(3deg)">E</span><span style="display:inline-block; margin-right: 14px; transform: rotate(-3deg) translateY(-14px)">S</span><span style="display:inline-block; transform: rotate(5deg)">T</span>
+        </div>
+        <div class="sticker" style="left: 70px; top: 790px; font-size: 76px; background: var(--blush); color: var(--berry); transform: rotate(-4deg)">PINK GRAPEFRUIT</div>
+        <div style="position:absolute; left:-20px; top: 960px; width: 640px; padding: 16px 0 16px 92px; background: var(--leaf); color: var(--cream); font: 64px/1 var(--font-display); transform: rotate(3deg); box-shadow: 0 8px 0 rgba(0,0,0,0.18)">SPARKLING WATER</div>
+        <div class="can-shadow" style="left: 640px; top: 1520px; width: 340px; height: 52px"></div>
+        <img class="can" src="assets/zest-can.png" style="left: 610px; top: 690px; height: 860px" alt="" />
+        <div class="cap">made with <b>real</b> fruit.</div>
+        <div class="safe-label" style="color: rgba(255,244,241,0.7)">SF2 · MEET ZEST · 0:05</div>
+      </section>
+
+      <!-- SF3 · Proof 1 0:14: "Real fruit" bitten out of the frame by a juice blob that shows the slice macro -->
+      <section id="sf3" class="clip" data-start="2" data-duration="1" style="background: var(--berry)">
+        <svg width="1080" height="1920" style="position:absolute;inset:0" viewBox="0 0 1080 1920">
+          <defs>
+            <clipPath id="bite">
+              <path d="M150 560 C 150 380, 330 300, 520 330 C 700 355, 760 250, 900 330 C 1030 410, 980 600, 940 700 C 900 820, 990 930, 900 1050 C 800 1180, 600 1120, 470 1150 C 300 1190, 150 1100, 140 930 C 132 800, 150 700, 150 560 Z" />
+            </clipPath>
+          </defs>
+          <path d="M150 560 C 150 380, 330 300, 520 330 C 700 355, 760 250, 900 330 C 1030 410, 980 600, 940 700 C 900 820, 990 930, 900 1050 C 800 1180, 600 1120, 470 1150 C 300 1190, 150 1100, 140 930 C 132 800, 150 700, 150 560 Z" transform="translate(16 18)" fill="var(--berry-deep)" />
+          <image href="assets/crops/fruit-inspiration.png" x="120" y="290" width="900" height="994" preserveAspectRatio="xMidYMid slice" clip-path="url(#bite)" />
+          <g fill="var(--coral)"><circle cx="980" cy="1130" r="22" /><circle cx="110" cy="420" r="16" /><circle cx="1010" cy="290" r="12" /></g>
+        </svg>
+        <div class="slam" style="left: 60px; top: 1190px; font-size: 230px; color: var(--blush); text-shadow: 10px 10px 0 var(--berry-deep)">REAL<br />FRUIT.</div>
+        <div style="position:absolute; right: 60px; top: 1210px; font: 44px/1.5 var(--font-caption); font-weight: 800; color: rgba(254,196,202,0.72); text-align: right">
+          <div style="color: var(--cream)">✓ REAL FRUIT</div><div>NATURALLY FLAVOURED</div><div>LOW SUGAR</div>
+        </div>
+        <img class="can" src="assets/zest-can.png" style="left: 830px; top: 1400px; height: 420px; transform: rotate(9deg)" alt="" />
+        <div class="cap" style="background: var(--cream); color: var(--berry-deep)"><b style="background: var(--coral); color: var(--cream)">Real</b> fruit.</div>
+        <div class="safe-label" style="color: rgba(254,196,202,0.7)">SF3 · PROOF 1 · 0:14</div>
+      </section>
+
+      <!-- SF4 · CTA 0:28.5: can becomes the avatar, Follow pressed → Following ✓, coral flood callback -->
+      <section id="sf4" class="clip halftone" data-start="3" data-duration="1" style="background: var(--blush)">
+        <svg width="1080" height="1920" style="position:absolute;inset:0" viewBox="0 0 1080 1920">
+          <path d="M0 1240 C 200 1180, 340 1290, 540 1240 C 740 1190, 880 1290, 1080 1230 L1080 1920 L0 1920 Z" fill="var(--coral)" />
+        </svg>
+        <div style="position:absolute; left: 110px; top: 560px; width: 860px; padding: 56px 56px 60px; background: var(--cream); border-radius: 48px; border: 6px solid var(--berry); box-shadow: 14px 14px 0 var(--berry)">
+          <div style="display:flex; align-items:center; gap: 36px">
+            <div style="width: 210px; height: 210px; border-radius: 50%; overflow: hidden; background: var(--blush); border: 6px solid var(--berry); position: relative; flex: none">
+              <img src="assets/zest-can.png" style="position:absolute; left: 50%; top: 14px; height: 440px; transform: translateX(-50%)" alt="" />
+            </div>
+            <div>
+              <div style="font: 104px/0.9 var(--font-display); color: var(--berry)">ZEST</div>
+              <div style="margin-top: 12px; font: 800 36px/1.2 var(--font-caption); color: var(--berry-deep); opacity: 0.75">Pink grapefruit<br />sparkling water</div>
+            </div>
+          </div>
+          <div style="position: relative; margin-top: 46px; height: 140px; border-radius: 999px; background: var(--coral); display:flex; align-items:center; justify-content:center; gap: 22px; transform: scale(0.96); box-shadow: 0 3px 0 var(--berry-deep)">
+            <svg width="62" height="62" viewBox="0 0 62 62"><circle cx="31" cy="31" r="29" fill="var(--cream)" /><path d="M17 32 L27 42 L46 21" stroke="var(--coral)" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            <span style="font: 76px/1 var(--font-display); color: var(--cream); letter-spacing: 0.01em">FOLLOWING</span>
+            <div style="position:absolute; left: 640px; top: 40px; width: 96px; height: 96px; border-radius: 50%; border: 8px solid rgba(255,244,241,0.8)"></div>
+            <div style="position:absolute; left: 662px; top: 62px; width: 52px; height: 52px; border-radius: 50%; background: rgba(255,244,241,0.55)"></div>
+          </div>
+        </div>
+        <div class="cap">Follow for more <b>Zest</b>.</div>
+        <div class="safe-label">SF4 · CTA · 0:28.5</div>
+      </section>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      tl.set({}, {}, 4);
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>
