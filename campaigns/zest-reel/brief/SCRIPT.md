@@ -20,7 +20,7 @@ VO: Pop the tab and hear that fizz. Cold, bright, and bursting with grapefruit.
 ON SCREEN: macro on the tab (crop from your product sheet's top detail): bubbles budding off the rim into rising circles that merge into one big drop. The drop inflates into a coral card carrying "cold, bright" as blob type; a grapefruit slice (cropped from your print detail) bursts through it with droplets.
 
 ## 4. Three proofs (0:13 to 0:18): a different verb each time
-VO: Real fruit. Naturally flavoured. And low sugar, so every can stays light.
+VO: Real fruit. Naturally flavoured. And low sugar.
 ON SCREEN: (1) "Real fruit" is bitten out of the frame by a juice blob, the bite shows the slice macro. (2) "Naturally flavoured" prints itself into liquid and a leaf slides across, swallowing the line. (3) "Low sugar": a plain sugar bar with no number drains to a sliver and the can lifts as it empties. The three items are the can's own three lines.
 
 ## 5. Pour (0:18 to 0:21)
@@ -33,7 +33,9 @@ ON SCREEN: the orange rind edge of the slice peels off as one long ribbon, curls
 
 ## 7. CTA (0:25 to 0:30): an interaction, not a card
 VO: Crack one open. Follow for more Zest.
-ON SCREEN: the can shrinks to a round avatar on a small profile card; a Follow button sits below. The ring-pull crack from the hook plays again as the thumb presses it; it squeezes, floods in coral, and turns into "Following" with a tick. Small wordmark, never a lockup slam. The juice flood from the hook settles behind it (callback).
+ON SCREEN: the can shrinks to a round avatar on a small profile card; a Follow button sits below. The ring-pull crack from the hook plays again as a touch ripple presses it (no hand); it squeezes, floods in coral, and turns into "Following" with a tick. Small wordmark, never a lockup slam. The juice flood from the hook settles behind it (callback).
 
 ---
 Notes: no numbers in this film (check 3 n/a), no software UI beyond the Follow card (check 10 n/a). Hero is the real can photo: it stays untouched; the Zest label text appears only as printed.
+
+Revisions after style-frame approval (2026-10-28): "so every can stays light" cut ("light" is not printed on the can); CTA press is a touch ripple, no thumb.
