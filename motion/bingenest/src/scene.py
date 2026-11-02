@@ -214,7 +214,7 @@ class Scene:
         self.disc = bokeh_disc()
         self.dot = soft_dot()
         self.glint = glint()
-        self.kernels = [popcorn_kernel(s) for s in range(6)]
+        self.kernels = [popcorn_kernel(s) for s in range(8)]
         self._prep_oval()
         self._prep_tv_screen()
         self._prep_particles()
@@ -272,21 +272,23 @@ class Scene:
         cam0 = self.camera_base(0.0)
         spots = [(-0.62, -0.45, 0.30), (0.58, 0.38, 0.34), (-0.20, 0.62, 0.45), (0.30, -0.58, 0.52),
                  (-0.80, 0.15, 0.62), (0.82, -0.10, 0.70), (0.08, -0.35, 1.25), (-0.45, 0.40, 1.45),
-                 (0.55, 0.20, 1.7), (-0.70, -0.40, 1.9), (0.25, 0.55, 2.2), (-0.05, 0.75, 0.80)]
+                 (0.55, 0.20, 1.7), (-0.70, -0.40, 1.9), (0.25, 0.55, 2.2), (-0.05, 0.75, 0.80),
+                 (0.40, -0.20, 1.1), (-0.35, -0.70, 1.6), (0.75, 0.60, 1.3), (-0.90, 0.65, 1.05),
+                 (0.12, 0.30, 2.6), (-0.25, -0.15, 2.9)]
         for i, (u, v, rel) in enumerate(spots):
             if self.fmt == "9x16":
                 u, v = u * 0.9, v * 0.9
             relz = rel * cam0.D
             k = cam0.f / relz
             self.floaters.append(dict(x=cam0.cx + u * self.W / 2 / k, y=cam0.cy + v * self.H / 2 / k,
-                                      z=relz - cam0.D, k=i % 6,
-                                      s=rng.uniform(0.22, 0.30), rz=rng.uniform(0, 360),
+                                      z=relz - cam0.D, k=i % 8,
+                                      s=rng.uniform(0.26, 0.34), rz=rng.uniform(0, 360),
                                       vr=rng.uniform(-40, 40), vx=rng.uniform(-40, 40) * rel,
                                       vy=rng.uniform(-30, 20) * rel, vz=-rng.uniform(140, 260)))
         # popcorn eruption when the character lands
         self.confetti = []
         # bursts out of the bucket and off to the sides, never across his face
-        for i in range(30):
+        for i in range(38):
             left = i % 2 == 0
             ang = rng.uniform(-math.pi * 0.95, -math.pi * 0.62) if left else rng.uniform(-math.pi * 0.38, -math.pi * 0.05)
             sp = rng.uniform(800, 1650)
@@ -296,7 +298,7 @@ class Scene:
                 z=rng.uniform(-40, 40),
                 vx=math.cos(ang) * sp * (0.9 if self.fmt == "16x9" else 0.55),
                 vy=math.sin(ang) * sp, vz=rng.uniform(-1700, 300),
-                k=i % 6, s=rng.uniform(0.12, 0.2), rz=rng.uniform(0, 360),
+                k=i % 8, s=rng.uniform(0.26, 0.36), rz=rng.uniform(0, 360),
                 vr=rng.uniform(-420, 420), delay=0.06 + rng.uniform(0, 0.14)))
         # impact sparks (direction per spark, per event)
         self.spark_dirs = [(math.cos(a), math.sin(a), rng.uniform(0.6, 1.0))
@@ -322,10 +324,10 @@ class Scene:
                 sr += e * 0.06 * math.sin(u * 39 + tl)
         cam = Camera(self.W, self.H, self.base, cx + sx, cy + sy, zoom, roll + sr)
         # rack focus: foreground kernels -> logo plane
-        near = 0.42 * cam.D
+        near = 0.55 * cam.D
         rf = smoother((t - 0.25) / 0.85)
         cam.focus = near + (cam.D - near) * rf
-        cam.aperture = 26.0 - 14.0 * smooth((t - 0.6) / 1.5) - 5.0 * smooth((t - 6.0) / 1.2)
+        cam.aperture = 18.0 - 6.0 * smooth((t - 0.6) / 1.5) - 5.0 * smooth((t - 6.0) / 1.2)
         return cam
 
     def impacts(self):
@@ -520,9 +522,10 @@ class Scene:
                     dof=False, tint=b["col"])
 
     def kernel_card(self, k, x, y, z, s, rz):
-        """Popcorn chunk = the supplied popcorn art, small and spinning."""
-        sc = s * 0.30 * (0.85 + 0.06 * k)
-        return Card(self.spr["popcorn"], x, y, z, sc, sc, 0, 0, rz)
+        """A single popcorn kernel, tumbling in 3D (yaw/pitch foreshorten it)."""
+        sc = s * 0.75
+        return Card(self.kernels[k % 8], x, y, z, sc, sc,
+                    18 * math.sin(math.radians(rz) * 0.7 + k), 22 * math.sin(math.radians(rz) * 0.9 + 2 * k), rz)
 
     def mb(self, fn, t, opacity=1.0, fr=None, cam=None, **kw):
         """Adaptive motion blur: enough sub-frames that ghosts never separate."""

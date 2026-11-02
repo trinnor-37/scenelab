@@ -114,42 +114,57 @@ def glint(size=256):
     return Sprite(out)
 
 
-def popcorn_kernel(seed, size=160):
-    """A single popped kernel: a cluster of glossy butter-yellow lobes with the
-    same purple/white sticker edge as the supplied popcorn art."""
-    rng = np.random.default_rng(seed)
+def popcorn_kernel(seed, size=256):
+    """A single popped kernel, shaded as a 3D height field so it reads like
+    the supplied popcorn art: glossy butter-yellow lobes, orange creases,
+    sharp white highlights and the same white + purple sticker edge."""
+    rng = np.random.default_rng(seed + 101)
     y, x = np.mgrid[0:size, 0:size].astype(np.float32)
     c = size / 2
-    lobes = [(c, c, size * 0.2)]
-    for _ in range(rng.integers(4, 7)):
+    R = size * 0.30
+    lobes = [(c + rng.uniform(-6, 6), c + rng.uniform(-6, 6), R * rng.uniform(0.62, 0.72))]
+    n = int(rng.integers(5, 8))
+    base = rng.uniform(0, 2 * np.pi)
+    for j in range(n):
+        ang = base + j * 2 * np.pi / n + rng.uniform(-0.35, 0.35)
+        d = R * rng.uniform(0.55, 0.85)
+        lobes.append((c + np.cos(ang) * d, c + np.sin(ang) * d, R * rng.uniform(0.40, 0.58)))
+    # a couple of small puffs on top for the classic "butterfly" silhouette
+    for _ in range(int(rng.integers(1, 3))):
         ang = rng.uniform(0, 2 * np.pi)
-        d = rng.uniform(0.12, 0.2) * size
-        lobes.append((c + np.cos(ang) * d, c + np.sin(ang) * d, rng.uniform(0.11, 0.17) * size))
-    field = np.zeros((size, size), np.float32)
-    shade = np.zeros((size, size), np.float32)
-    spec = np.zeros((size, size), np.float32)
+        d = R * rng.uniform(0.15, 0.4)
+        lobes.append((c + np.cos(ang) * d, c + np.sin(ang) * d, R * rng.uniform(0.32, 0.42)))
+    h = np.zeros((size, size), np.float32)
     for (lx, ly, lr) in lobes:
-        d = np.hypot(x - lx, y - ly) / lr
-        inside = d < 1
-        field = np.maximum(field, inside.astype(np.float32))
-        nz = np.sqrt(np.clip(1 - d ** 2, 0, 1))
-        # light from top-left
-        lam = np.clip(0.55 * nz + 0.45 * np.clip(((lx - x) * 0.6 + (ly - y) * 0.8) / lr, -1, 1) * 0.5 + 0.35, 0, 1)
-        shade = np.where(inside & (lam > shade), lam, shade)
-        sp = np.exp(-(((x - (lx - lr * 0.35)) ** 2 + (y - (ly - lr * 0.4)) ** 2) / (lr * 0.22) ** 2))
-        spec = np.maximum(spec, sp * inside)
-    body = field > 0
-    dist_out = cv2.distanceTransform((~body).astype(np.uint8), cv2.DIST_L2, 5)
-    white = (dist_out > 0) & (dist_out < size * 0.035)
-    purple = (dist_out >= size * 0.035) & (dist_out < size * 0.065)
-    col = np.zeros((size, size, 3), np.float32)
-    lo, hi = np.array([0.93, 0.60, 0.08]), np.array([1.0, 0.93, 0.36])
-    col[body] = (lo + (hi - lo) * shade[body, None])
-    col[body] += spec[body, None] * 0.8
-    col[white] = (1.0, 0.98, 0.95)
-    col[purple] = (0.52, 0.10, 0.80)
+        ea = rng.uniform(0.85, 1.15)
+        d2 = ((x - lx) * ea) ** 2 + ((y - ly) / ea) ** 2
+        h = np.maximum(h, np.sqrt(np.clip(lr * lr - d2, 0, None)))
+    body = h > 0
+    hs = cv2.GaussianBlur(h, (0, 0), size * 0.006)
+    gy, gx = np.gradient(hs)
+    nz = np.ones_like(hs)
+    nrm = np.sqrt(gx * gx + gy * gy + nz * nz)
+    Nx, Ny, Nz = -gx / nrm, -gy / nrm, nz / nrm
+    L = np.array([-0.45, -0.6, 0.66]); L /= np.linalg.norm(L)
+    lam = np.clip(Nx * L[0] + Ny * L[1] + Nz * L[2], 0, 1)
+    Hh = L + np.array([0, 0, 1.0]); Hh /= np.linalg.norm(Hh)
+    sd = np.clip(Nx * Hh[0] + Ny * Hh[1] + Nz * Hh[2], 0, 1)
+    spec = sd ** 90 * 1.3 + sd ** 12 * 0.12
+    # creases: where the surface dips below its smoothed neighbourhood
+    crease = np.clip((cv2.GaussianBlur(h, (0, 0), size * 0.03) - h) / (R * 0.18), 0, 1)
+    hn = np.clip(h / (R * 0.75), 0, 1)
+    deep = np.array([0.95, 0.55, 0.06]); mid = np.array([1.0, 0.84, 0.26]); top = np.array([1.0, 0.97, 0.62])
+    alb = deep + (mid - deep) * np.clip(hn * 1.6, 0, 1)[..., None]
+    alb = alb + (top - alb) * np.clip((lam - 0.55) * 2.2, 0, 1)[..., None]
+    shade = (0.68 + 0.45 * lam)[..., None] * (1 - 0.45 * crease[..., None])
+    col = alb * shade + spec[..., None] * 1.0 + 0.10 * (1 - Nz)[..., None] * np.array([1.0, 0.85, 0.5])
+    dist = cv2.distanceTransform((~body).astype(np.uint8), cv2.DIST_L2, 5)
+    white = (dist > 0) & (dist <= size * 0.03)
+    purple = (dist > size * 0.03) & (dist <= size * 0.052)
+    col[white] = (1.0, 0.97, 0.94)
+    col[purple] = (0.50, 0.10, 0.78)
     a = (body | white | purple).astype(np.float32)
-    a = cv2.GaussianBlur(a, (0, 0), 0.7)
-    col = np.clip(col, 0, 1)
+    a = cv2.GaussianBlur(a, (0, 0), 0.8)
+    col = np.clip(col, 0, 1).astype(np.float32)
     out = np.dstack([col * a[..., None], a]).astype(np.float32)
     return Sprite(out)
