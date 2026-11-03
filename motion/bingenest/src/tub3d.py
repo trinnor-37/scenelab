@@ -496,16 +496,24 @@ def key_value(socket_owner, path, pairs):
 
 
 # ====================================================================== scene build
-def use_gpu(sc):
+GPU_ORDER = ("OPTIX", "CUDA", "HIP", "METAL", "ONEAPI")
+
+
+def use_gpu(sc, skip=()):
     """Use the fastest GPU backend available (NVIDIA OptiX/CUDA, AMD HIP,
-    Apple Metal, Intel oneAPI). Falls back to the CPU."""
+    Apple Metal, Intel oneAPI). TUB_GPU=CUDA (etc.) forces one backend,
+    TUB_CPU=1 forces the CPU. Backends in `skip` already failed."""
     if os.environ.get("TUB_CPU"):
+        sc.cycles.device = "CPU"
         return "CPU"
     try:
         prefs = bpy.context.preferences.addons["cycles"].preferences
     except Exception:
         return "CPU"
-    for kind in ("OPTIX", "CUDA", "HIP", "METAL", "ONEAPI"):
+    order = (os.environ["TUB_GPU"].upper(),) if os.environ.get("TUB_GPU") else GPU_ORDER
+    for kind in order:
+        if kind in skip:
+            continue
         try:
             prefs.compute_device_type = kind
             prefs.get_devices()
@@ -518,7 +526,8 @@ def use_gpu(sc):
             sc.cycles.device = "GPU"
             print("Cycles device:", kind, [d.name for d in devs], flush=True)
             return kind
-    print("Cycles device: CPU (no supported GPU found)", flush=True)
+    sc.cycles.device = "CPU"
+    print("Cycles device: CPU (no working GPU backend)", flush=True)
     return "CPU"
 
 
@@ -835,13 +844,26 @@ def main():
     os.makedirs(out, exist_ok=True)
     frames = a.frames if a.frames else list(range(1, NF + 1))
     import time
+    failed = set()
     for f in frames:
         if a.resume and os.path.exists(os.path.join(out, f"f{f:04d}.png")):
             continue
         t0 = time.time()
         sc.frame_set(f)
         sc.render.filepath = os.path.join(out, f"f{f:04d}.png")
-        bpy.ops.render.render(write_still=True)
+        while True:
+            try:
+                bpy.ops.render.render(write_still=True)
+                break
+            except RuntimeError as e:
+                # e.g. OptiX kernel fails to compile on an older NVIDIA driver:
+                # fall back to the next backend (CUDA, then CPU) and retry
+                cur = bpy.context.preferences.addons["cycles"].preferences.compute_device_type
+                if sc.cycles.device == "CPU":
+                    raise
+                failed.add(cur)
+                print(f"GPU backend {cur} failed ({str(e).splitlines()[0][:120]}); trying the next one", flush=True)
+                use_gpu(sc, skip=failed)
         print(f"[{a.format}] frame {f} {time.time() - t0:.1f}s", flush=True)
 
 
