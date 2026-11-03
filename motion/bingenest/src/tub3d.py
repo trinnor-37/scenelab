@@ -30,12 +30,33 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.join(HERE, "..")
 FPS = 60
 NF = 132                       # 2.2 s
-T_ARRIVE, T_CHARGE, T_ERUPT, T_EXIT = 0.50, 0.70, 0.95, 1.48
+T_ARRIVE, T_CHARGE, T_ERUPT = 0.50, 0.70, 0.95
+T_EXIT = 99.0      # disabled: the shot ends on the hero frame (tub front and centre, still erupting)
 H, RT, RB = 1.0, 0.58, 0.42    # tub height, top radius, bottom radius (metres)
 SCAL, SC_AMP = 14, 0.035
 G = 9.8
 CAM_POS = {"16x9": Vector((0.0, -5.2, 1.35)), "9x16": Vector((0.0, -5.6, 1.45))}
 CAM_AIM = Vector((0.0, 0.0, 0.78))
+# end-card framing: tub big and front-on, the plume filling the top of frame
+CAM_END = {"16x9": (Vector((0.0, -3.45, 0.86)), Vector((0.0, 0.0, 0.74))),
+           "9x16": (Vector((0.0, -3.95, 1.10)), Vector((0.0, 0.0, 1.02)))}
+
+
+def cam_pose(t, fmt):
+    """Camera location + aim: settles on the tub, then pushes in after the burst."""
+    p0, a0 = CAM_POS[fmt], CAM_AIM
+    p1, a1 = CAM_END[fmt]
+    k = smooth((t - 0.55) / 1.55)
+    k = k * k * (3 - 2 * k)
+    loc = p0.lerp(p1, k)
+    aim = a0.lerp(a1, k)
+    u = t - T_ERUPT
+    if u >= 0:   # eruption kick
+        e = math.exp(-u * 8)
+        fwd = (aim - loc).normalized()
+        loc = loc + Vector((0.025 * e * math.sin(u * 61), 0, 0.02 * e * math.sin(u * 53 + 1))) \
+            - fwd * 0.18 * math.exp(-u * 7) * math.sin(u * 15)
+    return loc, aim
 
 
 def clamp(x, a=0.0, b=1.0):
@@ -129,12 +150,12 @@ def make_label(path):
     logo = np.array(Image.open(os.path.join(ROOT, "assets", "reference_logo.png")).convert("RGBA")).astype(np.float32) / 255
     ys, xs = np.where(logo[..., 3] > 0.02)
     logo = logo[ys.min():ys.max() + 1, xs.min():xs.max() + 1]
-    lh = int(TH * 0.66)
+    lh = int(TH * 0.74)
     lw = int(logo.shape[1] * lh / logo.shape[0] * 0.92)
     L = cv2.resize(logo, (lw, lh), interpolation=cv2.INTER_AREA)
     for cu in (0.75, 0.25):                          # front (faces -Y) and back
         x0 = int(cu * TW - lw / 2)
-        y0 = int(TH * 0.20)
+        y0 = int(TH * 0.15)
         reg = col[y0:y0 + lh, x0:x0 + lw]
         al = L[..., 3:4]
         reg[:] = L[..., :3] * al + reg * (1 - al)
@@ -665,6 +686,7 @@ def build(fmt, samples, preview):
     for f, v in [(1, H - 0.04), (int(T_ERUPT * FPS), H - 0.04), (int((T_ERUPT + 0.25) * FPS), H - 0.25)]:
         fc.keyframe_points.insert(f, v)
 
+    CAMS = [cam_pose(t, fmt)[0] for t in T]
     kernels = []   # (local position, local quat, scale, launch t, velocity (tub-local), spin axis, spin rate)
     # heap: dense packed dome above the rim
     for i in range(420):
@@ -673,23 +695,28 @@ def build(fmt, samples, preview):
         rad = rr * RT * 1.0
         x, y = math.cos(a) * rad, math.sin(a) * rad
         z = H + 0.03 + 0.34 * (1 - rr ** 2.0) + rng.uniform(-0.03, 0.05)
-        d = np.array([x * 1.6, y * 1.6, 1.0 + rng.uniform(0, 0.6)])
+        d = np.array([x * 1.8, abs(y) * 0.6 + 0.15, 1.0 + rng.uniform(0, 0.6)])   # up/out, never at the lens
         d /= np.linalg.norm(d)
         v = d * rng.uniform(4.0, 7.5)
         kernels.append(dict(p=Vector((x, y, z)), q=rand_quat(), s=ksc * rng.uniform(0.85, 1.25),
                             ts=T_ERUPT + rng.uniform(0, 0.08) + (1 - rr) * 0.04, v=Vector(v),
                             ax=Vector(rng.normal(size=3)), w=rng.uniform(5, 16), lens=False))
     # geyser stream fed from inside the cup
-    for i in range(330):
+    for i in range(560):
         a = rng.uniform(0, 2 * math.pi)
         z = rng.uniform(0.45, 0.85)
         rad = math.sqrt(rng.uniform(0, 1)) * (r_at(z) - 0.17)
-        ts = T_ERUPT + 0.04 + (rng.uniform(0, 1) ** 1.5) * 0.55
-        cone = rng.uniform(0.05, 0.75)
+        ts = T_ERUPT + 0.04 + (rng.uniform(0, 1) ** 1.15) * (NF / FPS - T_ERUPT - 0.05)
+        kind = rng.uniform()
+        if kind < 0.62:      # plume: rises into a dense glowing cloud over the rim
+            cone = rng.uniform(0.0, 0.55); sp = rng.uniform(3.4, 5.6)
+        else:                # fast streamers
+            cone = rng.uniform(0.2, 0.85); sp = rng.uniform(5.5, 9.0)
         ang = rng.uniform(0, 2 * math.pi)
-        d = np.array([math.cos(ang) * math.sin(cone), math.sin(ang) * math.sin(cone), math.cos(cone)])
-        v = d * rng.uniform(5.0, 9.0)
-        lens = i % 3 == 0
+        d = np.array([math.cos(ang) * math.sin(cone) * 1.5, abs(math.sin(ang)) * math.sin(cone) * 0.5 + 0.12,
+                      math.cos(cone)])
+        v = d * sp
+        lens = False
         kernels.append(dict(p=Vector((math.cos(a) * rad, math.sin(a) * rad, z)), q=rand_quat(),
                             s=ksc * rng.uniform(0.85, 1.3), ts=ts, v=Vector(v),
                             ax=Vector(rng.normal(size=3)), w=rng.uniform(5, 18), lens=lens,
@@ -714,10 +741,41 @@ def build(fmt, samples, preview):
                 q0 = M0.to_quaternion() @ k["q"]
                 q = axis_quat(k["ax"], k["w"] * u) @ q0
                 s = k["s"]
-                dcam = (p - cp).length
+                dcam = (p - CAMS[fi]).length
                 if dcam < 0.9:
                     s *= smooth((dcam - 0.35) / 0.55)
                 M = Matrix.LocRotScale(p, q, Vector((max(s, 1e-4),) * 3))
+            mats.append(M)
+        L, Q, S = decompose_series(mats)
+        set_curves(o, frames, L, Q, S)
+
+    # ---- hero foreground: big out-of-focus kernels that fly out of the tub
+    # and settle near the lens in the frame corners (like the reference)
+    pe, ae = CAM_END[fmt]
+    fwd = (ae - pe).normalized()
+    right = fwd.cross(Vector((0, 0, 1))).normalized()
+    up = right.cross(fwd).normalized()
+    spots = [(-0.98, -0.62), (0.97, -0.66), (-0.95, 0.55), (0.96, 0.5), (-0.99, 0.0), (1.0, -0.05),
+             (-0.75, 0.92), (0.78, 0.9)]
+    aspect = 16 / 9 if fmt == "16x9" else 9 / 16
+    for j, (sxn, syn) in enumerate(spots):
+        dist = rng.uniform(0.75, 1.25)
+        half_h = dist * math.tan(math.radians(16 if fmt == "16x9" else 21.8))
+        tgt = pe + fwd * dist + right * (sxn * half_h * aspect * 0.95) + up * (syn * half_h * 0.95)
+        ts = rng.uniform(1.05, 1.5)
+        q0 = rand_quat(); ax = Vector(rng.normal(size=3)); w = rng.uniform(1.0, 2.5)
+        o = bpy.data.objects.new(f"hero{j}", kms[j % 8]); col.objects.link(o)
+        mats = []
+        for fi, t in enumerate(T):
+            M0 = tub_matrix(ts, fmt)
+            src = M0 @ Vector((0, 0, H + 0.1))
+            if t < ts:
+                M = Matrix.LocRotScale(src, q0, Vector((1e-4,) * 3))
+            else:
+                e = out_quart((t - ts) / 0.55)
+                p = src.lerp(tgt, e) + (tgt - src).normalized() * 0.05 * (t - ts)
+                sc_ = ksc * 1.25 * (0.4 + 0.6 * e)
+                M = Matrix.LocRotScale(p, axis_quat(ax, w * (t - ts)) @ q0, Vector((sc_,) * 3))
             mats.append(M)
         L, Q, S = decompose_series(mats)
         set_curves(o, frames, L, Q, S)
@@ -731,8 +789,7 @@ def build(fmt, samples, preview):
         c = smooth((t - T_CHARGE) / (T_ERUPT - T_CHARGE))
         u = t - T_ERUPT
         b = math.exp(-max(u, 0) * 4.5) * (u >= 0)
-        lv = c * 0.35 + b * 1.4
-        lv *= 1 - smooth((t - T_EXIT) / 0.3)
+        lv = c * 0.35 + b * 1.1 + 0.75 * smooth(u / 0.12) * (u >= 0)
         return lv
     for f in range(0, NF + 2):
         lv = ramp_keys(f / FPS)
@@ -746,18 +803,17 @@ def build(fmt, samples, preview):
     ring = bpy.data.objects.new("ring", build_torus()); col.objects.link(ring)
     ring.data.materials.append(rm)
     ring.visible_shadow = False
-    P_er = tub_matrix(T_ERUPT, fmt) @ Vector((0, 0, 0.75))
+    P_er = tub_matrix(NF / FPS, fmt) @ Vector((0, 0, 1.0))
     for f in range(0, NF + 2):
         t = f / FPS
         u = t - T_ERUPT
         g = out_expo((u + 0.05) / 0.35) if u > -0.05 else 0.0
-        s = 0.2 + 1.55 * g
+        s = 0.2 + (1.05 if fmt == "16x9" else 0.9) * g
         ring.location = (P_er.x, P_er.y + 0.9, P_er.z)
         ring.scale = (s, s, s)
         ring.keyframe_insert("location", frame=f)
         ring.keyframe_insert("scale", frame=f)
-        fade = 1 - smooth((t - (T_EXIT + 0.1)) / 0.5)
-        inten = ((0.9 + 2.0 * math.exp(-max(u, 0) * 6)) * fade) if u > -0.05 else 0.0
+        inten = (1.0 + 2.0 * math.exp(-max(u, 0) * 6) + 0.08 * math.sin(t * 9)) if u > -0.05 else 0.0
         remit.inputs["Strength"].default_value = 1.7 * inten
         remit.inputs["Strength"].keyframe_insert("default_value", frame=f)
         ring.hide_render = inten < 0.03
@@ -773,18 +829,18 @@ def build(fmt, samples, preview):
     emb_me = bpy.data.meshes.new("ember")
     bm = _bm.new(); _bm.ops.create_icosphere(bm, subdivisions=2, radius=1.0); bm.to_mesh(emb_me); bm.free()
     emb_me.materials.append(em)
-    for kind, count, me, size in (("c", 80, chip_me, 0.055), ("e", 110, emb_me, 0.006)):
+    for kind, count, me, size in (("c", 80, chip_me, 0.055), ("C", 12, chip_me, 0.26), ("e", 110, emb_me, 0.006)):
         for n_ in range(count):
             o = bpy.data.objects.new(f"{kind}{n_}", me); col.objects.link(o)
             if kind == "e":
                 o.visible_shadow = False
-            ts = T_ERUPT + rng.uniform(0, 0.55 if kind == "c" else 0.4)
+            ts = T_ERUPT + rng.uniform(0, {"c": 1.0, "C": 0.5, "e": 1.1}[kind])
             p0l = Vector((rng.uniform(-0.3, 0.3), rng.uniform(-0.3, 0.3), H + rng.uniform(-0.05, 0.1)))
             a = rng.uniform(0, 2 * math.pi)
-            sp = rng.uniform(3, 8) if kind == "c" else rng.uniform(4, 11)
-            el = rng.uniform(0.35, 1.0)
+            sp = {"c": rng.uniform(3, 8), "C": rng.uniform(2.2, 3.6), "e": rng.uniform(4, 11)}[kind]
+            el = rng.uniform(0.35, 1.0) if kind != "C" else rng.uniform(0.05, 0.35)
             v = Vector((math.cos(a) * (1 - el) * 1.6, math.sin(a) * (1 - el) * 1.6 - rng.uniform(0, 1.0), el)) * sp
-            ax = Vector(rng.normal(size=3)); w = rng.uniform(8, 25)
+            ax = Vector(rng.normal(size=3)); w = rng.uniform(8, 25) if kind != "C" else rng.uniform(2, 5)
             q0 = rand_quat()
             s = size * rng.uniform(0.7, 1.4)
             mats = []
@@ -795,12 +851,15 @@ def build(fmt, samples, preview):
                     u = t - ts
                     M0 = tub_matrix(ts, fmt)
                     pw = M0 @ p0l
-                    drag = 2.2 if kind == "c" else 1.2
+                    drag = {"c": 2.2, "C": 1.6, "e": 1.2}[kind]
                     dist = (1 - math.exp(-drag * u)) / drag
-                    gg = 0.35 if kind == "c" else 0.6
+                    gg = {"c": 0.35, "C": 0.15, "e": 0.6}[kind]
                     p = pw + v * dist + Vector((0, 0, -0.5 * G * gg * u * u))
-                    life = 1.0 if kind == "c" else (1 - smooth(u / 0.9))
+                    life = (1 - smooth(u / 0.9)) if kind == "e" else 1.0
                     q = axis_quat(ax, w * u) @ q0
+                    dc = (p - CAMS[fi]).length          # nothing blows out right on the lens
+                    if dc < 1.2:
+                        life *= smooth((dc - 0.5) / 0.7)
                     M = Matrix.LocRotScale(p, q, Vector((max(s * life, 1e-4),) * 3))
                 mats.append(M)
             L, Q, S = decompose_series(mats)
@@ -809,20 +868,9 @@ def build(fmt, samples, preview):
     # ---- camera keys: subtle push + eruption shake
     for f in range(0, NF + 2):
         t = f / FPS
-        push = 0.35 * smooth((t - 0.35) / 0.6)
-        off = Vector((0, 0, 0))
-        u = t - T_ERUPT
-        if u >= 0:
-            e = math.exp(-u * 8)
-            off += Vector((0.025 * e * math.sin(u * 61), 0, 0.02 * e * math.sin(u * 53 + 1)))
-            push += -0.25 * math.exp(-u * 7) * math.cos(u * 15) + 0.2 * (1 - math.exp(-u * 2.5))
-        u = t - (T_EXIT + 0.3)
-        if u >= 0:
-            e = math.exp(-u * 9)
-            off += Vector((0.02 * e * math.sin(u * 70), 0, 0.016 * e * math.sin(u * 59)))
-        fwd = (CAM_AIM - cp).normalized()
-        cam.location = cp + fwd * push + off
-        cam.rotation_euler = (CAM_AIM - cp).to_track_quat("-Z", "Y").to_euler()
+        loc, aim = cam_pose(t, fmt)
+        cam.location = loc
+        cam.rotation_euler = (aim - loc).to_track_quat("-Z", "Y").to_euler()
         cam.keyframe_insert("location", frame=f)
         cam.keyframe_insert("rotation_euler", frame=f)
         cd.dof.focus_distance = (tub_matrix(t, fmt) @ Vector((0, 0, 0.6)) - cam.location).length
