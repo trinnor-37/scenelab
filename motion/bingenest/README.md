@@ -50,3 +50,21 @@ A full render takes about 5–6 minutes per format on 4 cores.
 Tweak the timing with the constants at the top of `src/scene.py`
 (`WORD_LAND`, `RING`, `TV_LAND`, `CHAR_LAND` …). Tweak the framing with
 `FORMATS[...]["keys"]`, given as `(t, cx, cy, zoom, roll)`.
+
+## 3D popcorn tub (Blender Cycles)
+
+`src/tub3d.py` builds the popcorn-tub eruption as a real 3D scene and renders
+it with Cycles through the `bpy` module. `src/tub3d_post.py` adds the glow and
+background and writes the videos. On a machine with a graphics card the
+render picks up the card automatically (NVIDIA, AMD, Apple Metal or Intel).
+
+```bash
+pip install bpy==5.2.3 numpy opencv-python-headless pillow   # needs Python 3.13; ffmpeg on PATH
+python3 src/tub3d.py --format 16x9 --samples 20 --resume
+python3 src/tub3d_post.py --format 16x9
+python3 src/tub3d.py --format 9x16 --samples 20 --resume
+python3 src/tub3d_post.py --format 9x16
+```
+
+The outputs land in `out/tub3d/`. Add `--resume` to continue a render
+without redoing frames that already exist.

@@ -496,6 +496,32 @@ def key_value(socket_owner, path, pairs):
 
 
 # ====================================================================== scene build
+def use_gpu(sc):
+    """Use the fastest GPU backend available (NVIDIA OptiX/CUDA, AMD HIP,
+    Apple Metal, Intel oneAPI). Falls back to the CPU."""
+    if os.environ.get("TUB_CPU"):
+        return "CPU"
+    try:
+        prefs = bpy.context.preferences.addons["cycles"].preferences
+    except Exception:
+        return "CPU"
+    for kind in ("OPTIX", "CUDA", "HIP", "METAL", "ONEAPI"):
+        try:
+            prefs.compute_device_type = kind
+            prefs.get_devices()
+        except Exception:
+            continue
+        devs = [d for d in prefs.devices if d.type == kind]
+        if devs:
+            for d in prefs.devices:
+                d.use = d.type == kind
+            sc.cycles.device = "GPU"
+            print("Cycles device:", kind, [d.name for d in devs], flush=True)
+            return kind
+    print("Cycles device: CPU (no supported GPU found)", flush=True)
+    return "CPU"
+
+
 def build(fmt, samples, preview):
     bpy.ops.wm.read_factory_settings(use_empty=True)
     sc = bpy.context.scene
@@ -507,6 +533,7 @@ def build(fmt, samples, preview):
     sc.render.engine = "CYCLES"
     cy = sc.cycles
     cy.device = "CPU"
+    use_gpu(sc)
     cy.samples = samples
     cy.use_adaptive_sampling = True
     cy.adaptive_threshold = 0.05
@@ -801,6 +828,7 @@ def main():
     ap.add_argument("--samples", type=int, default=48)
     ap.add_argument("--preview", type=float, default=1.0)
     ap.add_argument("--out", default=None)
+    ap.add_argument("--resume", action="store_true", help="skip frames that are already rendered")
     a = ap.parse_args()
     sc = build(a.format, a.samples, a.preview)
     out = a.out or os.path.join(ROOT, "out", "tub3d", f"raw_{a.format}")
@@ -808,6 +836,8 @@ def main():
     frames = a.frames if a.frames else list(range(1, NF + 1))
     import time
     for f in frames:
+        if a.resume and os.path.exists(os.path.join(out, f"f{f:04d}.png")):
+            continue
         t0 = time.time()
         sc.frame_set(f)
         sc.render.filepath = os.path.join(out, f"f{f:04d}.png")
