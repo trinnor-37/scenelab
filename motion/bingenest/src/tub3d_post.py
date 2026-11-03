@@ -33,15 +33,23 @@ def load(path):
 
 
 def glow(c):
+    """Glow only where it belongs: the neon ring (saturated magenta) and the
+    truly blown-out hot spots (mouth glow, embers). Ordinary bright popcorn
+    and white stripes get no glow, so the image stays crisp and saturated."""
     rgb = c[..., :3]
-    lum = rgb.max(axis=2, keepdims=True)
-    br = rgb * np.clip((lum - 0.80) / 0.2, 0, 1)
+    a = np.maximum(c[..., 3:4], 1e-4)
+    st = rgb / a
+    r, g, b = st[..., 0], st[..., 1], st[..., 2]
+    neon = np.clip((np.minimum(r, b) - g - 0.25) / 0.25, 0, 1) * np.clip((np.maximum(r, b) - 0.6) / 0.3, 0, 1)
+    y = 0.2126 * r + 0.7152 * g + 0.0722 * b
+    hot = np.clip((y - 0.985) / 0.015, 0, 1)
+    src = rgb * (neon * 1.0 + hot * 0.25)[..., None]
     h, w = rgb.shape[:2]
     acc = np.zeros_like(rgb)
-    for f, sig, k in ((4, 3, 0.55), (8, 6, 0.45), (16, 8, 0.35)):
-        s = cv2.resize(br, (w // f, h // f), interpolation=cv2.INTER_AREA)
-        s = cv2.GaussianBlur(s, (0, 0), sig)
-        acc += cv2.resize(s, (w, h), interpolation=cv2.INTER_LINEAR) * k
+    for f, sig, k in ((4, 3, 0.7), (8, 6, 0.6), (16, 8, 0.5)):
+        s_ = cv2.resize(src, (w // f, h // f), interpolation=cv2.INTER_AREA)
+        s_ = cv2.GaussianBlur(s_, (0, 0), sig)
+        acc += cv2.resize(s_, (w, h), interpolation=cv2.INTER_LINEAR) * k
     out = c.copy()
     out[..., :3] += acc
     out[..., 3] = np.maximum(out[..., 3], np.clip(acc.max(axis=2), 0, 1))
@@ -76,7 +84,7 @@ def main():
                     (rgba[..., [2, 1, 0, 3]] * 255 + 0.5).astype(np.uint8))
         bg = np.clip(hs.frame(i / FPS), 0, 1)
         o = (c[..., :3] + bg * (1 - al)) * vig
-        o = np.where(o > 0.9, 0.9 + (1 - np.exp(-(o - 0.9) * 5)) * 0.1, o)
+        o = np.where(o > 0.95, 0.95 + (1 - np.exp(-(o - 0.95) * 8)) * 0.05, o)
         enc.stdin.write((np.clip(o, 0, 1) * 255 + 0.5).astype(np.uint8).tobytes())
     enc.stdin.close()
     enc.wait()

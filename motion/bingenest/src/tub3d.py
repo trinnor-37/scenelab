@@ -702,7 +702,7 @@ def build(fmt, samples, preview):
                             ts=T_ERUPT + rng.uniform(0, 0.08) + (1 - rr) * 0.04, v=Vector(v),
                             ax=Vector(rng.normal(size=3)), w=rng.uniform(5, 16), lens=False))
     # geyser stream fed from inside the cup
-    for i in range(560):
+    for i in range(400):
         a = rng.uniform(0, 2 * math.pi)
         z = rng.uniform(0.45, 0.85)
         rad = math.sqrt(rng.uniform(0, 1)) * (r_at(z) - 0.17)
@@ -713,7 +713,7 @@ def build(fmt, samples, preview):
         else:                # fast streamers
             cone = rng.uniform(0.2, 0.85); sp = rng.uniform(5.5, 9.0)
         ang = rng.uniform(0, 2 * math.pi)
-        d = np.array([math.cos(ang) * math.sin(cone) * 1.5, abs(math.sin(ang)) * math.sin(cone) * 0.5 + 0.12,
+        d = np.array([math.cos(ang) * math.sin(cone) * 1.05, abs(math.sin(ang)) * math.sin(cone) * 0.5 + 0.12,
                       math.cos(cone)])
         v = d * sp
         lens = False
@@ -735,12 +735,17 @@ def build(fmt, samples, preview):
                 vw = M0.to_3x3().normalized() @ k["v"]
                 if k["lens"]:
                     vw = vw * 0.55 + k["lv"]
-                drag = 1.4
+                drag = 1.9
                 dist = (1 - math.exp(-drag * u)) / drag
-                p = p0 + vw * dist + Vector((0, 0, -0.5 * G * u * u))
+                # popcorn 'floats' (stylised, like the reference): low gravity
+                p = p0 + vw * dist + Vector((0, 0, -0.5 * G * 0.45 * u * u))
                 q0 = M0.to_quaternion() @ k["q"]
                 q = axis_quat(k["ax"], k["w"] * u) @ q0
                 s = k["s"]
+                # keep the lower frame clean: kernels falling back below the rim melt away
+                low = (M0 @ Vector((0, 0, H * 0.85))).z
+                if p.z < low and u > 0.3:
+                    s *= smooth(1 - (low - p.z) / 0.35)
                 dcam = (p - CAMS[fi]).length
                 if dcam < 0.9:
                     s *= smooth((dcam - 0.35) / 0.55)
