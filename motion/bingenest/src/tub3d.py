@@ -840,7 +840,7 @@ def main():
     ap.add_argument("--resume", action="store_true", help="skip frames that are already rendered")
     a = ap.parse_args()
     sc = build(a.format, a.samples, a.preview)
-    out = a.out or os.path.join(ROOT, "out", "tub3d", f"raw_{a.format}")
+    out = os.path.abspath(a.out or os.path.join(ROOT, "out", "tub3d", f"raw_{a.format}"))
     os.makedirs(out, exist_ok=True)
     frames = a.frames if a.frames else list(range(1, NF + 1))
     import time
