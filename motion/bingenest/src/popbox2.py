@@ -775,8 +775,8 @@ class Hyperspace:
         r = np.hypot((xx - W / 2) / m, (yy - H * 0.45) / m) * 2
         a = np.arctan2(yy - H * 0.45, xx - W / 2)
         rays = (0.5 + 0.5 * np.cos(a * 22)) ** 8 * 0.5 + (0.5 + 0.5 * np.cos(a * 9 + 1)) ** 4 * 0.5
-        base = np.float32([0.10, 0.01, 0.22]) + np.float32([0.55, 0.12, 0.85]) * np.exp(-r * 1.5)[..., None]
-        base += np.float32([0.9, 0.5, 1.0]) * (np.exp(-r * 5) * 0.6)[..., None]
+        base = np.float32([0.05, 0.0, 0.13]) + np.float32([0.42, 0.06, 0.75]) * np.exp(-r * 1.7)[..., None]
+        base += np.float32([0.8, 0.35, 1.0]) * (np.exp(-r * 5) * 0.45)[..., None]
         base += np.float32([0.6, 0.2, 0.9]) * (rays * np.exp(-r * 0.9) * 0.35)[..., None]
         self.base = base.astype(np.float32)
 

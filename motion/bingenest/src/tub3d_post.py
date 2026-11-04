@@ -56,6 +56,16 @@ def glow(c):
     return out
 
 
+def grade(o):
+    """Final look: clean blacks, gentle S-curve, richer colour (no hue shifts)."""
+    o = np.clip((o - 0.03) / 0.97, 0, None)
+    o = np.where(o > 0.95, 0.95 + (1 - np.exp(-(o - 0.95) * 8)) * 0.05, o)
+    o = np.clip(o, 0, 1)
+    lum = (0.2126 * o[..., 0] + 0.7152 * o[..., 1] + 0.0722 * o[..., 2])[..., None]
+    o = np.clip(lum + (o - lum) * 1.18, 0, 1)
+    return o * o * (3 - 2 * o) * 0.35 + o * 0.65
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--format", default="16x9")
@@ -83,8 +93,7 @@ def main():
         cv2.imwrite(os.path.join(seq, f"popcorn_tub3d_{a.format}_{i:04d}.png"),
                     (rgba[..., [2, 1, 0, 3]] * 255 + 0.5).astype(np.uint8))
         bg = np.clip(hs.frame(i / FPS), 0, 1)
-        o = (c[..., :3] + bg * (1 - al)) * vig
-        o = np.where(o > 0.95, 0.95 + (1 - np.exp(-(o - 0.95) * 8)) * 0.05, o)
+        o = grade((c[..., :3] + bg * (1 - al)) * vig)
         enc.stdin.write((np.clip(o, 0, 1) * 255 + 0.5).astype(np.uint8).tobytes())
     enc.stdin.close()
     enc.wait()

@@ -334,7 +334,7 @@ def mat_popcorn():
     ramp = nt.nodes.new("ShaderNodeValToRGB")
     ramp.color_ramp.elements[0].position = 0.15
     ramp.color_ramp.elements[0].position = 0.35
-    ramp.color_ramp.elements[0].color = (0.55, 0.13, 0.0, 1)
+    ramp.color_ramp.elements[0].color = (0.40, 0.10, 0.0, 1)
     ramp.color_ramp.elements[1].position = 0.92
     ramp.color_ramp.elements[1].color = (1.0, 0.58, 0.06, 1)
     nt.links.new(inv.outputs["Value"], ramp.inputs["Fac"])
@@ -353,7 +353,7 @@ def mat_popcorn():
     cream = nt.nodes.new("ShaderNodeMix"); cream.data_type = "RGBA"; cream.blend_type = "MIX"
     cream.inputs["Factor"].default_value = 0.6
     nt.links.new(ramp.outputs["Color"], cream.inputs["A"])
-    cream.inputs["B"].default_value = (1.0, 0.86, 0.48, 1)
+    cream.inputs["B"].default_value = (1.0, 0.84, 0.36, 1)
     nt.links.new(cream.outputs["Result"], mixc.inputs["B"])
     vor = nt.nodes.new("ShaderNodeTexVoronoi")
     vor.inputs["Scale"].default_value = 2.0
@@ -593,7 +593,7 @@ def build(fmt, samples, preview):
     w = bpy.data.worlds.new("w"); sc.world = w; w.use_nodes = True
     bg = w.node_tree.nodes["Background"]
     bg.inputs["Color"].default_value = (0.16, 0.08, 0.26, 1)
-    bg.inputs["Strength"].default_value = 0.45
+    bg.inputs["Strength"].default_value = 0.22
 
     col = sc.collection
     label = os.path.join(ROOT, "out", "tub3d", "label.png")
@@ -626,9 +626,9 @@ def build(fmt, samples, preview):
         o = bpy.data.objects.new(name, d); col.objects.link(o); o.location = loc
         o.rotation_euler = (Vector(aim) - Vector(loc)).to_track_quat("-Z", "Y").to_euler()
         return o
-    area("key", (-3.2, -4.0, 4.6), 1900, (1.0, 0.92, 0.82), 3.0)
-    area("rimL", (-3.8, 3.2, 2.4), 1500, (0.75, 0.30, 1.0), 2.0)
-    area("rimR", (3.8, 3.0, 2.0), 1500, (1.0, 0.30, 0.85), 2.0)
+    area("key", (-3.2, -4.0, 4.6), 2600, (1.0, 0.86, 0.66), 3.0)
+    area("rimL", (-3.8, 3.2, 2.4), 900, (0.62, 0.32, 1.0), 2.0)
+    area("rimR", (3.8, 3.0, 2.0), 900, (0.80, 0.30, 1.0), 2.0)
     area("fill", (2.5, -4.5, 0.0), 300, (0.6, 0.4, 1.0), 4.0)
 
     # ---- camera
@@ -760,8 +760,7 @@ def build(fmt, samples, preview):
     fwd = (ae - pe).normalized()
     right = fwd.cross(Vector((0, 0, 1))).normalized()
     up = right.cross(fwd).normalized()
-    spots = [(-0.98, -0.62), (0.97, -0.66), (-0.95, 0.55), (0.96, 0.5), (-0.99, 0.0), (1.0, -0.05),
-             (-0.75, 0.92), (0.78, 0.9)]
+    spots = []   # giant out-of-focus lens kernels removed: they read as milky haze
     aspect = 16 / 9 if fmt == "16x9" else 9 / 16
     for j, (sxn, syn) in enumerate(spots):
         dist = rng.uniform(0.75, 1.25)
@@ -834,7 +833,7 @@ def build(fmt, samples, preview):
     emb_me = bpy.data.meshes.new("ember")
     bm = _bm.new(); _bm.ops.create_icosphere(bm, subdivisions=2, radius=1.0); bm.to_mesh(emb_me); bm.free()
     emb_me.materials.append(em)
-    for kind, count, me, size in (("c", 80, chip_me, 0.055), ("C", 12, chip_me, 0.26), ("e", 110, emb_me, 0.006)):
+    for kind, count, me, size in (("c", 80, chip_me, 0.055), ("C", 8, chip_me, 0.15), ("e", 110, emb_me, 0.006)):
         for n_ in range(count):
             o = bpy.data.objects.new(f"{kind}{n_}", me); col.objects.link(o)
             if kind == "e":
